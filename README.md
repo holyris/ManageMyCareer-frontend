@@ -1,27 +1,14 @@
-# Homepage
+#Tuto bonnes pratiques git
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.23.
+Pour synchroniser avec la branch master distance (origin/master), à faire avant de commit->push !! :
 
-## Development server
+Si vous avez des modif en cours : git stash (mettre vos modifs de côté) git pull --rebase (récupérer modifs distantes) git stash pop (récupérer vos modifs)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+On fait git stash car c'est impossible de git pull avec des modifs en cours.
 
-## Code scaffolding
+Pour push : commit avant (via vscode c'est plus simple) git push origin HEAD:votre branche distante
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Si ça marche pas, faire git push -f origin HEAD:votre branche distante
 
-## Build
+Puis si vous avez des doutes demandez moi sur discord avec @
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
