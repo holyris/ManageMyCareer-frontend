@@ -1,4 +1,4 @@
-#Tuto bonnes pratiques git
+# Tuto bonnes pratiques git
 
 Pour synchroniser avec la branch master distance (origin/master), à faire avant de commit->push !! :
 
