@@ -14,7 +14,9 @@ import { UploaddialogComponent } from './uploaddialog/uploaddialog.component';
 import { MatCommonModule } from '@angular/material/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
-import {MatInputModule} from '@angular/material/input'; 
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import {MatInputModule} from '@angular/material/input';
     MatCommonModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
