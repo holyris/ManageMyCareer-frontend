@@ -1,36 +1,48 @@
-<nav class="navbar navbar-inverse">
+<button class="btn btn-success" (click)="openUpload()">Nouveau</button>
+
+<p-dialog [contentStyle]="{'overflow':'visible'}" header="Nouveau" [(visible)]="uploadModalVisible" [resizable]="false">
   <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-        aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-
-      <a class="navbar-brand" routerLink="/">Le Projet</a>
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <p-fileUpload customUpload="true" (uploadHandler)="onUpload($event)" [showUploadButton]="false"
+          [showCancelButton]="false"></p-fileUpload>
+      </div>
     </div>
-
-    <div id="navbar" class="navbar-collapse collapse">
-      <form *ngIf="!userService.connected()" class="navbar-form navbar-right">
-        <div class="form-group">
-          <input [(ngModel)]="username" name="user_name" type="text" placeholder="Email" class="form-control">
-        </div>
-        <div class="form-group">
-          <input [(ngModel)]="password" name="user_password" type="password" placeholder="Password" class="form-control">
-        </div>
-        <button (click)="connect()" class="btn btn-success">Sign in</button>
-        <button routerLink="/register" class="btn btn-warning">Register</button>
-        <button class="btn btn-success" (click)="openUpload()">Upload</button>
-
-      </form>
-
-      <div *ngIf="userService.connected()" class="navbar-form navbar-right">
-        <button (click)="userService.disconnect()" class="btn btn-danger">Sign Out</button>
-
+    <div class="ui-g">
+      <div class="ui-g-6">
+        <p-dropdown [options]="types" [(ngModel)]="selectedType" optionLabel="label" placeholder="Type"
+          [showClear]="true"></p-dropdown>
       </div>
 
+      <div class="ui-g-6">
+        <p-calendar [(ngModel)]="date" view="month" dateFormat="mm/yy" placeholder="Date" [yearNavigator]="true"
+          yearRange="2000:2030"></p-calendar>
+      </div>
+    </div>
+
+    <div class="ui-g">
+      <div class="ui-g-6">
+        <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)" [(ngModel)]="selectedCompany" [size]="30" placeholder="Entreprise"
+          ></p-autoComplete>
+      </div>
+      <div class="ui-g-6">
+        <p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)" [(ngModel)]="selectedJob" [size]="30" placeholder="Poste" >
+        </p-autoComplete>
+      </div>
+    </div>
+
+    <div class="ui-g">
+      <div class="ui-g-12 ui-md-6">
+        <input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
+      </div>
+      <div class="ui-g-12 ui-md-6">
+        <input type="text" pInputText pKeyFilter="money" placeholder="Salaire net">
+      </div>
     </div>
   </div>
-</nav>
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="uploadModalVisible=false" label="Uploader"></button>
+    <button type="button" pButton icon="pi pi-times" (click)="uploadModalVisible=false" label="Fermer"
+      class="ui-button-secondary"></button>
+  </p-footer>
+</p-dialog>
