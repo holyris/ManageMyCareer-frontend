@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
-import { MatDialog } from '@angular/material/dialog';
-import { UploaddialogComponent } from '../uploaddialog/uploaddialog.component';
-import {DialogService} from 'primeng/dynamicdialog';
 
 export interface Type {
   value: number;
-  text: string;
+  label: string;
 }
 @Component({
   selector: 'app-header',
@@ -14,54 +11,81 @@ export interface Type {
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  username: String;
+  userlabel: String;
   password: String;
   uploadModalVisible: Boolean;
-
-  label: string = "Type de document"
+  selectedType: Type;
+  selectedCompany: String;
+  selectedJob: String;
+  date: Date;
+  uploadedFile: any;
+  filteredCompanies: any[];
+  filteredJobs: any[];
+  
+  
+  companies: String[] = [
+    "Entreprise", "manage", "career", "test", "acta", "isir"
+  ];
+  jobs: String[] = [
+    "Developpeur ", "admin reseau", "croquette"
+  ];
+  
   types: Type[] = [
     {
-      value: 0, text: 'Fiche de paie'
+      value: 0, label: 'Fiche de paie'
     },
     {
-      value: 1, text: 'Contrat de travail'
-    }, 
-    {
-      value: 2, text: 'CV'
+      value: 1, label: 'Contrat de travail'
     },
     {
-      value: 3, text: 'Lettre'
+      value: 2, label: 'CV'
     },
     {
-      value: 4, text: 'Autre'
+      value: 3, label: 'Lettre'
+    },
+    {
+      value: 4, label: 'Autre'
     },];
 
-  constructor(public userService: UserService, public dialog: MatDialog) { }
+  constructor(public userService: UserService) { }
 
   ngOnInit() {
   }
 
-  connect(){
-    this.userService.connect(this.username, this.password);
+  connect() {
+    this.userService.connect(this.userlabel, this.password);
   }
 
-  openUpload(){
+  openUpload() {
     this.uploadModalVisible = true;
-  //   const ref = this.dialogService.open(uploadmodal, {
-  //     header: 'Choose a Car',
-  //     width: '70%'
-  // });
-
   }
 
-  // openUpload() {
-  //   const dialogRef = this.dialog.open(UploaddialogComponent, {
-  //     width: '250px',
-  //     data: {name: '', animal: ''}
-  //   });
+  onUpload(event) {
+    for (let file of event.files) {
+      this.uploadedFile.push(file);
+    }
+  }
 
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     console.log('The dialog was closed with '+result);
-  //   });
-  // }
+  filterCompanies(event){
+    let filtered: any[] = [];
+    for (let i = 0; i < this.companies.length; i++) {
+      let company = this.companies[i];
+      if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+        filtered.push(company);
+      }
+    }
+    this.filteredCompanies = filtered;
+  }
+
+
+  filterJobs(event){
+    let filtered: any[] = [];
+    for (let i = 0; i < this.jobs.length; i++) {
+      let company = this.jobs[i];
+      if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+        filtered.push(company);
+      }
+    }
+    this.filteredJobs = filtered;
+  }
 }

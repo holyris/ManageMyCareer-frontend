@@ -6,22 +6,23 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { RegisterComponent } from './register/register.component';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatDialogModule } from '@angular/material/dialog';
-import { UploaddialogComponent } from './uploaddialog/uploaddialog.component';
 import { MatCommonModule } from '@angular/material/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field'; 
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {DialogModule} from 'primeng/dialog';
-import {DynamicDialogModule} from 'primeng/dynamicdialog';
-import { UploadmodalComponent } from './uploadmodal/uploadmodal.component';
-import {ButtonModule} from 'primeng/button';
-import {DropdownModule} from 'primeng/dropdown';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DialogModule } from 'primeng/dialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { FileUploadModule } from 'primeng/fileupload';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 @NgModule({
@@ -30,26 +31,27 @@ import {DropdownModule} from 'primeng/dropdown';
     HomeComponent,
     HeaderComponent,
     RegisterComponent,
-    UploaddialogComponent,
-    UploadmodalComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
     MatSliderModule,
-    MatDialogModule,
     MatCommonModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     MatDatepickerModule,
     DialogModule,
     DynamicDialogModule,
     ButtonModule,
-    DropdownModule
+    DropdownModule,
+    CalendarModule,
+    FileUploadModule,
+    AutoCompleteModule,
+    KeyFilterModule,
+    InputTextModule
   ],
   providers: [],
   bootstrap: [AppComponent]
