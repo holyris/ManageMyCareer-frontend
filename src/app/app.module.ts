@@ -16,6 +16,12 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {DialogModule} from 'primeng/dialog';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import { UploadmodalComponent } from './uploadmodal/uploadmodal.component';
+import {ButtonModule} from 'primeng/button';
+import {DropdownModule} from 'primeng/dropdown';
 
 
 @NgModule({
@@ -25,6 +31,7 @@ import {MatSelectModule} from '@angular/material/select';
     HeaderComponent,
     RegisterComponent,
     UploaddialogComponent,
+    UploadmodalComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +45,11 @@ import {MatSelectModule} from '@angular/material/select';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatDatepickerModule,
+    DialogModule,
+    DynamicDialogModule,
+    ButtonModule,
+    DropdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]
