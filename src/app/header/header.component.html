@@ -1,37 +1,37 @@
 <button class="btn btn-success" (click)="openUpload()">Nouveau</button>
+<button class="btn btn-success" (click)="test()">Test</button>
 
 <p-dialog [contentStyle]="{'overflow':'visible'}" header="Nouveau" [(visible)]="uploadModalVisible" [resizable]="false">
   <div class="container">
     <div class="ui-g">
       <div class="ui-g-12">
         <p-fileUpload customUpload="true" (uploadHandler)="onUpload($event)" [showUploadButton]="false"
-          [showCancelButton]="false"></p-fileUpload>
+          [showCancelButton]="false" chooseLabel="Choisir un fichier"></p-fileUpload>
       </div>
     </div>
     <div class="ui-g">
       <div class="ui-g-6">
-        <p-dropdown [options]="types" [(ngModel)]="selectedType" optionLabel="label" placeholder="Type"
+        <p-dropdown [options]="types" [(ngModel)]="selectedDocumentType" optionLabel="label" placeholder="Type"
           [showClear]="true"></p-dropdown>
       </div>
-
-      <div class="ui-g-6">
+      <div class="ui-g-6" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
         <p-calendar [(ngModel)]="date" view="month" dateFormat="mm/yy" placeholder="Date" [yearNavigator]="true"
-          yearRange="2000:2030"></p-calendar>
+          yearRange="1950:2030"></p-calendar>
       </div>
     </div>
-
-    <div class="ui-g">
+    <div class="ui-g" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
       <div class="ui-g-6">
-        <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)" [(ngModel)]="selectedCompany" [size]="30" placeholder="Entreprise"
-          ></p-autoComplete>
+        <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
+          [(ngModel)]="selectedCompany" placeholder="Entreprise" [dropdown]="true"></p-autoComplete>
       </div>
       <div class="ui-g-6">
-        <p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)" [(ngModel)]="selectedJob" [size]="30" placeholder="Poste" >
+        <p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)" [(ngModel)]="selectedJob"
+           placeholder="Poste" [dropdown]="true">
         </p-autoComplete>
       </div>
     </div>
 
-    <div class="ui-g">
+    <div class="ui-g" *ngIf="isSelectedFichePaie()">
       <div class="ui-g-12 ui-md-6">
         <input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
       </div>
