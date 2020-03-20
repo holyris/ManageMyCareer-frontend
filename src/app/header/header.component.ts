@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
+import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.model';
 
-export interface Type {
-  value: number;
-  label: string;
-}
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -14,37 +11,36 @@ export class HeaderComponent implements OnInit {
   userlabel: String;
   password: String;
   uploadModalVisible: Boolean;
-  selectedType: Type;
+  selectedDocumentType: DocumentType;
   selectedCompany: String;
   selectedJob: String;
   date: Date;
   uploadedFile: any;
   filteredCompanies: any[];
   filteredJobs: any[];
-  
-  
+
   companies: String[] = [
     "Entreprise", "manage", "career", "test", "acta", "isir"
   ];
   jobs: String[] = [
     "Developpeur ", "admin reseau", "croquette"
   ];
-  
-  types: Type[] = [
+
+  types: DocumentType[] = [
     {
-      value: 0, label: 'Fiche de paie'
+      value: EnumTypeValue.FichePaie, label: 'Fiche de paie'
     },
     {
-      value: 1, label: 'Contrat de travail'
+      value: EnumTypeValue.Contrat, label: 'Contrat de travail'
     },
     {
-      value: 2, label: 'CV'
+      value: EnumTypeValue.Cv, label: 'CV'
     },
     {
-      value: 3, label: 'Lettre'
+      value: EnumTypeValue.Lettre, label: 'Lettre'
     },
     {
-      value: 4, label: 'Autre'
+      value: EnumTypeValue.Autre, label: 'Autre'
     },];
 
   constructor(public userService: UserService) { }
@@ -66,7 +62,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  filterCompanies(event){
+  filterCompanies(event) {
     let filtered: any[] = [];
     for (let i = 0; i < this.companies.length; i++) {
       let company = this.companies[i];
@@ -78,7 +74,7 @@ export class HeaderComponent implements OnInit {
   }
 
 
-  filterJobs(event){
+  filterJobs(event) {
     let filtered: any[] = [];
     for (let i = 0; i < this.jobs.length; i++) {
       let company = this.jobs[i];
@@ -88,4 +84,17 @@ export class HeaderComponent implements OnInit {
     }
     this.filteredJobs = filtered;
   }
+
+  isSelectedFichePaie() {
+    return this.selectedDocumentType && this.selectedDocumentType.value === EnumTypeValue.FichePaie
+  }
+
+  isSelectedContrat() {
+    return this.selectedDocumentType && this.selectedDocumentType.value === EnumTypeValue.Contrat
+  }
+
+  test() {
+    console.log(this.selectedDocumentType);
+  }
+
 }
