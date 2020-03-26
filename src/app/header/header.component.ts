@@ -3,6 +3,8 @@ import { UserService } from 'src/app/user.service';
 import { FileService } from 'src/app/service/file.service';
 import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.model';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -46,7 +48,7 @@ export class HeaderComponent implements OnInit {
       value: EnumTypeValue.Autre, label: 'Autre'
     },];
 
-  constructor(public fileService: FileService, public userService: UserService) { }
+  constructor(public fileService: FileService, public userService: UserService, private router: Router) { }
 
   ngOnInit() {
   }
@@ -96,6 +98,11 @@ export class HeaderComponent implements OnInit {
 
   test() {
     console.log(this.selectedFile);
+  }
+
+  goToPageListe(pageName:string) {
+    console.log("test");
+    this.router.navigate([`${pageName}`]);
   }
 
 }

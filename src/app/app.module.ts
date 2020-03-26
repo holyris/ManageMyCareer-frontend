@@ -25,6 +25,9 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesComponent } from './messages/messages.component';
 
+import { AgGridModule } from 'ag-grid-angular';
+import { ListeComponent } from './liste/liste.component';
+
 
 @NgModule({
   declarations: [
@@ -33,6 +36,7 @@ import { MessagesComponent } from './messages/messages.component';
     HeaderComponent,
     RegisterComponent,
     MessagesComponent,
+    ListeComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,8 @@ import { MessagesComponent } from './messages/messages.component';
     FileUploadModule,
     AutoCompleteModule,
     KeyFilterModule,
-    InputTextModule
+    InputTextModule,
+    AgGridModule.withComponents([])
   ],
   providers: [],
   bootstrap: [AppComponent]
