@@ -9,13 +9,15 @@ import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatCommonModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
@@ -24,9 +26,12 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesComponent } from './messages/messages.component';
+import { LeftMenuComponent } from './left-menu/left-menu.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { ListeComponent } from './liste/liste.component';
+import { UploadModalComponent } from './upload-modal/upload-modal.component';
 
 
 @NgModule({
@@ -37,6 +42,8 @@ import { ListeComponent } from './liste/liste.component';
     RegisterComponent,
     MessagesComponent,
     ListeComponent,
+    LeftMenuComponent,
+    UploadModalComponent
   ],
   imports: [
     BrowserModule,
@@ -44,13 +51,15 @@ import { ListeComponent } from './liste/liste.component';
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatSliderModule,
     MatCommonModule,
-    MatButtonModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
     MatFormFieldModule,
     MatDatepickerModule,
     DialogModule,
     DynamicDialogModule,
+    OverlayPanelModule,
     ButtonModule,
     DropdownModule,
     CalendarModule,
@@ -58,6 +67,7 @@ import { ListeComponent } from './liste/liste.component';
     AutoCompleteModule,
     KeyFilterModule,
     InputTextModule,
+    MatDividerModule,
     AgGridModule.withComponents([])
   ],
   providers: [],
