@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService } from 'src/app/user.service';
+import { FileService } from 'src/app/service/file.service';
 import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.model';
 
 @Component({
@@ -15,9 +16,11 @@ export class HeaderComponent implements OnInit {
   selectedCompany: String;
   selectedJob: String;
   date: Date;
-  uploadedFile: any;
+  selectedFile: File;
   filteredCompanies: any[];
   filteredJobs: any[];
+  message: String;
+  uploadingSpinner: Boolean = false;
 
   companies: String[] = [
     "Entreprise", "manage", "career", "test", "acta", "isir"
@@ -43,23 +46,21 @@ export class HeaderComponent implements OnInit {
       value: EnumTypeValue.Autre, label: 'Autre'
     },];
 
-  constructor(public userService: UserService) { }
+  constructor(public fileService: FileService, public userService: UserService) { }
 
   ngOnInit() {
   }
 
-  connect() {
-    this.userService.connect(this.userlabel, this.password);
+  uploadFile() {
+    this.fileService.upload(this.selectedFile);
   }
 
-  openUpload() {
+  openUploadDialog() {
     this.uploadModalVisible = true;
   }
 
-  onUpload(event) {
-    for (let file of event.files) {
-      this.uploadedFile.push(file);
-    }
+  addFile(event) {
+    this.selectedFile = event.files[0];
   }
 
   filterCompanies(event) {
@@ -94,7 +95,7 @@ export class HeaderComponent implements OnInit {
   }
 
   test() {
-    console.log(this.selectedDocumentType);
+    console.log(this.selectedFile);
   }
 
 }
