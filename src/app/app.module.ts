@@ -23,6 +23,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessagesComponent } from './messages/messages.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { InputTextModule } from 'primeng/inputtext';
     HomeComponent,
     HeaderComponent,
     RegisterComponent,
+    MessagesComponent,
   ],
   imports: [
     BrowserModule,
