@@ -1,7 +1,7 @@
 <button class="btn btn-success" (click)="openUploadDialog()">Nouveau</button>
 <button class="btn btn-success" (click)="test()">Test</button>
-<button class="btn btn-success" (click)="goToPageListe('liste')">Lister les fichiers</button>
-<button class="btn btn-warning" (click)="goToPageListe('')">Home page</button>
+<button class="btn btn-success" routerLink="liste">Lister les fichiers</button>
+<button class="btn btn-warning" routerLink="">Home page</button>
 
 <p-dialog [contentStyle]="{'overflow':'visible'}" header="Nouveau" [(visible)]="uploadModalVisible" [resizable]="false">
   <div class="container">

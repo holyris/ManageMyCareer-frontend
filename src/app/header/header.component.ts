@@ -99,10 +99,4 @@ export class HeaderComponent implements OnInit {
   test() {
     console.log(this.selectedFile);
   }
-
-  goToPageListe(pageName:string) {
-    console.log("test");
-    this.router.navigate([`${pageName}`]);
-  }
-
 }
