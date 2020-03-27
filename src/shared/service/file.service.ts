@@ -5,14 +5,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { PersonalFile } from '../PersonalFile';
+import { PersonalFile } from '../model/PersonalFile';
 import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ListeService {
-  
+export class FileService {
+
   private filesUrl = 'http://localhost:8080/files';  // URL to web api
 
   httpOptions = {
@@ -20,9 +20,21 @@ export class ListeService {
     "Access-Control-Allow-Origin": "*"})
   };
 
-  
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
+
+  upload(file: File) {
+    if (!file) { return; }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const req = this.http.post('http://localhost:8080/file', formData).subscribe(
+      (res) => console.log(res),
+      (err) => console.log(err)
+    );
+    return req;
+  }
 
   getFiles (): Observable<PersonalFile[]> {
     return this.http.get<PersonalFile[]>(this.filesUrl)
@@ -56,4 +68,7 @@ export class ListeService {
   private log(message: string) {
     this.messageService.add(`ListeService: ${message}`);
   }
+
+  
+
 }

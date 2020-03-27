@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-
-import { PersonalFile } from '../PersonalFile';
-import { ListeService } from '../service/liste.service';
+import { PersonalFile } from '../../shared/model/PersonalFile';
+import { FileService } from 'src/shared/service/file.service';
 
 @Component({
   selector: 'app-liste',
@@ -13,7 +11,7 @@ import { ListeService } from '../service/liste.service';
 export class ListeComponent implements OnInit {
   files: PersonalFile[];
 
-  constructor(private personalFileService: ListeService) {
+  constructor(private personalFileService: FileService) {
 
   }
   
