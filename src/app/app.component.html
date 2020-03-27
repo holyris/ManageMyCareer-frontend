@@ -1,6 +1,15 @@
 <app-header></app-header>
-<router-outlet></router-outlet>
 
-<footer>
-  <p>&copy; 2016 Company, Inc.</p>
-</footer>
+<mat-sidenav-container>
+
+  <mat-sidenav class="elevation-3" mode="side" opened>
+    <app-left-menu></app-left-menu>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <router-outlet></router-outlet>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

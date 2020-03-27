@@ -26,6 +26,7 @@ export class ListeComponent implements OnInit {
     this.personalFileService.getFiles()
     .subscribe(files => {
       this.files = files;
+      //console.log(files);
     });
   }
 
