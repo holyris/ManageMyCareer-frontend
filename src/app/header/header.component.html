@@ -1,51 +1,7 @@
-<button class="btn btn-success" (click)="openUploadDialog()">Nouveau</button>
-<button class="btn btn-success" (click)="test()">Test</button>
-<button class="btn btn-success" routerLink="liste">Lister les fichiers</button>
-<button class="btn btn-warning" routerLink="">Home page</button>
+<mat-toolbar class="elevation-2">
+  <img height="50" routerLink="" src="../assets/logo2.png">
+  <span routerLink="">ManageMyCareer</span>
+</mat-toolbar>
 
-<p-dialog [contentStyle]="{'overflow':'visible'}" header="Nouveau" [(visible)]="uploadModalVisible" [resizable]="false">
-  <div class="container">
-    <div class="ui-g">
-      <div class="ui-g-12">
-        <p-fileUpload [customUpload]="true" (uploadHandler)="addFile($event)" [auto]="true" [showUploadButton]="false"
-          [showCancelButton]="false" chooseLabel="Fichier"></p-fileUpload>
-      </div>
-      <!-- <div class="ui-g-6" *ngIf="selectedFile">{{selectedFile.name}}</div> -->
-    </div>
-    <div class="ui-g">
-      <div class="ui-g-6">
-        <p-dropdown [options]="types" [(ngModel)]="selectedDocumentType" optionLabel="label"
-          placeholder="Type de document" [showClear]="true"></p-dropdown>
-      </div>
-      <div class="ui-g-6" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
-        <p-calendar [(ngModel)]="date" view="month" dateFormat="mm/yy" placeholder="Date" [yearNavigator]="true"
-          yearRange="1950:2030"></p-calendar>
-      </div>
-    </div>
-    <div class="ui-g" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
-      <div class="ui-g-6">
-        <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
-          [(ngModel)]="selectedCompany" placeholder="Entreprise" [dropdown]="true"></p-autoComplete>
-      </div>
-      <div class="ui-g-6">
-        <p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)" [(ngModel)]="selectedJob"
-          placeholder="Poste" [dropdown]="true">
-        </p-autoComplete>
-      </div>
-    </div>
+  
 
-    <div class="ui-g" *ngIf="isSelectedFichePaie()">
-      <div class="ui-g-12 ui-md-6">
-        <input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
-      </div>
-      <div class="ui-g-12 ui-md-6">
-        <input type="text" pInputText pKeyFilter="money" placeholder="Salaire net">
-      </div>
-    </div>
-  </div>
-  <p-footer>
-    <button type="button" pButton icon="pi pi-check" (click)="uploadFile()" label="Uploader"></button>
-    <button type="button" pButton icon="pi pi-times" (click)="uploadModalVisible=false" label="Fermer"
-      class="ui-button-secondary"></button>
-  </p-footer>
-</p-dialog>
