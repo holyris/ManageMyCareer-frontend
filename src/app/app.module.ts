@@ -33,6 +33,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { FileListComponent } from './file-list/file-list.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { FooterComponent } from './footer/footer.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { FooterComponent } from './footer/footer.component';
     FileListComponent,
     LeftMenuComponent,
     UploadModalComponent,
-    FooterComponent
+    FooterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

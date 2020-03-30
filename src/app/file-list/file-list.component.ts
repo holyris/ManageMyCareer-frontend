@@ -14,7 +14,7 @@ export class FileListComponent implements OnInit {
   constructor(private personalFileService: FileService) {
 
   }
-  
+
   ngOnInit(): void {
     //console.log(this.getFiles());
     this.getFiles();
@@ -22,17 +22,19 @@ export class FileListComponent implements OnInit {
 
   getFiles(): void {
     this.personalFileService.getFiles()
-    .subscribe(files => {
-      this.files = files;
-      //console.log(files);
-    });
+      .subscribe(files => {
+        this.files = files;
+        //console.log(files);
+      });
   }
 
   columnDefs = [
-    {headerName: 'Id', field: 'id', sortable: true, filter: true},
-    {headerName: 'File Name', field: 'fileName', sortable: true, filter: true},
-    {headerName: 'File Type', field: 'fileType', sortable: true, filter: true},
-    {headerName: 'Data', field: 'data', sortable: true, filter: true}
+    {
+      headerName: 'Nom', field: 'fileName', sortable: true, filter: true, suppressMovable: true
+    },
+    { headerName: 'Type', field: 'fileType', sortable: true, filter: true, suppressMovable: true },
+    { headerName: 'Taille', field: 'fileSize', sortable: true, filter: true, suppressMovable: true },
+
   ];
   /*
   rowData = [
