@@ -4,11 +4,11 @@ import { PersonalFile } from '../../shared/model/PersonalFile';
 import { FileService } from 'src/shared/service/file.service';
 
 @Component({
-  selector: 'app-liste',
-  templateUrl: './liste.component.html',
-  styleUrls: ['./liste.component.scss']
+  selector: 'app-file-list',
+  templateUrl: './file-list.component.html',
+  styleUrls: ['./file-list.component.scss']
 })
-export class ListeComponent implements OnInit {
+export class FileListComponent implements OnInit {
   files: PersonalFile[];
 
   constructor(private personalFileService: FileService) {
