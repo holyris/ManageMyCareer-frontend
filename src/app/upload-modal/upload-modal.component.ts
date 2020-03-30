@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from 'src/shared/service/file.service';
 import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.model';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-upload-modal',
   templateUrl: './upload-modal.component.html',
   styleUrls: ['./upload-modal.component.scss'],
-  providers: [DynamicDialogConfig, DynamicDialogRef]
 })
 export class UploadModalComponent implements OnInit {
 
@@ -48,9 +46,12 @@ export class UploadModalComponent implements OnInit {
       value: EnumTypeValue.Autre, label: 'Autre'
     },];
 
-  constructor(public fileService: FileService, public dynamicDialogRef: DynamicDialogRef, public dynamicDialogConfig : DynamicDialogConfig) { }
+  constructor(public fileService: FileService) { }
 
   ngOnInit() {
+    this.selectedCompany = null;
+    this.selectedDocumentType = null;
+    this.selectedJob = null;
   }
 
   uploadFile() {
@@ -59,6 +60,7 @@ export class UploadModalComponent implements OnInit {
   }
 
   show(){
+    this.ngOnInit();
     this.visible = true;
   }
 

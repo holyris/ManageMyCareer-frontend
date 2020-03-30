@@ -30,8 +30,10 @@ import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { AgGridModule } from 'ag-grid-angular';
-import { ListeComponent } from './liste/liste.component';
+import { FileListComponent } from './file-list/file-list.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
+import { FooterComponent } from './footer/footer.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -41,9 +43,11 @@ import { UploadModalComponent } from './upload-modal/upload-modal.component';
     HeaderComponent,
     RegisterComponent,
     MessagesComponent,
-    ListeComponent,
+    FileListComponent,
     LeftMenuComponent,
-    UploadModalComponent
+    UploadModalComponent,
+    FooterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

@@ -29,7 +29,7 @@ export class FileService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const req = this.http.post('http://localhost:8080/file', formData).subscribe(
+    const req = this.http.post(this.filesUrl, formData).subscribe(
       (res) => console.log(res),
       (err) => console.log(err)
     );

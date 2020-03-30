@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
-import { ListeComponent } from './liste/liste.component';
+import { FileListComponent } from './file-list/file-list.component';
 
 
 const routes: Routes = [{
@@ -14,8 +14,8 @@ const routes: Routes = [{
   component: RegisterComponent
 },
 {
-  path: "liste",
-  component: ListeComponent
+  path: "files",
+  component: FileListComponent
 }];
 
 @NgModule({

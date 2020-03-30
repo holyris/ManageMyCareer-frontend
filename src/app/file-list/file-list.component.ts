@@ -4,17 +4,17 @@ import { PersonalFile } from '../../shared/model/PersonalFile';
 import { FileService } from 'src/shared/service/file.service';
 
 @Component({
-  selector: 'app-liste',
-  templateUrl: './liste.component.html',
-  styleUrls: ['./liste.component.scss']
+  selector: 'app-file-list',
+  templateUrl: './file-list.component.html',
+  styleUrls: ['./file-list.component.scss']
 })
-export class ListeComponent implements OnInit {
+export class FileListComponent implements OnInit {
   files: PersonalFile[];
 
   constructor(private personalFileService: FileService) {
 
   }
-  
+
   ngOnInit(): void {
     //console.log(this.getFiles());
     this.getFiles();
@@ -22,17 +22,19 @@ export class ListeComponent implements OnInit {
 
   getFiles(): void {
     this.personalFileService.getFiles()
-    .subscribe(files => {
-      this.files = files;
-      //console.log(files);
-    });
+      .subscribe(files => {
+        this.files = files;
+        //console.log(files);
+      });
   }
 
   columnDefs = [
-    {headerName: 'Id', field: 'id', sortable: true, filter: true},
-    {headerName: 'File Name', field: 'fileName', sortable: true, filter: true},
-    {headerName: 'File Type', field: 'fileType', sortable: true, filter: true},
-    {headerName: 'Data', field: 'data', sortable: true, filter: true}
+    {
+      headerName: 'Nom', field: 'fileName', sortable: true, filter: true, suppressMovable: true
+    },
+    { headerName: 'Type', field: 'fileType', sortable: true, filter: true, suppressMovable: true },
+    { headerName: 'Taille', field: 'fileSize', sortable: true, filter: true, suppressMovable: true },
+
   ];
   /*
   rowData = [
