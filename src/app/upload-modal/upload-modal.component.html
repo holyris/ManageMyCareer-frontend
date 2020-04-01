@@ -3,12 +3,10 @@
 		<div class="ui-g">
 			<div class="ui-g-12">
 				<p-fileUpload [customUpload]="true" (uploadHandler)="addFile($event)" name="fileUpload" [auto]="true"
-					[showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier" #fileUpload>
+					[showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier" #uploadFileComponent>
 				</p-fileUpload>
 
 			</div>
-			{{selectedFile}}
-			<!-- <div class="ui-g-6" *ngIf="selectedFile">{{selectedFile.name}}</div> -->
 		</div>
 		<div class="ui-g">
 			<div class="ui-g-6">

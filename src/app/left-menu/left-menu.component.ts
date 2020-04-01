@@ -18,8 +18,6 @@ export class LeftMenuComponent implements OnInit {
 
   openUploadModal() {
     this.uploadModal.show();
-
-    
-}
+  }
 
 }

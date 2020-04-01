@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PersonalFile } from '../../shared/model/PersonalFile';
-import { FileService } from 'src/shared/service/file.service';
+import { PersonalFile } from '../../shared/models/PersonalFile';
+import { FileService } from 'src/shared/services/file.service';
 
 @Component({
   selector: 'app-file-list',

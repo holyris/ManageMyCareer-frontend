@@ -1,1 +1,28 @@
-<p>login works!</p>
+<div class="p-grid p-justify-center p-align-center" style="height:100%">
+  <div class="p-col-4">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <p-card header="Connexion">
+
+        <div class="mt-4 form-group">
+          <input pInputText type="text" class="form-control" formControlName="username"
+            placeholder="Nom d'utilisateur*" />
+        </div>
+        <div class="form-group">
+          <input pInputText type="password" class="form-control" formControlName="password"
+            placeholder="Mot de passe*" />
+        </div>
+
+        <p-footer>
+          <div>
+            <button type="submit" pButton class="ui-button-success" label="Connexion" [disabled]="!form.valid"></button>
+            <button type="button" pButton routerLink="/register" class="ml-2" label="Créer un compte"></button>
+          </div>
+          <div class="mt-2">
+            <a routerLink="/login">Mot de passe oublié</a>
+          </div>
+        </p-footer>
+
+      </p-card>
+    </form>
+  </div>
+</div>

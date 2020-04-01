@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FileService } from 'src/shared/service/file.service';
-import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.model';
+import { FileService } from 'src/shared/services/file.service';
+import { DocumentType, EnumTypeValue } from 'src/shared/models/document-type.model';
 
 @Component({
   selector: 'app-upload-modal',
@@ -8,9 +8,7 @@ import { DocumentType, EnumTypeValue } from 'src/shared/model/document-type.mode
   styleUrls: ['./upload-modal.component.scss'],
 })
 export class UploadModalComponent implements OnInit {
-
-  userlabel: String;
-  password: String;
+  @ViewChild('uploadFileComponent') uploadFileComponent: any;
   visible: Boolean;
   selectedDocumentType: DocumentType;
   selectedCompany: String;
@@ -19,7 +17,6 @@ export class UploadModalComponent implements OnInit {
   selectedFile: File;
   filteredCompanies: any[];
   filteredJobs: any[];
-  message: String;
   uploadingSpinner: Boolean = false;
 
   companies: String[] = [
@@ -49,23 +46,30 @@ export class UploadModalComponent implements OnInit {
   constructor(public fileService: FileService) { }
 
   ngOnInit() {
-    this.selectedCompany = null;
-    this.selectedDocumentType = null;
-    this.selectedJob = null;
+
   }
 
-  uploadFile() {
-    this.fileService.upload(this.selectedFile);
-    this.close();
+  reset() {
+    if (!this.visible) {
+      this.selectedCompany = null;
+      this.selectedDocumentType = null;
+      this.selectedJob = null;
+      this.uploadFileComponent.clear();
+    }
   }
 
-  show(){
-    this.ngOnInit();
+  show() {
+    this.reset();
     this.visible = true;
   }
 
   close() {
     this.visible = false;
+  }
+
+  uploadFile() {
+    this.fileService.upload(this.selectedFile);
+    this.close();
   }
 
   addFile(event) {

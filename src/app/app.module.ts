@@ -1,20 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCommonModule } from '@angular/material/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -25,9 +24,10 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { InputTextModule } from 'primeng/inputtext';
-import { MessagesComponent } from './messages/messages.component';
 import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { PasswordModule } from 'primeng/password';
+import { CardModule } from 'primeng/card';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { FileListComponent } from './file-list/file-list.component';
@@ -42,7 +42,6 @@ import { LoginComponent } from './login/login.component';
     HomeComponent,
     HeaderComponent,
     RegisterComponent,
-    MessagesComponent,
     FileListComponent,
     LeftMenuComponent,
     UploadModalComponent,
@@ -54,13 +53,12 @@ import { LoginComponent } from './login/login.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatCommonModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
     DialogModule,
     DynamicDialogModule,
     OverlayPanelModule,
@@ -72,6 +70,8 @@ import { LoginComponent } from './login/login.component';
     KeyFilterModule,
     InputTextModule,
     MatDividerModule,
+    PasswordModule,
+    CardModule,
     AgGridModule.withComponents([])
   ],
   providers: [],

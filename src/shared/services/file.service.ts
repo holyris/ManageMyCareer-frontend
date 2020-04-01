@@ -5,19 +5,20 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { PersonalFile } from '../model/PersonalFile';
+import { PersonalFile } from '../models/PersonalFile';
 import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
-
-  private filesUrl = 'http://localhost:8080/files';  // URL to web api
+  private filesUrl = 'http://localhost:8080/file';  // URL to web api
 
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"})
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      "Access-Control-Allow-Origin": "*"
+    })
   };
 
 
@@ -29,14 +30,14 @@ export class FileService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const req = this.http.post(this.filesUrl, formData).subscribe(
+    const req = this.http.post(this.filesUrl, file, this.httpOptions).subscribe(
       (res) => console.log(res),
       (err) => console.log(err)
     );
     return req;
   }
 
-  getFiles (): Observable<PersonalFile[]> {
+  getFiles(): Observable<PersonalFile[]> {
     return this.http.get<PersonalFile[]>(this.filesUrl)
       .pipe(
         tap(_ => this.log('fetched files')),
@@ -50,7 +51,7 @@ export class FileService {
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
       // TODO: send the error to remote logging infrastructure
@@ -69,6 +70,6 @@ export class FileService {
     this.messageService.add(`ListeService: ${message}`);
   }
 
-  
+
 
 }

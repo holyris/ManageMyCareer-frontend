@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/shared/services/authentication.service';
+
 
 @Component({
   selector: 'app-header',
@@ -8,13 +10,15 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, public authenticationService: AuthenticationService) { }
 
   ngOnInit() {
   }
 
-  goToPageListe(pageName: string) {
-    this.router.navigate([`${pageName}`]);
-  }
+  logout() {
+    this.authenticationService.logout();
+    console.log(this.authenticationService.currentUserValue)
+    this.router.navigate(['/login']);
 
+  }
 }

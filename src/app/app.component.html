@@ -1,15 +1,13 @@
-<app-header></app-header>
+<app-header *ngIf="currentUser"></app-header>
 
-<mat-sidenav-container >
+<mat-drawer-container class="h-100">
 
-  <mat-sidenav mode="side" opened>
+  <mat-drawer mode="side" opened *ngIf="currentUser">
     <app-left-menu></app-left-menu>
-  </mat-sidenav>
+  </mat-drawer>
 
-  <mat-sidenav-content>
+  <mat-drawer-content autosize>
     <router-outlet></router-outlet>
-  </mat-sidenav-content>
+  </mat-drawer-content>
 
-</mat-sidenav-container>
- 
-<app-footer></app-footer>
+</mat-drawer-container>
