@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
 import { DocumentType, EnumTypeValue } from 'src/shared/models/document-type.model';
+import { FileModel } from 'src/shared/models/FileModel';
 
 @Component({
   selector: 'app-upload-modal',
@@ -10,11 +11,7 @@ import { DocumentType, EnumTypeValue } from 'src/shared/models/document-type.mod
 export class UploadModalComponent implements OnInit {
   @ViewChild('uploadFileComponent') uploadFileComponent: any;
   visible: Boolean;
-  selectedDocumentType: DocumentType;
-  selectedCompany: String;
-  selectedJob: String;
-  date: Date;
-  selectedFile: File;
+  fileObjects: Array<FileModel>;
   filteredCompanies: any[];
   filteredJobs: any[];
   uploadingSpinner: Boolean = false;
@@ -45,15 +42,11 @@ export class UploadModalComponent implements OnInit {
 
   constructor(public fileService: FileService) { }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 
   reset() {
     if (!this.visible) {
-      this.selectedCompany = null;
-      this.selectedDocumentType = null;
-      this.selectedJob = null;
+      this.fileObjects = [];
       this.uploadFileComponent.clear();
     }
   }
@@ -68,12 +61,32 @@ export class UploadModalComponent implements OnInit {
   }
 
   uploadFile() {
-    this.fileService.upload(this.selectedFile);
+    this.fileService.upload(this.fileObjects);
     this.close();
   }
 
-  addFile(event) {
-    this.selectedFile = event.files[0];
+  addFiles(event) {
+    this.fileObjects = [];
+    for (let file of event.files) {
+      this.fileObjects.push(new FileModel());
+      this.fileObjects[this.fileObjects.length - 1].file = file;
+    }
+    // for (var index = 0; index<event.files.length; index++) {
+    //   this.fileObjects[index].file = event.files[index];
+    // }
+    this.uploadFileComponent.clear();
+  }
+
+  deleteFileObjectByIndex(index) {
+    this.fileObjects.splice(index, 1);
+  }
+
+  isSelectedFichePaie(index) {
+    return this.fileObjects[index].documentType && this.fileObjects[index].documentType.value === EnumTypeValue.FichePaie
+  }
+
+  isSelectedContrat(index) {
+    return this.fileObjects[index].documentType && this.fileObjects[index].documentType.value === EnumTypeValue.Contrat
   }
 
   filterCompanies(event) {
@@ -99,12 +112,6 @@ export class UploadModalComponent implements OnInit {
     this.filteredJobs = filtered;
   }
 
-  isSelectedFichePaie() {
-    return this.selectedDocumentType && this.selectedDocumentType.value === EnumTypeValue.FichePaie
-  }
 
-  isSelectedContrat() {
-    return this.selectedDocumentType && this.selectedDocumentType.value === EnumTypeValue.Contrat
-  }
 
 }

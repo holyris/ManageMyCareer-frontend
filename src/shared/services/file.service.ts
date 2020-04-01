@@ -8,6 +8,9 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { PersonalFile } from '../models/PersonalFile';
 import { MessageService } from './message.service';
 
+import { FileModel } from 'src/shared/models/FileModel';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,13 +27,15 @@ export class FileService {
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
-  upload(file: File) {
-    if (!file) { return; }
+  upload(fileObjects: Array<FileModel>) {
+    if (!fileObjects) { return; }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const req = this.http.post(this.filesUrl, file, this.httpOptions).subscribe(
+    var formData = new FormData();
+    fileObjects.forEach(element => {
+      formData.append('file', element.file);
+    });
+    
+    const req = this.http.post(this.filesUrl, formData).subscribe(
       (res) => console.log(res),
       (err) => console.log(err)
     );

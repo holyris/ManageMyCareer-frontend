@@ -1,46 +1,67 @@
-<p-dialog [contentStyle]="{'overflow':'visible'}" [(visible)]="visible" [resizable]="false">
-	<div class="container">
-		<div class="ui-g">
-			<div class="ui-g-12">
-				<p-fileUpload [customUpload]="true" (uploadHandler)="addFile($event)" name="fileUpload" [auto]="true"
-					[showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier" #uploadFileComponent>
-				</p-fileUpload>
+<p-dialog [style]="{'overflow':'visible'}"
+	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Nouveau"
+	[resizable]="false" [modal]="true" [draggable]="false" responsive="true">
 
+	<div class="py-2 px-2">
+		<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" [auto]="true"
+			[showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier(s)" [multiple]="true"
+			#uploadFileComponent>
+		</p-fileUpload>
+	</div>
+
+	<div class="ui-g py-2" style="border-top: solid 1px grey" *ngFor="let fileObject of fileObjects; index as i">
+		<div class="col d-flex flex-column text-truncate" style="border-right: solid 1px grey">
+			<div class="row text-truncate" data-toggle="tooltip" [title]="fileObject.file.name">
+				<div class="col-12 text-truncate">{{fileObject.file.name}} </div>
 			</div>
-		</div>
-		<div class="ui-g">
-			<div class="ui-g-6">
-				<p-dropdown [options]="types" [(ngModel)]="selectedDocumentType" optionLabel="label"
-					placeholder="Type de document" [showClear]="true"></p-dropdown>
+			<div class="row">
+				<div class="col-12">{{fileObject.file.size}}Ko</div>
 			</div>
-			<div class="ui-g-6" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
-				<p-calendar [(ngModel)]="date" view="month" dateFormat="mm/yy" placeholder="Date" [yearNavigator]="true"
-					yearRange="1950:2030"></p-calendar>
+			<div class="row mt-auto">
+				<div class="col-12">
+					<button pButton class="ui-button-secondary" label="Retirer" (click)="deleteFileObjectByIndex(i)">
+					</button>
+				</div>
 			</div>
-		</div>
-		<div class="ui-g" *ngIf="isSelectedFichePaie() || isSelectedContrat()">
-			<div class="ui-g-6">
-				<p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
-					[(ngModel)]="selectedCompany" placeholder="Entreprise" [dropdown]="true"></p-autoComplete>
-			</div>
-			<div class="ui-g-6">
-				<p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)" [(ngModel)]="selectedJob"
-					placeholder="Poste" [dropdown]="true">
-				</p-autoComplete>
-			</div>
+
 		</div>
 
-		<div class="ui-g" *ngIf="isSelectedFichePaie()">
-			<div class="ui-g-12 ui-md-6">
-				<input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
+		<div class="col-auto">
+			<div class="row my-2">
+				<div class="col">
+					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType" optionLabel="label"
+						placeholder="Type de document"></p-dropdown>
+				</div>
+				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
+					<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].date" view="month" dateFormat="mm/yy"
+						placeholder="Date" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+				</div>
 			</div>
-			<div class="ui-g-12 ui-md-6">
-				<input type="text" pInputText pKeyFilter="money" placeholder="Salaire net">
+			<div class="row my-2" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
+				<div class="col">
+					<p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
+						[(ngModel)]="fileObjects[i].company" placeholder="Entreprise"></p-autoComplete>
+				</div>
+				<div class="col pl-0">
+					<p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)"
+						[(ngModel)]="fileObjects[i].job" placeholder="Poste">
+					</p-autoComplete>
+				</div>
+			</div>
+
+			<div class="row my-2" *ngIf="isSelectedFichePaie(i)">
+				<div class="col">
+					<input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
+				</div>
+				<div class="col pl-0">
+					<input type="text" pInputText pKeyFilter="money" placeholder="Salaire net">
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<p-footer>
-		<button type="button" pButton icon="pi pi-check" (click)="uploadFile()" label="Uploader"></button>
+		<button type="button" pButton icon="pi pi-check" (click)="uploadFile()" label="Importer"></button>
 		<button type="button" pButton icon="pi pi-times" (click)="close()" label="Fermer"
 			class="ui-button-secondary"></button>
 	</p-footer>
