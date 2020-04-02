@@ -1,6 +1,6 @@
 <p-dialog [style]="{'overflow':'visible'}"
 	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Nouveau"
-	[resizable]="false" [modal]="true" [draggable]="false" responsive="true">
+	[resizable]="false" [modal]="true" [draggable]="false">
 
 	<div class="py-2 px-2">
 		<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" [auto]="true"
