@@ -3,46 +3,42 @@ import { Component, OnInit } from '@angular/core';
 import { PersonalFile } from '../../shared/models/PersonalFile';
 import { FileService } from 'src/shared/services/file.service';
 
+import { OperationsComponent } from "../operations/operations.component";
+
 @Component({
   selector: 'app-file-list',
   templateUrl: './file-list.component.html',
   styleUrls: ['./file-list.component.scss']
 })
 export class FileListComponent implements OnInit {
+  public columnDefs;
+  public defaultColDef;
+
   files: PersonalFile[];
 
   constructor(private personalFileService: FileService) {
-
+    this.columnDefs = [
+      { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Type', field: 'type', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Taille', field: 'size', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Opérations', field: 'operations', cellRendererFramework: OperationsComponent },
+    ];
+    this.defaultColDef = { resizable: false };
   }
 
   ngOnInit(): void {
-    //console.log(this.getFiles());
     this.getFiles();
+  }
+  
+  onGridReady(params) {
+    params.api.sizeColumnsToFit();
   }
 
   getFiles(): void {
     this.personalFileService.getFiles()
       .subscribe(files => {
         this.files = files;
-        //console.log(files);
+        console.log(files);
       });
   }
-
-  columnDefs = [
-    {
-      headerName: 'Nom', field: 'fileName', sortable: true, filter: true, suppressMovable: true
-    },
-    { headerName: 'Type', field: 'fileType', sortable: true, filter: true, suppressMovable: true },
-    { headerName: 'Taille', field: 'fileSize', sortable: true, filter: true, suppressMovable: true },
-
-  ];
-  /*
-  rowData = [
-      { name: 'fichier1', type: 'pdf', size: 35000, lastModified: new Date() },
-      { name: 'fichier2', type: 'png', size: 32000, lastModified: new Date() },
-      { name: 'fichier3', type: 'mp4', size: 72000, lastModified: new Date() }
-  ];
-  */
-  //rowData = this.getFiles();
-
 }

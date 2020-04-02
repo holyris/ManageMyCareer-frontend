@@ -34,6 +34,7 @@ import { FileListComponent } from './file-list/file-list.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
+import { OperationsComponent } from './operations/operations.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { LoginComponent } from './login/login.component';
     LeftMenuComponent,
     UploadModalComponent,
     FooterComponent,
-    LoginComponent
+    LoginComponent,
+    OperationsComponent,
   ],
   imports: [
     BrowserModule,

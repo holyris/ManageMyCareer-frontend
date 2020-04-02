@@ -1,5 +1,5 @@
-
-/*export interface PersonalFile {
+/*
+export interface PersonalFile {
     name: string;
     type: string;
     size: number;
@@ -9,8 +9,7 @@
 
 
 export interface PersonalFile {
-    id: string;
-    fileName: string;
-    fileType: string;
-    date: string;
+    name: string;
+    type: string;
+    size: number;
 }
