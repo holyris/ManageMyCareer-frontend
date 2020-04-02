@@ -10,8 +10,6 @@ import { FileService } from 'src/shared/services/file.service';
 })
 export class OperationsComponent {
   private params: any;
-
-  private readonly baseUrl = "http://localhost:8080/file/";
   private fileId: string;
   private fileName: string;
 

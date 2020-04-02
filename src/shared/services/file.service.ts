@@ -17,18 +17,17 @@ import { FileModel } from 'src/shared/models/FileModel';
 export class FileService {
   private filesUrl = 'http://localhost:8080/file/';  // URL to web api
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      "Access-Control-Allow-Origin": "*",
-      'Access-Control-Allow-Method': 'GET, POST, OPTIONS, DELETE',
-      "Access-Control-Allow-Credentials": "true",
-      "Access-Control-Allow-Headers": "Origin, X-Requested-With,X-HTTP-Method-Override, Content-Type, Accept, Authorization"
-    })
-  };
+  // httpOptions = {
+  //   headers: new HttpHeaders({
+  //     "Access-Control-Allow-Origin": "*",
+  //     'Access-Control-Allow-Method': 'GET, POST, OPTIONS, DELETE',
+  //     "Access-Control-Allow-Credentials": "true",
+  //     "Access-Control-Allow-Headers": "Origin, X-Requested-With,X-HTTP-Method-Override, Content-Type, Accept, Authorization"
+  //   })
+  // };
 
   constructor(private http: HttpClient,
-              private messageService: MessageService) {}
+    private messageService: MessageService) { }
 
   upload(fileObjects: Array<FileModel>) {
     if (!fileObjects) { return; }
@@ -37,7 +36,7 @@ export class FileService {
     fileObjects.forEach(element => {
       formData.append('file', element.file);
     });
-    
+
     const req = this.http.post(this.filesUrl, formData).subscribe(
       (res) => console.log(res),
       (err) => console.log(err)
@@ -53,81 +52,72 @@ export class FileService {
       );
   }
 
-  downloadFile (fileId: string, filename?: string) {
-    this.blob(this.filesUrl+fileId)
-        .subscribe(x => {
-            // It is necessary to create a new blob object with mime-type explicitly set
-            // otherwise only Chrome works like it should
-            var newBlob = new Blob([x], { type: "application/pdf" });
+  downloadFile(fileId: string, filename?: string) {
+    this.blob(this.filesUrl + fileId)
+      .subscribe(x => {
+        // It is necessary to create a new blob object with mime-type explicitly set
+        // otherwise only Chrome works like it should
+        var newBlob = new Blob([x], { type: "application/pdf" });
 
-            // IE doesn't allow using a blob object directly as link href
-            // instead it is necessary to use msSaveOrOpenBlob
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveOrOpenBlob(newBlob);
-                return;
-            }
+        // IE doesn't allow using a blob object directly as link href
+        // instead it is necessary to use msSaveOrOpenBlob
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(newBlob);
+          return;
+        }
 
-            // For other browsers: 
-            // Create a link pointing to the ObjectURL containing the blob.
-            const data = window.URL.createObjectURL(newBlob);
+        // For other browsers: 
+        // Create a link pointing to the ObjectURL containing the blob.
+        const data = window.URL.createObjectURL(newBlob);
 
-            var link = document.createElement('a');
-            link.href = data;
-            link.download = filename;
-            // this is necessary as link.click() does not work on the latest firefox
-            link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+        var link = document.createElement('a');
+        link.href = data;
+        link.download = filename;
+        // this is necessary as link.click() does not work on the latest firefox
+        link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
 
-            setTimeout(function () {
-                // For Firefox it is necessary to delay revoking the ObjectURL
-                window.URL.revokeObjectURL(data);
-                link.remove();
-            }, 100);
-        });
+        setTimeout(function () {
+          // For Firefox it is necessary to delay revoking the ObjectURL
+          window.URL.revokeObjectURL(data);
+          link.remove();
+        }, 100);
+      });
   }
 
   blob(url: string): Observable<Blob> {
     return this.http.get(url, { responseType: 'blob' });
   }
 
-  filePreview (fileId: string) {
-    return this.http.get(this.filesUrl+fileId, { headers: this.httpOptions.headers, responseType: 'blob' })
+  filePreview(fileId: string) {
+    return this.http.get(this.filesUrl + fileId, { responseType: 'blob' })
       .subscribe(blob => {
-        let newWindow = window.open('/file.html');
+        let newWindow = window.open('/files/preview');
         newWindow.onload = () => {
-            var blobHtmlElement;
-            blobHtmlElement = document.createElement('object');
-            blobHtmlElement.href = window.URL.createObjectURL(blob);
-            blobHtmlElement.style.position = 'fixed';
-            blobHtmlElement.style.zIndex = '200';
-            blobHtmlElement.style.top = '0';
-            blobHtmlElement.style.left = '0';
-            blobHtmlElement.style.bottom = '0';
-            blobHtmlElement.style.right = '0';
-            blobHtmlElement.style.width = '100%';
-            blobHtmlElement.style.height = '100%';
-            blobHtmlElement.setAttribute('data', blobHtmlElement.href);
-            newWindow.document.body.appendChild(blobHtmlElement);
-            blobHtmlElement.click();
+          var blobHtmlElement;
+          blobHtmlElement = document.createElement('object');
+          blobHtmlElement.href = window.URL.createObjectURL(blob);
+          blobHtmlElement.style.position = 'fixed';
+          blobHtmlElement.style.zIndex = '200';
+          blobHtmlElement.style.top = '0';
+          blobHtmlElement.style.left = '0';
+          blobHtmlElement.style.bottom = '0';
+          blobHtmlElement.style.right = '0';
+          blobHtmlElement.style.width = '100%';
+          blobHtmlElement.style.height = '100%';
+          blobHtmlElement.setAttribute('data', blobHtmlElement.href);
+          newWindow.document.body.appendChild(blobHtmlElement);
+          blobHtmlElement.click();
         };
       });
   }
 
-  deleteFile1 (fileId: string) {
+  deleteFile(fileId: string) {
 
-    this.http.delete(this.filesUrl+fileId)
+    this.http.delete(this.filesUrl + fileId)
       .subscribe(
         result => console.log(result),
         err => console.error(err)
-    );
-  }
-
-  deleteFile (fileId: string) {
-
-    this.http.delete(this.filesUrl+fileId, {headers: this.httpOptions.headers})
-      .subscribe(
-        result => console.log(result),
-        err => console.error(err)
-    );
+      );
   }
 
   /**

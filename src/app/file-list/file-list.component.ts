@@ -21,7 +21,10 @@ export class FileListComponent implements OnInit {
       { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Type', field: 'type', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Taille', field: 'size', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Opérations', field: 'operations', cellRendererFramework: OperationsComponent },
+      {
+        headerName: '', field: 'operations', suppressMovable: true, cellStyle: { 'text-align': 'right' },
+        cellRendererFramework: OperationsComponent
+      },
     ];
     this.defaultColDef = { resizable: false };
   }
@@ -29,7 +32,7 @@ export class FileListComponent implements OnInit {
   ngOnInit(): void {
     this.getFiles();
   }
-  
+
   onGridReady(params) {
     params.api.sizeColumnsToFit();
   }
