@@ -111,13 +111,10 @@ export class FileService {
       });
   }
 
-  deleteFile(fileId: string) {
+  async deleteFile(fileId: string) {
 
-    this.http.delete(this.filesUrl + fileId)
-      .subscribe(
-        result => console.log(result),
-        err => console.error(err)
-      );
+    await this.http.delete(this.filesUrl + fileId).toPromise();
+
   }
 
   /**

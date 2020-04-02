@@ -16,14 +16,17 @@ export class FileListComponent implements OnInit {
 
   files: PersonalFile[];
 
-  constructor(private personalFileService: FileService) {
+  constructor(private fileService: FileService) {
     this.columnDefs = [
       { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Type', field: 'type', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Taille', field: 'size', sortable: true, filter: true, suppressMovable: true },
       {
         headerName: '', field: 'operations', suppressMovable: true, cellStyle: { 'text-align': 'right' },
-        cellRendererFramework: OperationsComponent
+        cellRendererFramework: OperationsComponent,
+        cellRendererParams: {
+          deleteFile: this.getFiles.bind(this),          
+        }
       },
     ];
     this.defaultColDef = { resizable: false };
@@ -38,7 +41,7 @@ export class FileListComponent implements OnInit {
   }
 
   getFiles(): void {
-    this.personalFileService.getFiles()
+    this.fileService.getFiles()
       .subscribe(files => {
         this.files = files;
         console.log(files);
