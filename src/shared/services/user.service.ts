@@ -1,43 +1,35 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { User } from 'src/shared/models/user';
+
+@Injectable({ providedIn: 'root' })
 export class UserService {
-  users = [];
-  loggedUser;
-  constructor() { }
 
-  public register(username: String, password: String) {
-    if (!this.connected()) {
-      const user = { username: username, password: password };
+  private url = 'http://localhost:8080/';  // URL to web api
+  private httpHeaders = new HttpHeaders({
+    "Access-Control-Allow-Origin": "*",
+    'Access-Control-Allow-Method': 'GET, POST, OPTIONS, DELETE',
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With,X-HTTP-Method-Override, Content-Type, Accept, Authorization"
+  });
 
-      this.users.push(user);
-      this.loggedUser = user;
+
+  constructor(private http: HttpClient) { }
+
+  getAll() {
+    return this.http.get<User[]>(this.url + `users/list`);
+  }
+
+  register(user: User) {
+    return this.http.post<any>(this.url + `users/create_user`, {
+      username: user.username, password: user.password
     }
+    );
   }
 
-  public connect(username: String, password: String){
-    for(const user of this.users){
-      if(user.username === username && user.password === password){
-        console.log("ehp")
-        this.loggedUser = user;
-      }
-    }
+  delete(id: String) {
+    return this.http.delete(this.url + `users/` + id);
+
   }
-
-  public disconnect() {
-    const index = this.users.indexOf(this.loggedUser);
-    this.loggedUser = null;
-  }
-
-  public getLoggedUser() {
-    return this.loggedUser;
-  }
-
-  public connected() {
-    return this.loggedUser != null;
-  }
-
-
 }

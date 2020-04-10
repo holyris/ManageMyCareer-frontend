@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
 import { DocumentType, EnumTypeValue } from 'src/shared/models/document-type.model';
 import { FileModel } from 'src/shared/models/FileModel';
+import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 
 @Component({
   selector: 'app-upload-modal',
@@ -40,9 +41,11 @@ export class UploadModalComponent implements OnInit {
       value: EnumTypeValue.Autre, label: 'Autre'
     },];
 
-  constructor(public fileService: FileService) { }
+  constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+   }
 
   reset() {
     if (!this.visible) {
@@ -60,8 +63,10 @@ export class UploadModalComponent implements OnInit {
     this.visible = false;
   }
 
-  uploadFile() {
-    this.fileService.upload(this.fileObjects);
+  async uploadFiles() {
+    await this.fileService.upload(this.fileObjects)
+    // .then(this.fileUploadEventService.filesUploaded());
+    this.fileUploadEventService.filesUploaded()
     this.close();
   }
 
@@ -71,9 +76,6 @@ export class UploadModalComponent implements OnInit {
       this.fileObjects.push(new FileModel());
       this.fileObjects[this.fileObjects.length - 1].file = file;
     }
-    // for (var index = 0; index<event.files.length; index++) {
-    //   this.fileObjects[index].file = event.files[index];
-    // }
     this.uploadFileComponent.clear();
   }
 
