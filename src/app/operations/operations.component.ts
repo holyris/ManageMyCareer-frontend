@@ -36,10 +36,10 @@ export class OperationsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  async deleteFile($event) {
-    if (this.params.deleteFile instanceof Function) {
-      await this.personalFileService.deleteFile(this.fileId);
-      await this.params.deleteFile();
+  async deleteFile() {
+    if (this.params.refreshItems instanceof Function) {
+      await this.personalFileService.deleteFile(this.fileId)
+      this.params.refreshItems()
     }
   }
 

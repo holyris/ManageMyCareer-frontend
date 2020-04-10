@@ -1,8 +1,9 @@
 export class User {
   id: number;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  token: string;
+  firstName: String;
+  lastName: String;
+  token: String;
+
+  constructor(public username: String, public password: String){};
+
 }
