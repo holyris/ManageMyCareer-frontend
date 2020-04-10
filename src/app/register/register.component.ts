@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormGroup, FormBuilder} from '@angular/forms';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/shared/services/authentication.service';
+import { UserService } from 'src/shared/services/user.service';
+import { User } from 'src/shared/models/user';
+import { first } from 'rxjs/operators';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -13,7 +16,7 @@ export class RegisterComponent implements OnInit {
   passwordChecker: String;
   form: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService, public userService: UserService) {
     // redirect to home if already logged in
     if (this.authenticationService.currentUserValue) {
       this.router.navigate(['/']);
@@ -29,8 +32,16 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    this.authenticationService.login(this.username, this.password);
-    this.router.navigate(['/']);
+    const user = new User(this.form.value.username, this.form.value.password);
+    this.userService.register(user)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.log(error)
+        });
 
   }
 
@@ -39,17 +50,6 @@ export class RegisterComponent implements OnInit {
     let pass = form.get('password').value;
     let passwordChecker = form.get('passwordChecker').value;
     return pass === passwordChecker ? null : { notSame: true }
-
-    // return (control: AbstractControl): { [key: string]: any } | null => {
-    //   console.log(form.get('password').value);
-    //   let passwordChecker = control.value;
-    //   if (passwordChecker !== "3") {
-    //     return {
-    //       'Ne correspond pas': { value: control.value }
-    //     }
-    //   }
-    //   return null
-    // };
 
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { PersonalFile } from '../../shared/models/PersonalFile';
 import { FileService } from 'src/shared/services/file.service';
-
+import { Subscription } from 'rxjs';
 import { OperationsComponent } from "../operations/operations.component";
+import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 
 @Component({
   selector: 'app-file-list',
@@ -13,10 +13,11 @@ import { OperationsComponent } from "../operations/operations.component";
 export class FileListComponent implements OnInit {
   public columnDefs;
   public defaultColDef;
+  uploadSubscription: Subscription;
 
   files: PersonalFile[];
 
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService) {
     this.columnDefs = [
       { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Type', field: 'type', sortable: true, filter: true, suppressMovable: true },
@@ -25,7 +26,7 @@ export class FileListComponent implements OnInit {
         headerName: '', field: 'operations', suppressMovable: true, cellStyle: { 'text-align': 'right' },
         cellRendererFramework: OperationsComponent,
         cellRendererParams: {
-          deleteFile: this.getFiles.bind(this),          
+          refreshItems: this.refreshItems.bind(this),
         }
       },
     ];
@@ -33,18 +34,26 @@ export class FileListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getFiles();
+    this.refreshItems();
+    this.uploadSubscription = this.fileUploadEventService.getFilesUploadedEvent.subscribe(
+      x => {
+        this.refreshItems();
+      }
+    )
   }
 
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.uploadSubscription.unsubscribe();
+  }
   onGridReady(params) {
     params.api.sizeColumnsToFit();
   }
 
-  getFiles(): void {
+  refreshItems(): void {
     this.fileService.getFiles()
       .subscribe(files => {
         this.files = files;
-        console.log(files);
       });
   }
 }

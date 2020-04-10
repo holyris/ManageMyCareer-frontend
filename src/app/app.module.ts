@@ -3,11 +3,12 @@ import { NgModule } from '@angular/core';
 
 
 import { AppRoutingModule } from './app-routing.module';
+// import { SpringbootInterceptor } from 'src/shared/helpers/springboot.interceptor'
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { RegisterComponent } from './register/register.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCommonModule } from '@angular/material/core';
@@ -76,7 +77,13 @@ import { OperationsComponent } from './operations/operations.component';
     CardModule,
     AgGridModule.withComponents([])
   ],
-  providers: [],
+  providers: [
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: SpringbootInterceptor,
+    //   multi: true
+    // }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
