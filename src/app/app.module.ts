@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 
 
 import { AppRoutingModule } from './app-routing.module';
-// import { SpringbootInterceptor } from 'src/shared/helpers/springboot.interceptor'
 import { AppComponent } from './app.component';
+import { RequestInterceptor } from 'src/shared/helpers/request.interceptor';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { RegisterComponent } from './register/register.component';
@@ -29,6 +29,9 @@ import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { FileListComponent } from './file-list/file-list.component';
@@ -36,6 +39,7 @@ import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { OperationsComponent } from './operations/operations.component';
+import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 
 
 @NgModule({
@@ -50,6 +54,7 @@ import { OperationsComponent } from './operations/operations.component';
     FooterComponent,
     LoginComponent,
     OperationsComponent,
+    NotificationToastComponent
   ],
   imports: [
     BrowserModule,
@@ -75,14 +80,17 @@ import { OperationsComponent } from './operations/operations.component';
     MatDividerModule,
     PasswordModule,
     CardModule,
-    AgGridModule.withComponents([])
+    MessagesModule,
+    MessageModule,
+    ToastModule,
+    AgGridModule.withComponents([]),
   ],
   providers: [
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: SpringbootInterceptor,
-    //   multi: true
-    // }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

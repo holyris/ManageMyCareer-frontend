@@ -19,7 +19,8 @@
 			</div>
 			<div class="row mt-auto">
 				<div class="col-12">
-					<button pButton class="ui-button-secondary" label="Retirer" (click)="deleteFileObjectByIndex(i)">
+					<button class="btn btn-light btn-sm" (click)="deleteFileObjectByIndex(i)">
+						Retirer
 					</button>
 				</div>
 			</div>
@@ -61,8 +62,18 @@
 	</div>
 
 	<p-footer>
-		<button type="button" pButton icon="pi pi-check" (click)="uploadFiles()" label="Importer"></button>
+		<!-- <button type="button" pButton icon="pi pi-check" (click)="uploadFiles()" label="Importer"></button>
 		<button type="button" pButton icon="pi pi-times" (click)="close()" label="Fermer"
-			class="ui-button-secondary"></button>
-	</p-footer>
+			class="ui-button-secondary"></button> -->
+		<button type="button" class="btn btn-primary btn-sm" (click)="uploadFiles()" [disabled]="loading">
+			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+			<i *ngIf="!loading" class="fa fa-upload"></i>
+			Importer
+			</button>
+		<button type="button" (click)="close()" 
+			class="btn btn-secondary btn-sm">
+			<i class="fa fa-times"></i>
+			Fermer
+		</button>
+		</p-footer>
 </p-dialog>

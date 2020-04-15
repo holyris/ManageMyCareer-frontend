@@ -1,6 +1,20 @@
-<section layout="row" layout-sm="column" layout-align="end center" layout-wrap>
-    <button type="button" class="ui-button-primary" pButton icon="pi pi-arrow-down" (click)="downloadFile()"></button>&nbsp;
-    <button type="button" class="ui-button-warning" pButton icon="pi pi-eye" (click)="filePreview()"></button>&nbsp;
-    <button type="button" class="ui-button-success" pButton icon="pi pi-pencil" (click)="updateFile()"></button>&nbsp;
-    <button type="button" class="ui-button-danger" pButton icon="pi pi-trash" (click)="deleteFile()"></button>
-</section>
+<!-- <button type="button" class="ui-button-primary" pButton icon="pi pi-arrow-down" (click)="downloadFile()"></button>
+<button type="button" class="ui-button-warning" pButton icon="pi pi-eye" (click)="filePreview()"></button>
+<button type="button" class="ui-button-success" pButton icon="pi pi-pencil" (click)="updateFile()"></button>
+<button type="button" class="ui-button-danger" pButton icon="pi pi-trash" (click)="deleteFile()"></button> -->
+
+<button title="Télécharger" type="button" class="ml-1 align-baseline btn btn-outline-primary btn-sm rounded-circle" (click)="downloadFile()">
+		<i class="fa fa-download"></i>
+	</button>
+
+	<button title="Prévisualiser" type="button" class="ml-1 align-baseline btn btn-outline-warning btn-sm rounded-circle" (click)="filePreview()">
+		<i class="fa fa-eye"></i>
+	</button>
+
+	<button title="Modifier" type="button" class="ml-1 align-baseline btn btn-outline-success btn-sm rounded-circle" (click)="updateFile()">
+		<i class="fa fa-pen"></i>
+	</button>
+
+<button title="Supprimer" type="button" class="ml-1 align-baseline btn btn-outline-danger btn-sm rounded-circle" (click)="deleteFile()">
+	<i class="fa fa-trash"></i>
+</button>

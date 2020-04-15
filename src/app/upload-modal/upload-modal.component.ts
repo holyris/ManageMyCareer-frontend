@@ -15,7 +15,8 @@ export class UploadModalComponent implements OnInit {
   fileObjects: Array<FileModel>;
   filteredCompanies: any[];
   filteredJobs: any[];
-  uploadingSpinner: Boolean = false;
+  loading: Boolean = false;
+
 
   companies: String[] = [
     "Entreprise", "manage", "career", "test", "acta", "isir"
@@ -43,9 +44,7 @@ export class UploadModalComponent implements OnInit {
 
   constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService) { }
 
-  ngOnInit() {
-
-   }
+  ngOnInit() { }
 
   reset() {
     if (!this.visible) {
@@ -64,9 +63,11 @@ export class UploadModalComponent implements OnInit {
   }
 
   async uploadFiles() {
+    this.loading = true;
     await this.fileService.upload(this.fileObjects)
-    // .then(this.fileUploadEventService.filesUploaded());
     this.fileUploadEventService.filesUploaded()
+    this.loading = false;
+    
     this.close();
   }
 
@@ -101,7 +102,6 @@ export class UploadModalComponent implements OnInit {
     }
     this.filteredCompanies = filtered;
   }
-
 
   filterJobs(event) {
     let filtered: any[] = [];

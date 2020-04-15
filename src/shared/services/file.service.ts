@@ -6,19 +6,19 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { PersonalFile } from '../models/PersonalFile';
-import { MessageService } from './message.service';
 
 import { FileModel } from 'src/shared/models/FileModel';
+import { NotificationService } from './notification.service';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileService {
   private filesUrl = 'http://localhost:8080/files/';  // URL to web api
 
   private httpOptions = {
-    withCredentials:true
+    withCredentials: true
     // headers: new HttpHeaders({
     //   "Access-Control-Allow-Origin": "*",
     //   'Access-Control-Allow-Method': 'GET, POST, OPTIONS, DELETE',
@@ -27,16 +27,24 @@ export class FileService {
     // })
   };
 
-  constructor(private http: HttpClient,
-    private messageService: MessageService) { }
+  constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
   async upload(fileObjects: Array<FileModel>) {
     var formData = new FormData();
     fileObjects.forEach(element => {
       formData.append('file', element.file);
     });
-
-    return await this.http.post(this.filesUrl, formData, this.httpOptions).toPromise();
+    const request = await this.http.post(this.filesUrl, formData, this.httpOptions).toPromise();
+    const length = Object.keys(request).length
+    let detail;
+    if (length > 1) {
+      detail = length + ' fichiers importés'
+    }
+    else {
+      detail = length + ' fichier importé'
+    }
+    this.notificationService.add({ severity: 'success', detail: detail });
+    return request
   }
 
   getFiles(): Observable<PersonalFile[]> {
@@ -80,11 +88,11 @@ export class FileService {
   }
 
   blob(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob', withCredentials:true },);
+    return this.http.get(url, { responseType: 'blob', withCredentials: true });
   }
 
   filePreview(fileId: string) {
-    return this.http.get(this.filesUrl + fileId, { responseType: 'blob', withCredentials:true })
+    return this.http.get(this.filesUrl + fileId, { responseType: 'blob', withCredentials: true })
       .subscribe(blob => {
         let newWindow = window.open('/files/preview');
         newWindow.onload = () => {
@@ -108,8 +116,9 @@ export class FileService {
 
   deleteFile(fileId: string) {
 
-    return this.http.delete(this.filesUrl + fileId, this.httpOptions).toPromise();
-
+    const request =  this.http.delete(this.filesUrl + fileId, this.httpOptions).toPromise();
+    console.log(request);
+    return request
   }
 
   /**
@@ -134,9 +143,6 @@ export class FileService {
 
   /** Log a ListeService message with the MessageService */
   private log(message: string) {
-    this.messageService.add(`ListeService: ${message}`);
+
   }
-
-
-
 }

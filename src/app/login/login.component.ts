@@ -14,6 +14,9 @@ export class LoginComponent implements OnInit {
   username: String;
   password: String;
   form: FormGroup;
+  loading: Boolean = false;
+  alertMsg: any = "";
+  isAlerting: Boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService) {
     // redirect to home if already logged in
@@ -29,17 +32,29 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit() {    
+    this.loading=true;
+    this.resetAlert;
     this.authenticationService.login(new User(this.form.value.username, this.form.value.password))
     .pipe(first())
     .subscribe(
       data => {
-        this.router.navigate(['/home']);
       },
       error => {
         console.log(error)
+        error = "Nom d'utilisateur ou mot de passe incorrect";
+        this.alert(error);
+        this.loading=false;
       });
-    // this.router.navigate(['/home']);
+  }
 
+  alert(error){
+    this.alertMsg = error;
+    this.isAlerting = true;
+  }
+
+  resetAlert(){
+    this.alertMsg = "";
+    this.isAlerting = false;
   }
 }

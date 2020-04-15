@@ -2,7 +2,7 @@
 	<div class="col-4">
 		<form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
 			<p-card header="Créer un compte">
-
+				<p-message *ngIf="isAlerting" severity="error" [text]="alertMsg"></p-message>
 				<div class="mt-4 form-group">
 					<input pInputText type="text" class="form-control" formControlName="username"
 						placeholder="Nom d'utilisateur*" />
@@ -17,8 +17,10 @@
 				</div>
 				<p-footer>
 					<div>
-						<button type="submit" pButton class="ui-button-success" label="S'enregistrer"
-							[disabled]="!form.valid"></button>
+						<button type="submit" class="btn btn-success" [disabled]="!form.valid || loading">
+							<span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+							S'enregistrer
+						</button>
 						<a class="ml-3" routerLink="/login">J'ai déjà un compte</a>
 					</div>
 				</p-footer>
