@@ -15,6 +15,9 @@ export class RegisterComponent implements OnInit {
   password: String;
   passwordChecker: String;
   form: FormGroup;
+  loading: Boolean = false;
+  alertMsg: any = "";
+  isAlerting: Boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService, public userService: UserService) {
     // redirect to home if already logged in
@@ -32,6 +35,8 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
+    this.resetAlert();
     const user = new User(this.form.value.username, this.form.value.password);
     this.userService.register(user)
       .pipe(first())
@@ -41,16 +46,27 @@ export class RegisterComponent implements OnInit {
         },
         error => {
           console.log(error)
+          error = "Cet utilisateur existe déjà";
+          this.alert(error)
+          this.loading = false;
         });
 
   }
 
-  passwordMatcher(form: FormGroup) {
+  alert(error){
+    this.alertMsg = error;
+    this.isAlerting = true;
+  }
 
+  resetAlert(){
+    this.alertMsg = "";
+    this.isAlerting = false;
+  }
+
+  passwordMatcher(form: FormGroup) {
     let pass = form.get('password').value;
     let passwordChecker = form.get('passwordChecker').value;
     return pass === passwordChecker ? null : { notSame: true }
-
   }
 }
 

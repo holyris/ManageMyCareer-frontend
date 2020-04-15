@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~9.0.5",
     "@angular/platform-browser-dynamic": "~9.0.5",
     "@angular/router": "~9.0.5",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@types/file-saver": "^2.0.1",
     "ag-grid-angular": "^23.0.2",
     "ag-grid-community": "^23.0.2",

@@ -1,4 +1,7 @@
-<button type="button" pButton icon="pi pi-plus" class="mx-5 mb-2 mt-3 ui-button-rounded ui-button-success" (click)="openUploadModal()" label="Nouveau"></button>
+<button type="button" icon="pi pi-plus" class="mx-5 mb-2 mt-3 btn btn-success rounded-pill" (click)="openUploadModal()">
+  <i class="fa fa-plus"></i>
+  Nouveau
+</button>
 <app-upload-modal #uploadModal></app-upload-modal>
 <mat-nav-list>
   <mat-list-item routerLink="files">Fichiers</mat-list-item>
