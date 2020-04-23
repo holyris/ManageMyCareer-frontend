@@ -10,12 +10,12 @@
 	</div>
 
 	<div class="ui-g py-2" style="border-top: solid 1px grey" *ngFor="let fileObject of fileObjects; index as i">
-		<div class="col d-flex flex-column text-truncate" style="border-right: solid 1px grey">
+		<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px grey">
 			<div class="row text-truncate" data-toggle="tooltip" [title]="fileObject.file.name">
-				<div class="col-12 text-truncate">{{fileObject.file.name}} </div>
+				<div class="col-12 text-truncate font-weight-bold">{{fileObject.file.name}} </div>
 			</div>
 			<div class="row">
-				<div class="col-12">{{fileObject.file.size}}Ko</div>
+				<div class="col-12">Taille: {{fileObject.file.size}} o</div>
 			</div>
 			<div class="row mt-auto">
 				<div class="col-12">
