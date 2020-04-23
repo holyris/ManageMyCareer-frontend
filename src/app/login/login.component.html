@@ -15,11 +15,11 @@
 
         <p-footer>
           <div>
-            <button type="submit" class="btn btn-success" [disabled]="!form.valid || loading">
+            <button type="submit" class="btn btn-success btn-sm" [disabled]="!form.valid || loading">
               <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
               Connexion
             </button>
-            <button type="button" routerLink="/register" class="btn btn-primary ml-2">Créer un compte</button>
+            <button type="button" routerLink="/register" class="btn btn-primary btn-sm ml-2">Créer un compte</button>
           </div>
           <div class="mt-2">
             <a routerLink="/login">Mot de passe oublié</a>
