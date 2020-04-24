@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/account-creation-confirmation']);
         },
         error => {
           console.log(error)
