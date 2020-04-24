@@ -30,32 +30,41 @@
 		<div class="col-auto">
 			<div class="row my-2">
 				<div class="col">
-					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType" optionLabel="label"
-						placeholder="Type de document"></p-dropdown>
+					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType"
+						[style]="{'width': '100%'}" placeholder="Type de document"></p-dropdown>
 				</div>
 				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
 					<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].date" view="month" dateFormat="mm/yy"
-						placeholder="Date" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+						[style]="{'width': '100%'}" placeholder="Date" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
 				</div>
 			</div>
 			<div class="row my-2" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
 				<div class="col">
-					<p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
+					<!-- <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
 						[(ngModel)]="fileObjects[i].company" placeholder="Entreprise"></p-autoComplete>
 				</div>
 				<div class="col pl-0">
 					<p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)"
 						[(ngModel)]="fileObjects[i].workplace" placeholder="Poste">
-					</p-autoComplete>
+					</p-autoComplete> -->
+
+					<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="fileObjects[i].company" editable="true"
+						filter="true" placeholder="Entreprise"></p-dropdown>
+				</div>
+				<div class="col pl-0">
+					<p-dropdown appendTo="body" [options]="workplaces" [(ngModel)]="fileObjects[i].workplace" editable="true"
+						filter="true" placeholder="Poste"></p-dropdown>
 				</div>
 			</div>
 
 			<div class="row my-2" *ngIf="isSelectedFichePaie(i)">
 				<div class="col">
-					<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money" placeholder="Salaire brut">
+					<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
+						[style]="{'width': '100%'}" placeholder="Salaire brut">
 				</div>
 				<div class="col pl-0">
-					<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money" placeholder="Salaire net">
+					<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money"
+						[style]="{'width': '100%'}" placeholder="Salaire net">
 				</div>
 			</div>
 		</div>
@@ -66,11 +75,10 @@
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			<i *ngIf="!loading" class="fa fa-upload"></i>
 			Importer
-			</button>
-		<button type="button" (click)="close()" 
-			class="btn btn-secondary btn-sm">
+		</button>
+		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
 			<i class="fa fa-times"></i>
 			Fermer
 		</button>
-		</p-footer>
+	</p-footer>
 </p-dialog>

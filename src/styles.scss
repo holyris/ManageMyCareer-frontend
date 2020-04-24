@@ -1,36 +1,8 @@
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+@import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
+@import "../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
 @import '~@angular/material/theming';
-// Plus imports for other components in your app.
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat-core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$homepage-primary: mat-palette($mat-indigo);
-$homepage-accent: mat-palette($mat-pink, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$homepage-warn: mat-palette($mat-red);
-
-// Create the theme object (a Sass map containing all of the palettes).
-$homepage-theme: mat-light-theme($homepage-primary, $homepage-accent, $homepage-warn);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($homepage-theme);
-
-
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
-// Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -60,9 +32,14 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
-@import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
-@import "../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
-
 .ag-theme-alpine {
     @include ag-theme-alpine();
 }
+
+$theme-colors: (
+  "primary": #6798fe,
+  "success": #4ab8a1
+);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+

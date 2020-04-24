@@ -1,12 +1,13 @@
 <app-header *ngIf="currentUser"></app-header>
 
-<mat-drawer-container class="h-100">
 
-  <mat-drawer mode="side" opened *ngIf="currentUser">
+<mat-drawer-container style="height: calc(100% - 64px);">
+
+  <mat-drawer mode="side" opened disableClose="true" *ngIf="currentUser">
     <app-left-menu></app-left-menu>
   </mat-drawer>
 
-  <mat-drawer-content autosize>
+  <mat-drawer-content autosize >
     <router-outlet></router-outlet>
   </mat-drawer-content>
 

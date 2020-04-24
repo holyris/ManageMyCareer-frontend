@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
-import { DocumentType, EnumTypeValue } from 'src/shared/models/document-type.model';
+import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
+import { SelectItem } from 'primeng/api';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 
@@ -16,31 +17,51 @@ export class UploadModalComponent implements OnInit {
   filteredCompanies: any[];
   filteredJobs: any[];
   loading: Boolean = false;
-
-
-  companies: String[] = [
-    "Entreprise", "manage", "career", "test", "acta", "isir"
+  
+  types: SelectItem[] = [
+    {
+      label: EnumTypeValue.FichePaie,
+      value: EnumTypeValue.FichePaie
+    },
+    {
+      label: EnumTypeValue.Contrat,
+      value: EnumTypeValue.Contrat
+    },
+    {
+      label: EnumTypeValue.Cv,
+      value: EnumTypeValue.Cv
+    },
+    {
+      label: EnumTypeValue.Lettre,
+      value: EnumTypeValue.Lettre
+    },
+    {
+      label: EnumTypeValue.Autre,
+      value: EnumTypeValue.Autre
+    }
   ];
-  jobs: String[] = [
-    "Developpeur ", "admin reseau", "croquette"
-  ];
 
-  types: DocumentType[] = [
+  companies: SelectItem[] = [
     {
-      value: EnumTypeValue.FichePaie, label: 'Fiche de paie'
+      label: "Actads",
+      value: "Actads"
     },
     {
-      value: EnumTypeValue.Contrat, label: 'Contrat de travail'
+      label: "test",
+      value: "test"
+    },
+  ];
+  
+  workplaces: SelectItem[] = [
+    {
+      label: "Developpeur",
+      value: "Developpeur"
     },
     {
-      value: EnumTypeValue.Cv, label: 'CV'
+      label: "Manager",
+      value: "Manager"
     },
-    {
-      value: EnumTypeValue.Lettre, label: 'Lettre'
-    },
-    {
-      value: EnumTypeValue.Autre, label: 'Autre'
-    },];
+  ]
 
   constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService) { }
 
@@ -49,7 +70,7 @@ export class UploadModalComponent implements OnInit {
   reset() {
     if (!this.visible) {
       this.loading = false;
-      this.fileObjects = [];      
+      this.fileObjects = [];
       this.uploadFileComponent.clear(); //Reset le composant d'upload
     }
   }
@@ -86,7 +107,7 @@ export class UploadModalComponent implements OnInit {
         // converti reader.result en base64
         fileObject.fileContent = btoa(
           new Uint8Array(reader.result as ArrayBuffer)
-          .reduce((data, byte) => data + String.fromCharCode(byte), '')
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
         );
       }
       //prend le blob et le converti en tableau binaire dans reader.result
@@ -101,34 +122,34 @@ export class UploadModalComponent implements OnInit {
   }
 
   isSelectedFichePaie(index) {
-    return this.fileObjects[index].documentType && this.fileObjects[index].documentType.value === EnumTypeValue.FichePaie
+    return this.fileObjects[index].documentType === EnumTypeValue.FichePaie
   }
 
   isSelectedContrat(index) {
-    return this.fileObjects[index].documentType && this.fileObjects[index].documentType.value === EnumTypeValue.Contrat
+    return this.fileObjects[index].documentType === EnumTypeValue.Contrat
   }
 
-  filterCompanies(event) {
-    let filtered: any[] = [];
-    for (let i = 0; i < this.companies.length; i++) {
-      let company = this.companies[i];
-      if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-        filtered.push(company);
-      }
-    }
-    this.filteredCompanies = filtered;
-  }
+  // filterCompanies(event) {
+  //   let filtered: any[] = [];
+  //   for (let i = 0; i < this.companies.length; i++) {
+  //     let company = this.companies[i];
+  //     if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+  //       filtered.push(company);
+  //     }
+  //   }
+  //   this.filteredCompanies = filtered;
+  // }
 
-  filterJobs(event) {
-    let filtered: any[] = [];
-    for (let i = 0; i < this.jobs.length; i++) {
-      let company = this.jobs[i];
-      if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-        filtered.push(company);
-      }
-    }
-    this.filteredJobs = filtered;
-  }
+  // filterJobs(event) {
+  //   let filtered: any[] = [];
+  //   for (let i = 0; i < this.jobs.length; i++) {
+  //     let company = this.jobs[i];
+  //     if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+  //       filtered.push(company);
+  //     }
+  //   }
+  //   this.filteredJobs = filtered;
+  // }
 
 
 
