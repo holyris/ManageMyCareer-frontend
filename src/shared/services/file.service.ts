@@ -30,13 +30,13 @@ export class FileService {
   constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
   async upload(fileObjects: Array<FileModel>) {
-    var formData = new FormData();
-    fileObjects.forEach(element => {
-      formData.append('file', element.file);
-    });
-    const request = await this.http.post(this.filesUrl, formData, this.httpOptions).toPromise();
+    //à garder au cas où on reparte sur les multiparts
+    // fileObjects.forEach(element => {
+    //   formData.append('file', element.file);
+    // });
+    const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
     const length = Object.keys(request).length
-    let detail;
+    let detail = "";
     if (length > 1) {
       detail = length + ' fichiers importés'
     }

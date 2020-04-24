@@ -48,8 +48,9 @@ export class UploadModalComponent implements OnInit {
 
   reset() {
     if (!this.visible) {
-      this.fileObjects = [];
-      this.uploadFileComponent.clear();
+      this.loading = false;
+      this.fileObjects = [];      
+      this.uploadFileComponent.clear(); //Reset le composant d'upload
     }
   }
 
@@ -67,15 +68,30 @@ export class UploadModalComponent implements OnInit {
     await this.fileService.upload(this.fileObjects)
     this.fileUploadEventService.filesUploaded()
     this.loading = false;
-    
+
     this.close();
   }
 
   addFiles(event) {
-    this.fileObjects = [];
+    this.fileObjects = [];  //Reset la liste des fichiers 
     for (let file of event.files) {
-      this.fileObjects.push(new FileModel());
-      this.fileObjects[this.fileObjects.length - 1].file = file;
+      let fileObject = new FileModel();
+      fileObject.name = file.name;
+      fileObject.size = file.size;
+      fileObject.type = file.type;
+
+      let reader = new FileReader();
+      //appelle cette fonction quand readAsArrayBuffer est fini
+      reader.onload = function (e) {
+        // converti reader.result en base64
+        fileObject.fileContent = btoa(
+          new Uint8Array(reader.result as ArrayBuffer)
+          .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+      }
+      //prend le blob et le converti en tableau binaire dans reader.result
+      reader.readAsArrayBuffer(file);
+      this.fileObjects.push(fileObject);
     }
     this.uploadFileComponent.clear();
   }
