@@ -11,11 +11,11 @@
 
 	<div class="ui-g py-2" style="border-top: solid 1px grey" *ngFor="let fileObject of fileObjects; index as i">
 		<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px grey">
-			<div class="row text-truncate" data-toggle="tooltip" [title]="fileObject.file.name">
-				<div class="col-12 text-truncate font-weight-bold">{{fileObject.file.name}} </div>
+			<div class="row text-truncate" data-toggle="tooltip" [title]="fileObject.name">
+				<div class="col-12 text-truncate font-weight-bold">{{fileObject.name}} </div>
 			</div>
 			<div class="row">
-				<div class="col-12">Taille: {{fileObject.file.size}} o</div>
+				<div class="col-12">Taille: {{fileObject.size}} o</div>
 			</div>
 			<div class="row mt-auto">
 				<div class="col-12">
@@ -45,26 +45,23 @@
 				</div>
 				<div class="col pl-0">
 					<p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)"
-						[(ngModel)]="fileObjects[i].job" placeholder="Poste">
+						[(ngModel)]="fileObjects[i].workplace" placeholder="Poste">
 					</p-autoComplete>
 				</div>
 			</div>
 
 			<div class="row my-2" *ngIf="isSelectedFichePaie(i)">
 				<div class="col">
-					<input type="text" pInputText pKeyFilter="money" placeholder="Salaire brut">
+					<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money" placeholder="Salaire brut">
 				</div>
 				<div class="col pl-0">
-					<input type="text" pInputText pKeyFilter="money" placeholder="Salaire net">
+					<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money" placeholder="Salaire net">
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<p-footer>
-		<!-- <button type="button" pButton icon="pi pi-check" (click)="uploadFiles()" label="Importer"></button>
-		<button type="button" pButton icon="pi pi-times" (click)="close()" label="Fermer"
-			class="ui-button-secondary"></button> -->
 		<button type="button" class="btn btn-primary btn-sm" (click)="uploadFiles()" [disabled]="loading">
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			<i *ngIf="!loading" class="fa fa-upload"></i>
