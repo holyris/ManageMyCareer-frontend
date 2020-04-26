@@ -4,6 +4,7 @@ import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
 import { OperationsComponent } from "../operations/operations.component";
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
+import { GridApi, GridOptions, ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'app-file-list',
@@ -14,6 +15,12 @@ export class FileListComponent implements OnInit {
   public columnDefs;
   public defaultColDef;
   uploadSubscription: Subscription;
+  gridApi: GridApi;
+  
+  private rowSelection;
+
+  gridOptions: GridOptions = {
+  }
 
   files: PersonalFile[];
 
@@ -31,6 +38,8 @@ export class FileListComponent implements OnInit {
       },
     ];
     this.defaultColDef = { resizable: false };
+    
+    rowSelection = 'multiple';
   }
 
   ngOnInit(): void {
@@ -48,6 +57,7 @@ export class FileListComponent implements OnInit {
   }
   onGridReady(params) {
     params.api.sizeColumnsToFit();
+    this.gridApi = params.api;
   }
 
   refreshItems(): void {
@@ -55,5 +65,11 @@ export class FileListComponent implements OnInit {
       .subscribe(files => {
         this.files = files;
       });
+  }
+
+  onClickPrintSelection() {
+    let rows = this.gridApi.getSelectedRows();
+    
+    console.log("select row = ", rows);
   }
 }

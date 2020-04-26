@@ -40,6 +40,7 @@ import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { OperationsComponent } from './operations/operations.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
+import { UpdateModalComponent } from './update-modal/update-modal.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { NotificationToastComponent } from './notification-toast/notification-to
     FooterComponent,
     LoginComponent,
     OperationsComponent,
-    NotificationToastComponent
+    NotificationToastComponent,
+    UpdateModalComponent
   ],
   imports: [
     BrowserModule,
