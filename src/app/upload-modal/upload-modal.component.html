@@ -24,9 +24,7 @@
 					</button>
 				</div>
 			</div>
-
 		</div>
-
 		<div class="col-auto">
 			<div class="row my-2">
 				<div class="col">
@@ -34,7 +32,7 @@
 						[style]="{'width': '100%'}" placeholder="Type de document"></p-dropdown>
 				</div>
 				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
-					<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].date" view="month" dateFormat="mm/yy"
+					<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].documentDate" view="month" dateFormat="mm/yy"
 						[style]="{'width': '100%'}" placeholder="Date" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
 				</div>
 			</div>
