@@ -42,6 +42,7 @@ import { LoginComponent } from './login/login.component';
 import { OperationsComponent } from './operations/operations.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
+import { UpdateModalComponent } from './update-modal/update-modal.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { FilePreviewModalComponent } from './file-preview-modal/file-preview-mod
     LoginComponent,
     OperationsComponent,
     NotificationToastComponent,
-    FilePreviewModalComponent
+    FilePreviewModalComponent,
+    UpdateModalComponent
   ],
   imports: [
     BrowserModule,
