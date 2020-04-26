@@ -41,7 +41,7 @@ export class OperationsComponent implements ICellRendererAngularComp {
   }
 
   updateFile(): void {
-
+    this.updateModal.show();
   }
 
   // exemple

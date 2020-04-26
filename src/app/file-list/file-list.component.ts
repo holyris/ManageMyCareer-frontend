@@ -7,6 +7,7 @@ import { OperationsComponent } from "../operations/operations.component";
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
+import { GridApi, GridOptions, ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'app-file-list',
@@ -18,6 +19,12 @@ export class FileListComponent implements OnInit {
   public columnDefs;
   public defaultColDef;
   uploadSubscription: Subscription;
+  gridApi: GridApi;
+
+  private rowSelection;
+
+  gridOptions: GridOptions = {
+  }
 
   files: FileModel[];
 
@@ -55,6 +62,7 @@ export class FileListComponent implements OnInit {
 
   onGridReady(params) {
     params.api.sizeColumnsToFit();
+    this.gridApi = params.api;
   }
 
   refreshItems(): void {
@@ -76,5 +84,10 @@ export class FileListComponent implements OnInit {
     if (date) {
       return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
     }
+  }
+  onClickPrintSelection() {
+    let rows = this.gridApi.getSelectedRows();
+
+    console.log("select row = ", rows);
   }
 }
