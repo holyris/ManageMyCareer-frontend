@@ -7,7 +7,9 @@ export class FileModel {
   public documentType: String;
   public company: String;
   public workplace: String;
-  public date: Date;
+  public addedDate: Date;
+  public modifiedDate: Date;
+  public documentDate: Date;
   public grossSalary: Number;
   public netSalary: Number;
   public fileContent: String;
