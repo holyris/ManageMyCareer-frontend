@@ -8,6 +8,7 @@ import { FileUploadEventService } from 'src/shared/services/file-upload-event.se
 import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
 import { GridApi, GridOptions, ColDef } from 'ag-grid-community';
+import { UpdateModalComponent } from "src/app/update-modal/update-modal.component";
 
 @Component({
   selector: 'app-file-list',
@@ -16,6 +17,8 @@ import { GridApi, GridOptions, ColDef } from 'ag-grid-community';
 })
 export class FileListComponent implements OnInit {
   @ViewChild(FilePreviewModalComponent) filePreviewModal: FilePreviewModalComponent;
+  @ViewChild(UpdateModalComponent) updateModal: UpdateModalComponent;
+  uploadModalVisible: Boolean = false;
   public columnDefs;
   public defaultColDef;
   uploadSubscription: Subscription;
@@ -40,10 +43,13 @@ export class FileListComponent implements OnInit {
         cellRendererFramework: OperationsComponent,
         cellRendererParams: {
           refreshItems: this.refreshItems.bind(this),
+          showUpdateModal: this.showUpdateModal.bind(this),
         }
       },
     ];
     this.defaultColDef = { resizable: false };
+    
+    this.rowSelection = 'multiple';
   }
 
   ngOnInit(): void {
@@ -89,5 +95,11 @@ export class FileListComponent implements OnInit {
     let rows = this.gridApi.getSelectedRows();
 
     console.log("select row = ", rows);
+  }
+
+
+  showUpdateModal(){
+    console.log("showUpdateModal");
+    this.updateModal.show();
   }
 }
