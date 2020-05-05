@@ -44,7 +44,9 @@ export class OperationsComponent implements ICellRendererAngularComp {
   }
 
   updateFile(): void {
-    this.updateModal.show();
+    if (this.params.showUpdateModal instanceof Function) {
+      this.params.showUpdateModal()
+    }
   }
 
   // exemple

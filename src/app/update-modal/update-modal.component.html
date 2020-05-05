@@ -1,1 +1,17 @@
-<p>update-modal works!</p>
+<p-dialog [style]="{'overflow':'visible'}"
+	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Modification métadonnée"
+	[resizable]="false" [modal]="true" [draggable]="false">
+
+	<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
+						[style]="{'width': '100%'}" placeholder="Salaire brut">
+
+	<p-footer>
+		<button type="button" class="btn btn-primary btn-sm" (click)="updateFiles()" [disabled]="loading">
+			Modifier
+		</button>
+		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
+			<i class="fa fa-times"></i>
+			Fermer
+		</button>
+    </p-footer>
+</p-dialog>
