@@ -28,7 +28,7 @@ export class UserService {
     );
   }
 
-  delete(id: String) {
+  delete(id: string) {
     return this.http.delete(this.url + `users/` + id);
 
   }

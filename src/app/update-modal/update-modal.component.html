@@ -1,17 +1,74 @@
 <p-dialog [style]="{'overflow':'visible'}"
-	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Modification métadonnée"
-	[resizable]="false" [modal]="true" [draggable]="false">
+	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible"
+	header="Modification" [resizable]="false" [modal]="true" [draggable]="false" [blockScroll]="true">
+	<div class="col-12 my-4">
+		<div class="row">
+			<div class="col-12">
+				<span class="ui-float-label">
+					<input type="text" [(ngModel)]="file.name" pInputText [style]="{'min-width':'300px', 'width': '100%'}">
+					<label>Nom</label>
+				</span>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="col">
+				<span class="ui-float-label">
+					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="file.documentType" [autoDisplayFirst]="false"
+						[style]="{'width': '100%'}"></p-dropdown>
+					<label>Type de document</label>
+				</span>
 
-	<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
-						[style]="{'width': '100%'}" placeholder="Salaire brut">
+			</div>
+			<div class="col pl-0" *ngIf="isFileFichePaie() || isFileContrat()">
+				<span class="ui-float-label">
+					<p-calendar appendTo="body" [(ngModel)]="file.documentDate" view="month" dateFormat="mm/yy"
+						[style]="{'width': '100%'}" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+					<label>Date</label>
+				</span>
+			</div>
+		</div>
+		<div class="row mt-4" *ngIf="isFileFichePaie() || isFileContrat()">
+			<div class="col">
+				<span class="ui-float-label">
+					<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="file.company" [style]="{'width': '100%'}"
+						[autoDisplayFirst]="false" filter="true"></p-dropdown>
+					<label>Entreprise</label>
+				</span>
 
+			</div>
+			<div class="col pl-0">
+				<span class="ui-float-label">
+					<p-dropdown appendTo="body" [options]="workplaces" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
+						[(ngModel)]="file.workplace" filter="true"></p-dropdown>
+					<label>Poste</label>
+				</span>
+			</div>
+		</div>
+
+		<div class="row mt-4" *ngIf="isFileFichePaie()">
+			<div class="col">
+				<span class="ui-float-label">
+					<input type="text" [(ngModel)]="file.grossSalary" pInputText pKeyFilter="money" [style]="{'width': '100%'}">
+					<label>Salaire brut (€)</label>
+				</span>
+
+			</div>
+			<div class="col pl-0">
+				<span class="ui-float-label">
+					<input type="text" [(ngModel)]="file.netSalary" pInputText pKeyFilter="money" [style]="{'width': '100%'}">
+					<label>Salaire net (€)</label>
+				</span>
+			</div>
+		</div>
+	</div>
 	<p-footer>
-		<button type="button" class="btn btn-primary btn-sm" (click)="updateFiles()" [disabled]="loading">
-			Modifier
+		<button type="button" class="btn btn-primary btn-sm" (click)="updateFile()" [disabled]="loading">
+			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+			Appliquer
 		</button>
 		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
 			<i class="fa fa-times"></i>
 			Fermer
 		</button>
-    </p-footer>
+	</p-footer>
 </p-dialog>

@@ -11,9 +11,9 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  username: String;
-  password: String;
-  passwordChecker: String;
+  username: string;
+  password: string;
+  passwordChecker: string;
   form: FormGroup;
   loading: Boolean = false;
   alertMsg: any = "";

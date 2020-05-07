@@ -47,7 +47,13 @@ export class FileService {
     return request
   }
 
-  getFiles(): Observable<FileModel[]> {
+  async update(file: FileModel) {
+    const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
+    this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
+    return request;
+  }
+
+  getAll(): Observable<FileModel[]> {
     return this.http.get<FileModel[]>(this.filesUrl, this.httpOptions)
       .pipe(
         map(
@@ -56,13 +62,13 @@ export class FileService {
         catchError(this.handleError<FileModel[]>('getFiles', []))
       );
   }
-  
-  getBlobById(id: string): Observable<Blob> {
+
+  getBlob(id: Number): Observable<Blob> {
     return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
   }
 
-  downloadFile(id: string, filename?: string) {
-    this.getBlobById(id)
+  download(id: Number, filename?: string) {
+    this.getBlob(id)
       .subscribe(x => {
         // It is necessary to create a new blob object with mime-type explicitly set
         // otherwise only Chrome works like it should
@@ -93,31 +99,24 @@ export class FileService {
       });
   }
 
-  // filePreview(fileId: string) {
-  //   return this.http.get(this.filesUrl + fileId, { responseType: 'blob', withCredentials: true })
-  //     .subscribe(blob => {
+  async delete(id: Number) {
+    const request = this.http.delete(this.filesUrl + id, this.httpOptions).toPromise();
+    return request;
+  }
 
-  //       var blobHtmlElement;
-  //       blobHtmlElement = document.createElement('object');
-  //       blobHtmlElement.href = window.URL.createObjectURL(blob);
-  //       blobHtmlElement.style.position = 'fixed';
-  //       blobHtmlElement.style.zIndex = '200';
-  //       blobHtmlElement.style.top = '0';
-  //       blobHtmlElement.style.left = '0';
-  //       blobHtmlElement.style.bottom = '0';
-  //       blobHtmlElement.style.right = '0';
-  //       blobHtmlElement.style.width = '100%';
-  //       blobHtmlElement.style.height = '100%';
-  //       blobHtmlElement.setAttribute('data', blobHtmlElement.href);
-  //       document.body.appendChild(blobHtmlElement);
-  //       blobHtmlElement.click();
-
-  //     });
-  // }
-
-  deleteFile(fileId: string) {
-    const request = this.http.delete(this.filesUrl + fileId, this.httpOptions).toPromise();
-    return request
+  async deleteMultiple(files: FileModel[]) {
+    for (const file of files) {
+      await this.delete(file.id);
+    }
+    const length = files.length
+    let detail = "";
+    if (length > 1) {
+      detail = length + ' fichiers supprimés'
+    }
+    else {
+      detail = length + ' fichier supprimé'
+    }
+    this.notificationService.add({ severity: 'success', detail: detail });
   }
 
   /**
