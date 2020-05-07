@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NotificationService } from 'src/shared/services/notification.service';
+import { NotificationService } from 'src/app/notification-toast/notification.service';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 

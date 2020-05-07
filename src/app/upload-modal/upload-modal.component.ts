@@ -4,6 +4,8 @@ import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { SelectItem } from 'primeng/api';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
+import { Subscription } from 'rxjs';
+import { UploadModalService } from './upload-modal.service';
 
 @Component({
   selector: 'app-upload-modal',
@@ -17,6 +19,7 @@ export class UploadModalComponent implements OnInit {
   filteredCompanies: any[];
   filteredJobs: any[];
   loading: Boolean = false;
+  subscription: Subscription;
   
   types: SelectItem[] = [
     {
@@ -63,9 +66,16 @@ export class UploadModalComponent implements OnInit {
     },
   ]
 
-  constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService) { }
+  constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService, private uploadModalService: UploadModalService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // permet d'executer du code quand show() du service est appelé
+    this.subscription = this.uploadModalService.showEvent.subscribe(
+      () => {
+        this.show();
+      }
+    )
+   }
 
   reset() {
     if (!this.visible) {

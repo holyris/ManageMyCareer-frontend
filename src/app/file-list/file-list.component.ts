@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PersonalFile } from '../../shared/models/PersonalFile';
+import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
 import { OperationsComponent } from "../operations/operations.component";
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
+import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
+import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
 
 @Component({
   selector: 'app-file-list',
@@ -11,17 +14,20 @@ import { FileUploadEventService } from 'src/shared/services/file-upload-event.se
   styleUrls: ['./file-list.component.scss']
 })
 export class FileListComponent implements OnInit {
+  @ViewChild(FilePreviewModalComponent) filePreviewModal: FilePreviewModalComponent;
   public columnDefs;
   public defaultColDef;
   uploadSubscription: Subscription;
 
-  files: PersonalFile[];
+  files: FileModel[];
 
-  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService) {
+  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService, private filePreviewModalService: FilePreviewModalService) {
     this.columnDefs = [
-      { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Type', field: 'type', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Taille', field: 'size', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true, tooltipField: 'name' },
+      { headerName: 'Type', field: 'documentType', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Entreprise', field: 'company', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Poste', field: 'workplace', sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Date', field: 'documentDate', valueFormatter: (params) => { return this.documentDateFormatter(params.value) }, sortable: true, filter: true, suppressMovable: true },
       {
         headerName: '', field: 'operations', suppressMovable: true, cellStyle: { 'text-align': 'right' },
         cellRendererFramework: OperationsComponent,
@@ -36,7 +42,7 @@ export class FileListComponent implements OnInit {
   ngOnInit(): void {
     this.refreshItems();
     this.uploadSubscription = this.fileUploadEventService.getFilesUploadedEvent.subscribe(
-      x => {
+      () => {
         this.refreshItems();
       }
     )
@@ -46,14 +52,29 @@ export class FileListComponent implements OnInit {
     // prevent memory leak when component destroyed
     this.uploadSubscription.unsubscribe();
   }
+
   onGridReady(params) {
     params.api.sizeColumnsToFit();
   }
 
   refreshItems(): void {
     this.fileService.getFiles()
-      .subscribe(files => {
+      .subscribe((files: FileModel[]) => {
         this.files = files;
       });
+  }
+
+  rowDoubleClicked(event) {
+    this.fileService.getBlobById(event.data.id).subscribe(
+      blob => {
+        this.filePreviewModalService.show(blob)
+      }
+    )
+  }
+
+  documentDateFormatter(date): String {
+    if (date) {
+      return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+    }
   }
 }

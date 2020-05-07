@@ -32,6 +32,7 @@ import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
+import { SafePipeModule } from 'safe-pipe';
 
 import { AgGridModule } from 'ag-grid-angular';
 import { FileListComponent } from './file-list/file-list.component';
@@ -40,6 +41,7 @@ import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { OperationsComponent } from './operations/operations.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
+import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
 
 
 @NgModule({
@@ -54,7 +56,8 @@ import { NotificationToastComponent } from './notification-toast/notification-to
     FooterComponent,
     LoginComponent,
     OperationsComponent,
-    NotificationToastComponent
+    NotificationToastComponent,
+    FilePreviewModalComponent
   ],
   imports: [
     BrowserModule,
@@ -83,6 +86,7 @@ import { NotificationToastComponent } from './notification-toast/notification-to
     MessagesModule,
     MessageModule,
     ToastModule,
+    SafePipeModule,
     AgGridModule.withComponents([]),
   ],
   providers: [

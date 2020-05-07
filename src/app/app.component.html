@@ -1,16 +1,18 @@
 <app-header *ngIf="currentUser"></app-header>
 
 
-<mat-drawer-container style="height: calc(100% - 64px);">
+<mat-sidenav-container style="height: calc(100% - 64px);">
 
-  <mat-drawer mode="side" opened disableClose="true" *ngIf="currentUser">
+  <mat-sidenav mode="side" opened disableClose="true" *ngIf="currentUser" style="z-index:1">
     <app-left-menu></app-left-menu>
-  </mat-drawer>
+  </mat-sidenav>
 
-  <mat-drawer-content autosize >
+  <mat-sidenav-content style="z-index:1">
     <router-outlet></router-outlet>
-  </mat-drawer-content>
+  </mat-sidenav-content>
 
-</mat-drawer-container>
+</mat-sidenav-container>
 
+<app-upload-modal ></app-upload-modal>
+<app-file-preview-modal></app-file-preview-modal>
 <app-notification-toast></app-notification-toast>
