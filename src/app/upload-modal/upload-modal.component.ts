@@ -128,7 +128,10 @@ export class UploadModalComponent implements OnInit {
   }
 
   deleteFileObjectByIndex(index) {
+    console.log(index)
+    console.log(this.fileObjects);
     this.fileObjects.splice(index, 1);
+    console.log(this.fileObjects);
   }
 
   isSelectedFichePaie(index) {

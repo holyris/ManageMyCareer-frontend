@@ -1,6 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { PersonalFile } from 'src/shared/models/PersonalFile';
+import { Subscription } from 'rxjs';
+import { UpdateModalService } from './update-modal.service';
+import { FileModel } from 'src/shared/models/FileModel';
+import { SelectItem } from 'primeng/api/selectitem';
+import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
+import { FileService } from 'src/shared/services/file.service';
 
 @Component({
   selector: 'app-update-modal',
@@ -8,34 +13,92 @@ import { PersonalFile } from 'src/shared/models/PersonalFile';
   styleUrls: ['./update-modal.component.scss']
 })
 export class UpdateModalComponent implements OnInit {
-  @ViewChild('updateFileComponent') updateFileComponent: any;
-  PersonalFile: any;
+  subscription: Subscription;
   visible: Boolean = false;
   loading: Boolean = false;
+  file: FileModel = new FileModel();
 
-  constructor() { }
+  types: SelectItem[] = [
+    {
+      label: EnumTypeValue.FichePaie,
+      value: EnumTypeValue.FichePaie
+    },
+    {
+      label: EnumTypeValue.Contrat,
+      value: EnumTypeValue.Contrat
+    },
+    {
+      label: EnumTypeValue.Cv,
+      value: EnumTypeValue.Cv
+    },
+    {
+      label: EnumTypeValue.Lettre,
+      value: EnumTypeValue.Lettre
+    },
+    {
+      label: EnumTypeValue.Autre,
+      value: EnumTypeValue.Autre
+    }
+  ];
+
+  companies: SelectItem[] = [
+    {
+      label: "Actads",
+      value: "Actads"
+    },
+    {
+      label: "test",
+      value: "test"
+    },
+  ];
+  
+  workplaces: SelectItem[] = [
+    {
+      label: "Developpeur",
+      value: "Developpeur"
+    },
+    {
+      label: "Manager",
+      value: "Manager"
+    },
+  ]
+
+  constructor(private updateModalService: UpdateModalService, private fileService: FileService) { }
 
   ngOnInit(): void {
+    // permet d'executer du code quand show() du service est appelé
+    this.subscription = this.updateModalService.showEvent.subscribe(
+      file => {
+        this.show(file);
+      }
+    )
   }
 
-  show() {
+  show(file: FileModel) {
+    this.reset();
+    this.file = file;
     this.visible = true;
-    console.log("modal visible");
   }
 
   close() {
     this.visible = false;
   }
 
-  async updateFiles() {
-    /*
-    this.loading = true;
-    await this.fileService.upload(this.fileObjects)
-    this.fileUploadEventService.filesUploaded()
+  reset(){
     this.loading = false;
-
-    this.close();
-    */
   }
 
+  async updateFile(){
+    this.loading = true;
+    await this.fileService.update(this.file);
+    this.loading = false;
+  }
+
+  isFileFichePaie() {
+    return this.file && this.file.documentType === EnumTypeValue.FichePaie
+  }
+
+  isFileContrat() {
+    return this.file && this.file.documentType === EnumTypeValue.Contrat
+  }
 }

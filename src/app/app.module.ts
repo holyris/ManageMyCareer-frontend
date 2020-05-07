@@ -35,6 +35,7 @@ import { ToastModule } from 'primeng/toast';
 import { SafePipeModule } from 'safe-pipe';
 
 import { AgGridModule } from 'ag-grid-angular';
+import 'ag-grid-enterprise';
 import { FileListComponent } from './file-list/file-list.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { FooterComponent } from './footer/footer.component';

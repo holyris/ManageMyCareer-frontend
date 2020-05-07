@@ -1,6 +1,6 @@
 <p-dialog [style]="{'overflow':'visible'}"
 	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Nouveau"
-	[resizable]="false" [modal]="true" [draggable]="false" [dismissableMask]="true" [blockScroll]="true">
+	[resizable]="false" [modal]="true" [draggable]="false" [blockScroll]="true">
 
 	<div class="py-2 px-2">
 		<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" [auto]="true"
@@ -11,11 +11,11 @@
 
 	<div class="ui-g py-2" style="border-top: solid 1px grey" *ngFor="let fileObject of fileObjects; index as i">
 		<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px grey">
-			<div class="row text-truncate" data-toggle="tooltip" [title]="fileObject.name">
-				<div class="col-12 text-truncate font-weight-bold">{{fileObject.name}} </div>
+			<div class="row">
+				<div class="col-12">Taille :</div>
 			</div>
 			<div class="row">
-				<div class="col-12">Taille: {{fileObject.size}} o</div>
+				<div class="col-12">{{fileObject.size}}B</div>
 			</div>
 			<div class="row mt-auto">
 				<div class="col-12">
@@ -25,18 +25,34 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-auto">
-			<div class="row my-2">
-				<div class="col">
-					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType"
-						[style]="{'width': '100%'}" placeholder="Type de document"></p-dropdown>
-				</div>
-				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
-					<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].documentDate" view="month" dateFormat="mm/yy"
-						[style]="{'width': '100%'}" placeholder="Date" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+		<div class="col-auto my-3">
+			<div class="row">
+				<div class="col-12">
+					<span class="ui-float-label">
+						<input type="text" [(ngModel)]="fileObjects[i].name" pInputText [style]="{'min-width':'300px', 'width': '100%'}">
+						<label>Nom</label>
+					</span>
 				</div>
 			</div>
-			<div class="row my-2" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
+			<div class="row mt-4">
+				<div class="col">
+					<span class="ui-float-label">
+						<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType"
+							[autoDisplayFirst]="false" [style]="{'width': '100%'}"></p-dropdown>
+						<label>Type de document</label>
+					</span>
+
+				</div>
+				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
+					<span class="ui-float-label">
+						<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].documentDate" view="month" dateFormat="mm/yy"
+							[style]="{'width': '100%'}" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
+						<label>Date</label>
+					</span>
+
+				</div>
+			</div>
+			<div class="row mt-4" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
 				<div class="col">
 					<!-- <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
 						[(ngModel)]="fileObjects[i].company" placeholder="Entreprise"></p-autoComplete>
@@ -46,23 +62,37 @@
 						[(ngModel)]="fileObjects[i].workplace" placeholder="Poste">
 					</p-autoComplete> -->
 
-					<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="fileObjects[i].company" editable="true"
-						filter="true" placeholder="Entreprise"></p-dropdown>
+					<span class="ui-float-label">
+						<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="fileObjects[i].company"
+							[style]="{'width': '100%'}" [autoDisplayFirst]="false" filter="true"></p-dropdown>
+						<label>Entreprise</label>
+					</span>
+
 				</div>
 				<div class="col pl-0">
-					<p-dropdown appendTo="body" [options]="workplaces" [(ngModel)]="fileObjects[i].workplace" editable="true"
-						filter="true" placeholder="Poste"></p-dropdown>
+					<span class="ui-float-label">
+						<p-dropdown appendTo="body" [options]="workplaces" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
+							[(ngModel)]="fileObjects[i].workplace" filter="true"></p-dropdown>
+						<label>Poste</label>
+					</span>
 				</div>
 			</div>
 
-			<div class="row my-2" *ngIf="isSelectedFichePaie(i)">
+			<div class="row mt-4" *ngIf="isSelectedFichePaie(i)">
 				<div class="col">
-					<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
-						[style]="{'width': '100%'}" placeholder="Salaire brut">
+					<span class="ui-float-label">
+						<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
+							[style]="{'width': '100%'}">
+						<label>Salaire brut (€)</label>
+					</span>
+
 				</div>
 				<div class="col pl-0">
-					<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money"
-						[style]="{'width': '100%'}" placeholder="Salaire net">
+					<span class="ui-float-label">
+						<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money"
+							[style]="{'width': '100%'}"> 
+							<label>Salaire net (€)</label>
+					</span>
 				</div>
 			</div>
 		</div>

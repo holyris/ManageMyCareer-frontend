@@ -1,33 +1,19 @@
 
 export class FileModel {
-  // public id: Number;
-  // public name: String;
-  // public size: Number;
-  // public type: String;
-  // public documentType: String;
-  // public company: String;
-  // public workplace: String;
-  // public addedDate: Date;
-  // public modifiedDate: Date;
-  // public documentDate: Date;
-  // public grossSalary: Number;
-  // public netSalary: Number;
-  // public fileContent: String;
-
   constructor(
     public id: Number = null,
-    public name: String = '',
+    public name: string = '',
     public size: Number = null,
-    public type: String = '',
-    public documentType: String = '',
-    public company: String = '',
-    public workplace: String = '',
+    public type: string = '',
+    public documentType: string = '',
+    public company: string = '',
+    public workplace: string = '',
     public addedDate: Date = null,
     public modifiedDate: Date = null,
     public documentDate: Date = null,
     public grossSalary: Number = null,
     public netSalary: Number = null,
-    public fileContent: String = null
+    public fileContent: string = null
   ) {
   }
 

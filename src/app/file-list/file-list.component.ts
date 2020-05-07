@@ -1,14 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { PersonalFile } from '../../shared/models/PersonalFile';
+import { Component, OnInit} from '@angular/core';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
-import { OperationsComponent } from "../operations/operations.component";
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
-import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
-import { GridApi, GridOptions, ColDef } from 'ag-grid-community';
-import { UpdateModalComponent } from "src/app/update-modal/update-modal.component";
+import { GridApi} from 'ag-grid-community';
+import { UpdateModalService } from '../update-modal/update-modal.service';
 
 @Component({
   selector: 'app-file-list',
@@ -16,40 +13,22 @@ import { UpdateModalComponent } from "src/app/update-modal/update-modal.componen
   styleUrls: ['./file-list.component.scss']
 })
 export class FileListComponent implements OnInit {
-  @ViewChild(FilePreviewModalComponent) filePreviewModal: FilePreviewModalComponent;
-  @ViewChild(UpdateModalComponent) updateModal: UpdateModalComponent;
-  uploadModalVisible: Boolean = false;
   public columnDefs;
   public defaultColDef;
   uploadSubscription: Subscription;
   gridApi: GridApi;
-
-  private rowSelection;
-
-  gridOptions: GridOptions = {
-  }
-
   files: FileModel[];
 
-  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService, private filePreviewModalService: FilePreviewModalService) {
+
+  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService, private filePreviewModalService: FilePreviewModalService, private updateModalService: UpdateModalService) {
     this.columnDefs = [
       { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true, tooltipField: 'name' },
       { headerName: 'Type', field: 'documentType', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Entreprise', field: 'company', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Poste', field: 'workplace', sortable: true, filter: true, suppressMovable: true },
       { headerName: 'Date', field: 'documentDate', valueFormatter: (params) => { return this.documentDateFormatter(params.value) }, sortable: true, filter: true, suppressMovable: true },
-      {
-        headerName: '', field: 'operations', suppressMovable: true, cellStyle: { 'text-align': 'right' },
-        cellRendererFramework: OperationsComponent,
-        cellRendererParams: {
-          refreshItems: this.refreshItems.bind(this),
-          showUpdateModal: this.showUpdateModal.bind(this),
-        }
-      },
     ];
     this.defaultColDef = { resizable: false };
-    
-    this.rowSelection = 'multiple';
   }
 
   ngOnInit(): void {
@@ -71,35 +50,84 @@ export class FileListComponent implements OnInit {
     this.gridApi = params.api;
   }
 
-  refreshItems(): void {
-    this.fileService.getFiles()
-      .subscribe((files: FileModel[]) => {
-        this.files = files;
-      });
+  showUpdateModal(file: FileModel) {
+    this.updateModalService.show(file);
   }
 
-  rowDoubleClicked(event) {
-    this.fileService.getBlobById(event.data.id).subscribe(
+  showFilePreviewModal(file) {
+    this.fileService.getBlob(file.id).subscribe(
       blob => {
         this.filePreviewModalService.show(blob)
       }
     )
   }
 
-  documentDateFormatter(date): String {
+  downloadFile(file: FileModel): void {
+    this.fileService.download(file.id, file.name);
+  }
+
+  async deleteFiles(files: FileModel[]) {
+    await this.fileService.deleteMultiple(files);
+    this.refreshItems();
+  }
+
+  refreshItems(): void {
+    this.fileService.getAll()
+      .subscribe((files: FileModel[]) => {
+        this.files = files;
+      });
+  }
+
+  rowDoubleClicked(event) {
+    this.showFilePreviewModal(event.data);
+  }
+
+  rowRightClicked(event) {
+    if (!event.node.isSelected()) {
+      event.node.setSelected(true, true);
+    }
+  }
+
+  documentDateFormatter(date): string {
     if (date) {
       return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
     }
   }
-  onClickPrintSelection() {
-    let rows = this.gridApi.getSelectedRows();
 
-    console.log("select row = ", rows);
-  }
+  getContextMenuItems = (params) => {
+    var file = params.node.data;
+    var result = [
+      {
+        name: 'Aperçu',
+        icon: `<i class='fa fa-eye'></i>`,
+        action: () => {
+          this.showFilePreviewModal(file)
+        }
+      },
+      'separator',
+      {
+        name: 'Modifier',
+        icon: `<i class='fa fa-pen'></i>`,
+        action: () => {
+          this.showUpdateModal(file)
+        }
+      },
+      'separator',
+      {
+        name: 'Télécharger',
+        icon: `<i class='fa fa-download'></i>`,
+        action: () => { this.downloadFile(file) }
 
+      },
+      'separator',
+      {
+        name: 'Supprimer',
+        icon: `<i class='fa fa-trash'></i>`,
+        action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
 
-  showUpdateModal(){
-    console.log("showUpdateModal");
-    this.updateModal.show();
+      },
+    ];
+
+    return result;
   }
 }

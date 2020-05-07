@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams, IAfterGuiAttachedParams } from 'ag-grid-community';
 import { FileService } from 'src/shared/services/file.service';
+import { FileModel } from 'src/shared/models/FileModel';
 
 @Component({
   selector: 'app-operations',
@@ -10,22 +11,20 @@ import { FileService } from 'src/shared/services/file.service';
 })
 export class OperationsComponent implements ICellRendererAngularComp {
   params: any;
-  label: String;
-  fileId: string;
-  fileName: string;
+  label: string;
+  file: FileModel = new FileModel();
 
   constructor(private personalFileService: FileService) {
   }
 
   agInit(params: any): void {
     this.params = params;
+    this.file = this.params.data;
 
-    this.fileId = this.params.data.id;
-    this.fileName = this.params.data.name;
   }
 
   downloadFile(): void {
-    this.personalFileService.downloadFile(this.fileId, this.fileName);
+    this.personalFileService.download(this.file.id, this.file.name);
   }
 
   //Needed to implement ICellRendererAngularComp
@@ -35,28 +34,14 @@ export class OperationsComponent implements ICellRendererAngularComp {
 
   async deleteFile() {
     if (this.params.refreshItems instanceof Function) {
-      await this.personalFileService.deleteFile(this.fileId)
+      await this.personalFileService.delete(this.file.id)
       this.params.refreshItems()
     }
   }
 
   updateFile(): void {
     if (this.params.showUpdateModal instanceof Function) {
-      this.params.showUpdateModal()
+      this.params.showUpdateModal(this.file);
     }
   }
-
-  // exemple
-  // onClick($event) {
-  //   if (this.params.onClick instanceof Function) {
-  //     // put anything into params u want pass into parents component
-  //     const params = {
-  //       event: $event,
-  //       rowData: this.params.node.data
-  //       // ...something
-  //     }
-  //     this.params.onClick(params);
-
-  //   }
-  // }
 }

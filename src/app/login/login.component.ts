@@ -11,8 +11,8 @@ import { User } from 'src/shared/models/user'
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  username: String;
-  password: String;
+  username: string;
+  password: string;
   form: FormGroup;
   loading: Boolean = false;
   alertMsg: any = "";
