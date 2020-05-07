@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 
 import { PersonalFile } from '../models/PersonalFile';
 
 import { FileModel } from 'src/shared/models/FileModel';
-import { NotificationService } from './notification.service';
+import { NotificationService } from '../../app/notification-toast/notification.service';
 
 
 @Injectable({
@@ -47,16 +47,22 @@ export class FileService {
     return request
   }
 
-  getFiles(): Observable<PersonalFile[]> {
-    return this.http.get<PersonalFile[]>(this.filesUrl, this.httpOptions)
+  getFiles(): Observable<FileModel[]> {
+    return this.http.get<FileModel[]>(this.filesUrl, this.httpOptions)
       .pipe(
+        map(
+          (jsonArray: Object[]) => jsonArray.map(jsonItem => FileModel.fromJson(jsonItem))),
         tap(_ => this.log('fetched files')),
-        catchError(this.handleError<PersonalFile[]>('getFiles', []))
+        catchError(this.handleError<FileModel[]>('getFiles', []))
       );
   }
+  
+  getBlobById(id: string): Observable<Blob> {
+    return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
+  }
 
-  downloadFile(fileId: string, filename?: string) {
-    this.blob(this.filesUrl + fileId)
+  downloadFile(id: string, filename?: string) {
+    this.getBlobById(id)
       .subscribe(x => {
         // It is necessary to create a new blob object with mime-type explicitly set
         // otherwise only Chrome works like it should
@@ -87,37 +93,30 @@ export class FileService {
       });
   }
 
-  blob(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob', withCredentials: true });
-  }
+  // filePreview(fileId: string) {
+  //   return this.http.get(this.filesUrl + fileId, { responseType: 'blob', withCredentials: true })
+  //     .subscribe(blob => {
 
-  filePreview(fileId: string) {
-    return this.http.get(this.filesUrl + fileId, { responseType: 'blob', withCredentials: true })
-      .subscribe(blob => {
-        let newWindow = window.open('/files/preview');
-        newWindow.onload = () => {
-          var blobHtmlElement;
-          blobHtmlElement = document.createElement('object');
-          blobHtmlElement.href = window.URL.createObjectURL(blob);
-          blobHtmlElement.style.position = 'fixed';
-          blobHtmlElement.style.zIndex = '200';
-          blobHtmlElement.style.top = '0';
-          blobHtmlElement.style.left = '0';
-          blobHtmlElement.style.bottom = '0';
-          blobHtmlElement.style.right = '0';
-          blobHtmlElement.style.width = '100%';
-          blobHtmlElement.style.height = '100%';
-          blobHtmlElement.setAttribute('data', blobHtmlElement.href);
-          newWindow.document.body.appendChild(blobHtmlElement);
-          blobHtmlElement.click();
-        };
-      });
-  }
+  //       var blobHtmlElement;
+  //       blobHtmlElement = document.createElement('object');
+  //       blobHtmlElement.href = window.URL.createObjectURL(blob);
+  //       blobHtmlElement.style.position = 'fixed';
+  //       blobHtmlElement.style.zIndex = '200';
+  //       blobHtmlElement.style.top = '0';
+  //       blobHtmlElement.style.left = '0';
+  //       blobHtmlElement.style.bottom = '0';
+  //       blobHtmlElement.style.right = '0';
+  //       blobHtmlElement.style.width = '100%';
+  //       blobHtmlElement.style.height = '100%';
+  //       blobHtmlElement.setAttribute('data', blobHtmlElement.href);
+  //       document.body.appendChild(blobHtmlElement);
+  //       blobHtmlElement.click();
+
+  //     });
+  // }
 
   deleteFile(fileId: string) {
-
-    const request =  this.http.delete(this.filesUrl + fileId, this.httpOptions).toPromise();
-    console.log(request);
+    const request = this.http.delete(this.filesUrl + fileId, this.httpOptions).toPromise();
     return request
   }
 

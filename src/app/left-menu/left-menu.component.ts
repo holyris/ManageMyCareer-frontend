@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UploadModalComponent } from '../upload-modal/upload-modal.component';
+import { UploadModalService } from '../upload-modal/upload-modal.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -7,17 +8,14 @@ import { UploadModalComponent } from '../upload-modal/upload-modal.component';
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent implements OnInit {
-  @ViewChild(UploadModalComponent) uploadModal: UploadModalComponent;
-  uploadModalVisible: Boolean = false;
 
-  constructor() { }
+  constructor(private uploadModalService: UploadModalService) { }
 
   ngOnInit(): void {
   }
-
-
+  
   openUploadModal() {
-    this.uploadModal.show();
+    this.uploadModalService.show();
   }
 
 }

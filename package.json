@@ -32,6 +32,7 @@
     "primeicons": "^2.0.0",
     "primeng": "^9.0.1",
     "rxjs": "~6.5.4",
+    "safe-pipe": "^1.0.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

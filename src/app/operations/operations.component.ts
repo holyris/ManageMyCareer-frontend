@@ -28,10 +28,7 @@ export class OperationsComponent implements ICellRendererAngularComp {
     this.personalFileService.downloadFile(this.fileId, this.fileName);
   }
 
-  filePreview(): void {
-    this.personalFileService.filePreview(this.fileId);
-  }
-
+  //Needed to implement ICellRendererAngularComp
   refresh(params?: any): boolean {
     return true;
   }
