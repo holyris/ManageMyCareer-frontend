@@ -5,8 +5,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
-import { PersonalFile } from '../models/PersonalFile';
-
 import { FileModel } from 'src/shared/models/FileModel';
 import { NotificationService } from '../../app/notification-toast/notification.service';
 
@@ -34,6 +32,9 @@ export class FileService {
     // fileObjects.forEach(element => {
     //   formData.append('file', element.file);
     // });
+    fileObjects.forEach(file => {
+      file.reformat();
+    })
     const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
     const length = Object.keys(request).length
     let detail = "";
@@ -48,6 +49,7 @@ export class FileService {
   }
 
   async update(file: FileModel) {
+    console.log(file);
     const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
     this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
     return request;

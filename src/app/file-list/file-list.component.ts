@@ -1,10 +1,10 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
-import { GridApi} from 'ag-grid-community';
+import { GridApi } from 'ag-grid-community';
 import { UpdateModalService } from '../update-modal/update-modal.service';
 
 @Component({
@@ -95,39 +95,41 @@ export class FileListComponent implements OnInit {
   }
 
   getContextMenuItems = (params) => {
-    var file = params.node.data;
-    var result = [
-      {
-        name: 'Aperçu',
-        icon: `<i class='fa fa-eye'></i>`,
-        action: () => {
-          this.showFilePreviewModal(file)
-        }
-      },
-      'separator',
-      {
-        name: 'Modifier',
-        icon: `<i class='fa fa-pen'></i>`,
-        action: () => {
-          this.showUpdateModal(file)
-        }
-      },
-      'separator',
-      {
-        name: 'Télécharger',
-        icon: `<i class='fa fa-download'></i>`,
-        action: () => { this.downloadFile(file) }
+    if (params.node) {
+      var file = params.node.data;
+      var result = [
+        {
+          name: 'Aperçu',
+          icon: `<i class='fa fa-eye'></i>`,
+          action: () => {
+            this.showFilePreviewModal(file)
+          }
+        },
+        'separator',
+        {
+          name: 'Modifier',
+          icon: `<i class='fa fa-pen'></i>`,
+          action: () => {
+            this.showUpdateModal(file)
+          }
+        },
+        'separator',
+        {
+          name: 'Télécharger',
+          icon: `<i class='fa fa-download'></i>`,
+          action: () => { this.downloadFile(file) }
 
-      },
-      'separator',
-      {
-        name: 'Supprimer',
-        icon: `<i class='fa fa-trash'></i>`,
-        action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
+        },
+        'separator',
+        {
+          name: 'Supprimer',
+          icon: `<i class='fa fa-trash'></i>`,
+          action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
 
-      },
-    ];
+        },
+      ];
 
-    return result;
+      return result;
+    }
   }
 }

@@ -135,11 +135,11 @@ export class UploadModalComponent implements OnInit {
   }
 
   isSelectedFichePaie(index) {
-    return this.fileObjects[index].documentType === EnumTypeValue.FichePaie
+    return this.fileObjects[index].isFichePaie()
   }
 
   isSelectedContrat(index) {
-    return this.fileObjects[index].documentType === EnumTypeValue.Contrat
+    return this.fileObjects[index].isContrat();
   }
 
   // filterCompanies(event) {
