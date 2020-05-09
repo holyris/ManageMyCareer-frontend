@@ -6,6 +6,7 @@ import { FileModel } from 'src/shared/models/FileModel';
 import { SelectItem } from 'primeng/api/selectitem';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileService } from 'src/shared/services/file.service';
+import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 
 @Component({
   selector: 'app-update-modal',
@@ -63,7 +64,7 @@ export class UpdateModalComponent implements OnInit {
     },
   ]
 
-  constructor(private updateModalService: UpdateModalService, private fileService: FileService) { }
+  constructor(private updateModalService: UpdateModalService, private fileService: FileService, private fileUploadEventService: FileUploadEventService,) { }
 
   ngOnInit(): void {
     // permet d'executer du code quand show() du service est appelé
@@ -90,15 +91,18 @@ export class UpdateModalComponent implements OnInit {
 
   async updateFile(){
     this.loading = true;
+    
     await this.fileService.update(this.file);
+    this.fileUploadEventService.filesUploaded()
     this.loading = false;
+    this.close();
   }
 
   isFileFichePaie() {
-    return this.file && this.file.documentType === EnumTypeValue.FichePaie
+    return this.file && this.file.isFichePaie();
   }
 
   isFileContrat() {
-    return this.file && this.file.documentType === EnumTypeValue.Contrat
+    return this.file && this.file.isContrat();
   }
 }
