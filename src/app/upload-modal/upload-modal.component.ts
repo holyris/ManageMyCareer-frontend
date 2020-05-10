@@ -6,6 +6,10 @@ import { FileModel } from 'src/shared/models/FileModel';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { Subscription } from 'rxjs';
 import { UploadModalService } from './upload-modal.service';
+import { CompanyService } from 'src/shared/services/company.service';
+import { WorkplaceService } from 'src/shared/services/workplace.service';
+import { WorkplaceModel } from 'src/shared/models/WorkplaceModel';
+import { CompanyModel } from 'src/shared/models/CompanyModel';
 
 @Component({
   selector: 'app-upload-modal',
@@ -20,7 +24,9 @@ export class UploadModalComponent implements OnInit {
   filteredJobs: any[];
   loading: Boolean = false;
   subscription: Subscription;
-  
+  companies: CompanyModel[];
+  workplaces: WorkplaceModel[];
+
   types: SelectItem[] = [
     {
       label: EnumTypeValue.FichePaie,
@@ -44,29 +50,12 @@ export class UploadModalComponent implements OnInit {
     }
   ];
 
-  companies: SelectItem[] = [
-    {
-      label: "Actads",
-      value: "Actads"
-    },
-    {
-      label: "test",
-      value: "test"
-    },
-  ];
-  
-  workplaces: SelectItem[] = [
-    {
-      label: "Developpeur",
-      value: "Developpeur"
-    },
-    {
-      label: "Manager",
-      value: "Manager"
-    },
-  ]
-
-  constructor(public fileService: FileService, public fileUploadEventService: FileUploadEventService, private uploadModalService: UploadModalService) { }
+  constructor(
+    public fileService: FileService,
+    public fileUploadEventService: FileUploadEventService,
+    private uploadModalService: UploadModalService,
+    private companyService: CompanyService,
+    private workplaceService: WorkplaceService) { }
 
   ngOnInit() {
     // permet d'executer du code quand show() du service est appelé
@@ -75,10 +64,12 @@ export class UploadModalComponent implements OnInit {
         this.show();
       }
     )
-   }
+  }
 
   reset() {
     if (!this.visible) {
+      this.getCompanies();
+      this.getWorkplaces();
       this.loading = false;
       this.fileObjects = [];
       this.uploadFileComponent.clear(); //Reset le composant d'upload
@@ -132,6 +123,26 @@ export class UploadModalComponent implements OnInit {
     console.log(this.fileObjects);
     this.fileObjects.splice(index, 1);
     console.log(this.fileObjects);
+  }
+
+  getCompanies() {
+    this.companyService.getAll().subscribe(data => {
+      this.companies = data;
+    })
+  }
+
+  getWorkplaces() {
+    this.workplaceService.getAll().subscribe(data => {
+      this.workplaces = data;
+    })
+  }
+
+  companyChanged(event, i){
+    this.fileObjects[i].company = event.value.name;
+  }
+
+  workplaceChanged(event, i){
+    this.fileObjects[i].workplace = event.value.name;
   }
 
   isSelectedFichePaie(index) {

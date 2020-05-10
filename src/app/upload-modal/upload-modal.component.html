@@ -29,7 +29,8 @@
 			<div class="row">
 				<div class="col-12">
 					<span class="ui-float-label">
-						<input type="text" [(ngModel)]="fileObjects[i].name" pInputText [style]="{'min-width':'300px', 'width': '100%'}">
+						<input type="text" [(ngModel)]="fileObjects[i].name" pInputText
+							[style]="{'min-width':'300px', 'width': '100%'}">
 						<label>Nom</label>
 					</span>
 				</div>
@@ -63,7 +64,7 @@
 					</p-autoComplete> -->
 
 					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="fileObjects[i].company"
+						<p-dropdown appendTo="body" [options]="companies" optionLabel="name" (onChange)="companyChanged($event, i)"
 							[style]="{'width': '100%'}" [autoDisplayFirst]="false" filter="true"></p-dropdown>
 						<label>Entreprise</label>
 					</span>
@@ -71,8 +72,8 @@
 				</div>
 				<div class="col pl-0">
 					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="workplaces" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
-							[(ngModel)]="fileObjects[i].workplace" filter="true"></p-dropdown>
+						<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name" (onChange)="workplaceChanged($event, i)"
+							[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
 						<label>Poste</label>
 					</span>
 				</div>
@@ -90,8 +91,8 @@
 				<div class="col pl-0">
 					<span class="ui-float-label">
 						<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money"
-							[style]="{'width': '100%'}"> 
-							<label>Salaire net (€)</label>
+							[style]="{'width': '100%'}">
+						<label>Salaire net (€)</label>
 					</span>
 				</div>
 			</div>
@@ -100,12 +101,10 @@
 
 	<p-footer>
 		<button type="button" class="btn btn-primary btn-sm" (click)="uploadFiles()" [disabled]="loading">
-			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			<i *ngIf="!loading" class="fa fa-upload"></i>
 			Importer
 		</button>
 		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
-			<i class="fa fa-times"></i>
 			Fermer
 		</button>
 	</p-footer>
