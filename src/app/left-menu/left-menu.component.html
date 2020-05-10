@@ -1,9 +1,17 @@
-<button type="button" icon="pi pi-plus" class="mx-5 mb-2 mt-3 btn btn-outline-primary rounded-pill"
-  (click)="openUploadModal()">
-  <i class="fa fa-plus"></i>
-  <!-- Nouveau -->
-  <span class="pl-2">Nouveau</span>
-</button>
+<div class="btn-group">
+  <button type="button" icon="pi pi-plus" class="mx-5 mb-2 mt-3 btn btn-outline-primary rounded-pill dropdown-toggle"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fa fa-plus"></i>
+    <span class="pl-2">Ajouter</span>
+  </button>
+  <div class="dropdown-menu">
+    <button class="dropdown-item" (click)="showFileUploadModal()">Fichiers</button>
+    <!-- <div class="dropdown-divider"></div> -->
+    <button class="dropdown-item" (click)="showCompanyCreationModal()">Entreprise</button>
+    <button class="dropdown-item" (click)="showWorkplaceCreationModal()">Poste</button>
+
+  </div>
+</div>
 <mat-nav-list>
   <mat-list-item routerLink="files">Fichiers</mat-list-item>
 </mat-nav-list>

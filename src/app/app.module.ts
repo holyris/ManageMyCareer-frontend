@@ -32,6 +32,7 @@ import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
+import {InputTextareaModule} from 'primeng/inputtextarea';
 import { SafePipeModule } from 'safe-pipe';
 
 import { AgGridModule } from 'ag-grid-angular';
@@ -44,6 +45,8 @@ import { OperationsComponent } from './operations/operations.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
 import { UpdateModalComponent } from './update-modal/update-modal.component';
+import { CompanyCreationModalComponent } from './company-creation-modal/company-creation-modal.component';
+import { WorkplaceCreationModalComponent } from './workplace-creation-modal/workplace-creation-modal.component';
 
 
 @NgModule({
@@ -60,7 +63,9 @@ import { UpdateModalComponent } from './update-modal/update-modal.component';
     OperationsComponent,
     NotificationToastComponent,
     FilePreviewModalComponent,
-    UpdateModalComponent
+    UpdateModalComponent,
+    CompanyCreationModalComponent,
+    WorkplaceCreationModalComponent
   ],
   imports: [
     BrowserModule,
@@ -83,13 +88,14 @@ import { UpdateModalComponent } from './update-modal/update-modal.component';
     AutoCompleteModule,
     KeyFilterModule,
     InputTextModule,
+    InputTextareaModule,
     MatDividerModule,
     PasswordModule,
     CardModule,
     MessagesModule,
     MessageModule,
     ToastModule,
-    SafePipeModule,
+    SafePipeModule,    
     AgGridModule.withComponents([]),
   ],
   providers: [

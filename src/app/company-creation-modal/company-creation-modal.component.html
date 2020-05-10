@@ -1,0 +1,31 @@
+<p-dialog [style]="{'overflow':'visible'}" [contentStyle]="{'overflow':'visible', 'padding':'0px'}"
+  [(visible)]="visible" header="Nouveau" [resizable]="false" [modal]="true" [draggable]="false" [blockScroll]="true">
+  <div class="col-12 my-4">
+    <div class="row">
+      <div class="col-12">
+        <span class="ui-float-label">
+          <input type="text" pInputText [(ngModel)]="company.name" [style]="{'min-width':'300px', 'width': '100%'}">
+          <label>Nom</label>
+        </span>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        <span class="ui-float-label">
+          <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="company.description" [style]="{'width':'100%'}"></textarea>
+          <label>Description</label>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <p-footer>
+    <button type="button" (click)="createCompany()" class="btn btn-primary btn-sm" [disabled]="loading">
+      <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+      Ajouter
+    </button>
+    <button type="button" (click)="close()" class="btn btn-secondary btn-sm">
+      Fermer
+    </button>
+  </p-footer>
+</p-dialog>
