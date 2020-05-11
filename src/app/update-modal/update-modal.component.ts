@@ -7,6 +7,10 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileService } from 'src/shared/services/file.service';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
+import { CompanyService } from 'src/shared/services/company.service';
+import { WorkplaceService } from 'src/shared/services/workplace.service';
+import { CompanyModel } from 'src/shared/models/CompanyModel';
+import { WorkplaceModel } from 'src/shared/models/WorkplaceModel';
 
 @Component({
   selector: 'app-update-modal',
@@ -18,6 +22,10 @@ export class UpdateModalComponent implements OnInit {
   visible: Boolean = false;
   loading: Boolean = false;
   file: FileModel = new FileModel();
+  companies: CompanyModel[];
+  workplaces: WorkplaceModel[];
+  selectedCompany: CompanyModel;
+  selectedWorkplace: WorkplaceModel;
 
   types: SelectItem[] = [
     {
@@ -42,31 +50,15 @@ export class UpdateModalComponent implements OnInit {
     }
   ];
 
-  companies: SelectItem[] = [
-    {
-      label: "Actads",
-      value: "Actads"
-    },
-    {
-      label: "test",
-      value: "test"
-    },
-  ];
-  
-  workplaces: SelectItem[] = [
-    {
-      label: "Developpeur",
-      value: "Developpeur"
-    },
-    {
-      label: "Manager",
-      value: "Manager"
-    },
-  ]
+  constructor(
+    private updateModalService: UpdateModalService, 
+    private fileService: FileService, 
+    private fileUploadEventService: FileUploadEventService, 
+    private companyService: CompanyService,
+    private workplaceService: WorkplaceService
+    ) { }
 
-  constructor(private updateModalService: UpdateModalService, private fileService: FileService, private fileUploadEventService: FileUploadEventService,) { }
-
-  ngOnInit(): void {
+  ngOnInit(): void {    
     // permet d'executer du code quand show() du service est appelé
     this.subscription = this.updateModalService.showEvent.subscribe(
       file => {
@@ -85,17 +77,38 @@ export class UpdateModalComponent implements OnInit {
     this.visible = false;
   }
 
-  reset(){
-    this.loading = false;
+  private reset(){
+    this.getCompanies();
+    this.getWorkplaces();
+    this.loading = false;    
   }
 
   async updateFile(){
-    this.loading = true;
-    
+    this.loading = true;    
     await this.fileService.update(this.file);
     this.fileUploadEventService.filesUploaded()
     this.loading = false;
     this.close();
+  }
+
+  private getCompanies() {
+    this.companyService.getAll().subscribe(data => {
+      this.companies = data;            
+    })
+  }
+
+  private getWorkplaces() {
+    this.workplaceService.getAll().subscribe(data => {
+      this.workplaces = data;
+    })
+  }
+
+  companyChanged(event){
+    this.file.company = event.value.name;
+  }
+
+  workplaceChanged(event){
+    this.file.workplace = event.value.name;
   }
 
   isFileFichePaie() {
