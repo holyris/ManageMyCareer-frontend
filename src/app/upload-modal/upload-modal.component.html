@@ -65,15 +65,17 @@
 
 					<span class="ui-float-label">
 						<p-dropdown appendTo="body" [options]="companies" optionLabel="name" (onChange)="companyChanged($event, i)"
-							[style]="{'width': '100%'}" [autoDisplayFirst]="false" filter="true"></p-dropdown>
+							[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true">
+						</p-dropdown>
 						<label>Entreprise</label>
 					</span>
 
 				</div>
 				<div class="col pl-0">
 					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name" (onChange)="workplaceChanged($event, i)"
-							[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
+						<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name"
+							(onChange)="workplaceChanged($event, i)" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
+							filter="true"></p-dropdown>
 						<label>Poste</label>
 					</span>
 				</div>

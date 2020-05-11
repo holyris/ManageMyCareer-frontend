@@ -1,6 +1,6 @@
-<p-dialog [style]="{'overflow':'visible'}"
-	[contentStyle]="{'overflow':'visible', 'padding':'0px'}" [(visible)]="visible"
-	header="Modification" [resizable]="false" [modal]="true" [draggable]="false" [blockScroll]="true">
+<p-dialog [style]="{'overflow':'visible'}" [contentStyle]="{'overflow':'visible', 'padding':'0px'}"
+	[(visible)]="visible" header="Modification" [resizable]="false" [modal]="true" [draggable]="false"
+	[blockScroll]="true">
 	<div class="col-12 my-4">
 		<div class="row">
 			<div class="col-12">
@@ -30,16 +30,16 @@
 		<div class="row mt-4" *ngIf="isFileFichePaie() || isFileContrat()">
 			<div class="col">
 				<span class="ui-float-label">
-					<p-dropdown appendTo="body" [options]="companies" [(ngModel)]="file.company" [style]="{'width': '100%'}"
-						[autoDisplayFirst]="false" filter="true"></p-dropdown>
+					<p-dropdown appendTo="body" [options]="companies" optionLabel="name" (onChange)="companyChanged($event)"
+						[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
 					<label>Entreprise</label>
 				</span>
 
 			</div>
 			<div class="col pl-0">
 				<span class="ui-float-label">
-					<p-dropdown appendTo="body" [options]="workplaces" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
-						[(ngModel)]="file.workplace" filter="true"></p-dropdown>
+					<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name" (onChange)="workplaceChanged($event)"
+						[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
 					<label>Poste</label>
 				</span>
 			</div>
