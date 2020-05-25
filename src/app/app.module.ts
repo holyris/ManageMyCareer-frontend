@@ -47,6 +47,11 @@ import { FilePreviewModalComponent } from './file-preview-modal/file-preview-mod
 import { UpdateModalComponent } from './update-modal/update-modal.component';
 import { CompanyCreationModalComponent } from './company-creation-modal/company-creation-modal.component';
 import { WorkplaceCreationModalComponent } from './workplace-creation-modal/workplace-creation-modal.component';
+import { CompanyListComponent } from './company-list/company-list.component';
+import { CompanyUpdateModalComponent } from './company-update-modal/company-update-modal.component';
+import { WorkplaceListComponent } from './workplace-list/workplace-list.component';
+import { WorkplaceUpdateModalComponent } from './workplace-update-modal/workplace-update-modal.component';
+// import { WorkplaceListComponent } from './workplace-list/workplace-list.component';
 
 
 @NgModule({
@@ -56,6 +61,7 @@ import { WorkplaceCreationModalComponent } from './workplace-creation-modal/work
     HeaderComponent,
     RegisterComponent,
     FileListComponent,
+    CompanyListComponent,
     LeftMenuComponent,
     UploadModalComponent,
     FooterComponent,
@@ -65,7 +71,11 @@ import { WorkplaceCreationModalComponent } from './workplace-creation-modal/work
     FilePreviewModalComponent,
     UpdateModalComponent,
     CompanyCreationModalComponent,
-    WorkplaceCreationModalComponent
+    WorkplaceCreationModalComponent,
+    CompanyListComponent,
+    CompanyUpdateModalComponent,
+    WorkplaceListComponent,
+    WorkplaceUpdateModalComponent,
   ],
   imports: [
     BrowserModule,

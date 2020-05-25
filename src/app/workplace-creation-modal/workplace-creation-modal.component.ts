@@ -5,6 +5,8 @@ import { WorkplaceService } from 'src/shared/services/workplace.service';
 import { WorkplaceModel } from 'src/shared/models/WorkplaceModel';
 import { CompanyModel } from 'src/shared/models/CompanyModel';
 import { CompanyService } from 'src/shared/services/company.service';
+import { WorkplaceUpdateModalService } from '../workplace-update-modal/workplace-update-modal.service';
+import { WorkplaceUploadEventService } from 'src/shared/services/workplace-upload-event.service';
 
 @Component({
   selector: 'app-workplace-creation-modal',
@@ -19,7 +21,7 @@ export class WorkplaceCreationModalComponent implements OnInit {
   workplace: WorkplaceModel = new WorkplaceModel();
   companies: CompanyModel[];
   
-  constructor(private workplaceCreationModalService: WorkplaceCreationModalService, private workplaceService : WorkplaceService, private companyService: CompanyService) { }
+  constructor(private workplaceCreationModalService: WorkplaceCreationModalService, private workplaceService : WorkplaceService, private companyService: CompanyService, private workplaceUploadEventService :WorkplaceUploadEventService) { }
 
   ngOnInit(): void {
     this.subscription = this.workplaceCreationModalService.showEvent.subscribe(
@@ -45,6 +47,7 @@ export class WorkplaceCreationModalComponent implements OnInit {
   async createWorkplace(){
     this.loading = true;
     await this.workplaceService.create(this.workplace);
+    this.workplaceUploadEventService.workplacesUploaded()
     this.loading = false;
     this.close();
   }

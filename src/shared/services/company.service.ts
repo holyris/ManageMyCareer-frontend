@@ -31,6 +31,32 @@ export class CompanyService {
     return request;
   }
 
+  async update(company: CompanyModel) {
+    const request = await this.http.patch(this.url, company, this.httpOptions).toPromise();
+    this.notificationService.add({ severity: 'success', detail: 'Entreprise modifié' });
+    return request;
+  }
+
+  async delete(id: Number) {
+    const request = this.http.delete(this.url + id, this.httpOptions).toPromise();
+    return request;
+  }
+
+  async deleteMultiple(companies: CompanyModel[]) {
+    for (const company of companies) {
+      await this.delete(company.id);
+    }
+    const length = companies.length
+    let detail = "";
+    if (length > 1) {
+      detail = length + ' entreprises supprimés'
+    }
+    else {
+      detail = length + ' entreprise supprimé'
+    }
+    this.notificationService.add({ severity: 'success', detail: detail });
+  }
+
 
 
 }
