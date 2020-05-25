@@ -1,0 +1,14 @@
+<div class="grid-wrapper h-100">
+    <ag-grid-angular
+    id="gridManageMyCareer"
+    class="ag-theme-alpine w-100 h-100"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="companies"
+    (gridReady)="onGridReady($event)"
+    (cellContextMenu)="rowRightClicked($event)"
+    [getContextMenuItems]="getContextMenuItems"
+    suppressCellSelection="true"
+    rowSelection='multiple'
+    ></ag-grid-angular>
+</div>

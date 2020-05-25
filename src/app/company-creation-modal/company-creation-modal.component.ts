@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { CompanyCreationModalService } from './company-creation-modal.service';
 import { CompanyService } from 'src/shared/services/company.service';
 import { CompanyModel } from 'src/shared/models/CompanyModel';
+import { CompanyUploadEventService } from 'src/shared/services/company-upload-event.service';
 
 @Component({
   selector: 'app-company-creation-modal',
@@ -14,7 +15,7 @@ export class CompanyCreationModalComponent implements OnInit {
   visible: Boolean = false;
   loading: Boolean = false;
   company: CompanyModel = new CompanyModel();
-  constructor(private companyCreationModalService: CompanyCreationModalService, private companyService : CompanyService) { }
+  constructor(private companyCreationModalService: CompanyCreationModalService, private companyService : CompanyService, private companyUploadEventService: CompanyUploadEventService) { }
 
   ngOnInit(): void {
     this.subscription = this.companyCreationModalService.showEvent.subscribe(
@@ -37,6 +38,7 @@ export class CompanyCreationModalComponent implements OnInit {
   async createCompany(){
     this.loading = true;
     await this.companyService.create(this.company);
+    this.companyUploadEventService.companiesUploaded()
     this.loading = false;
     this.close();
   }
