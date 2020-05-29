@@ -69,6 +69,7 @@ export class UploadModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loadDataFromApi();
     this.form = this.formBuilder.group({
       formArray: this.formBuilder.array([])
     })
@@ -118,17 +119,19 @@ export class UploadModalComponent implements OnInit {
     this.formArray.removeAt(index);
   }
 
-  // loadCompanies() {
-  //   this.companyService.getAll().subscribe(data => {
-  //     this.companies = data;
-  //   })
-  // }
+  loadDataFromApi() {
+    this.fileService.getCompanies().subscribe(
+      data => {
+        this.companies = data;
+      }
+    )
 
-  // loadWorkplaces() {
-  //   this.workplaceService.getAll().subscribe(data => {
-  //     this.workplaces = data;
-  //   })
-  // }
+    this.fileService.getWorkplaces().subscribe(
+      data => {
+        this.workplaces = data;
+      }
+    )
+  }
 
   get formArray() {
     return this.form.get('formArray') as FormArray;

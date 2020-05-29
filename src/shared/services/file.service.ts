@@ -27,6 +27,28 @@ export class FileService {
 
   constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
+  getAll(): Observable<FileModel[]> {
+    return this.http.get<FileModel[]>(this.filesUrl, this.httpOptions)
+      .pipe(
+        map(
+          (jsonArray: Object[]) => jsonArray.map(jsonItem => FileModel.fromJson(jsonItem))),
+        tap(_ => this.log('fetched files')),
+        catchError(this.handleError<FileModel[]>('getFiles', []))
+      );
+  }
+
+  getBlob(id: number): Observable<Blob> {
+    return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
+  }
+
+  getCompanies() {
+    return this.http.get<string[]>(this.filesUrl + "companies", this.httpOptions);
+  }
+
+  getWorkplaces() {
+    return this.http.get<string[]>(this.filesUrl + "workplaces", this.httpOptions);
+  }
+
   async upload(fileObjects: Array<FileModel>) {
     const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
     const length = Object.keys(request).length
@@ -47,21 +69,7 @@ export class FileService {
     return request;
   }
 
-  getAll(): Observable<FileModel[]> {
-    return this.http.get<FileModel[]>(this.filesUrl, this.httpOptions)
-      .pipe(
-        map(
-          (jsonArray: Object[]) => jsonArray.map(jsonItem => FileModel.fromJson(jsonItem))),
-        tap(_ => this.log('fetched files')),
-        catchError(this.handleError<FileModel[]>('getFiles', []))
-      );
-  }
-
-  getBlob(id: Number): Observable<Blob> {
-    return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
-  }
-
-  download(id: Number, filename?: string) {
+  download(id: number, filename?: string) {
     this.getBlob(id)
       .subscribe(x => {
         // It is necessary to create a new blob object with mime-type explicitly set
@@ -93,7 +101,7 @@ export class FileService {
       });
   }
 
-  async delete(id: Number) {
+  async delete(id: number) {
     const request = this.http.delete(this.filesUrl + id, this.httpOptions).toPromise();
     return request;
   }
