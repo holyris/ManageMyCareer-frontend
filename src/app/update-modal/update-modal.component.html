@@ -1,74 +1,79 @@
-<p-dialog [style]="{'overflow':'visible'}" [contentStyle]="{'overflow':'visible', 'padding':'0px'}"
-	[(visible)]="visible" header="Modification" [resizable]="false" [modal]="true" [draggable]="false"
-	[blockScroll]="true">
-	<div class="col-12 my-4">
+<form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+	<h2 mat-dialog-title>Modifier un fichier</h2>
+	<mat-dialog-content>
 		<div class="row">
 			<div class="col-12">
-				<span class="ui-float-label">
-					<input type="text" [(ngModel)]="file.name" pInputText [style]="{'min-width':'300px', 'width': '100%'}">
-					<label>Nom</label>
-				</span>
+				<mat-form-field [style]="{'min-width':'300px'}">
+					<mat-label>Nom</mat-label>
+					<input matInput formControlName="name" required>
+				</mat-form-field>				
 			</div>
 		</div>
-		<div class="row mt-4">
-			<div class="col">
-				<span class="ui-float-label">
-					<p-dropdown appendTo="body" [options]="types" [(ngModel)]="file.documentType" [autoDisplayFirst]="false"
-						[style]="{'width': '100%'}"></p-dropdown>
-					<label>Type de document</label>
-				</span>
-
+		<div class="row">
+			<div class="col-6">
+				<mat-form-field>
+					<mat-label>Type de document</mat-label>
+					<mat-select formControlName="documentType">
+						<mat-option *ngFor="let type of types" [value]="type.value">
+							{{type.label}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
 			</div>
-			<div class="col pl-0" *ngIf="isFileFichePaie() || isFileContrat()">
-				<span class="ui-float-label">
-					<p-calendar appendTo="body" [(ngModel)]="file.documentDate" view="month" dateFormat="mm/yy"
-						[style]="{'width': '100%'}" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
-					<label>Date</label>
-				</span>
+			<div class="col-6 pl-0">
+				<mat-form-field>
+					<mat-label>Date</mat-label>
+					<input matInput [matDatepicker]="dp" formControlName="documentDate">
+					<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+					<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp)"
+						panelClass="example-month-picker">
+					</mat-datepicker>
+				</mat-form-field>
 			</div>
 		</div>
-		<div class="row mt-4" *ngIf="isFileFichePaie() || isFileContrat()">
+		<div class="row">
 			<div class="col">
-				<span class="ui-float-label">
-					<p-dropdown appendTo="body" [options]="companies" optionLabel="name" (onChange)="companyChanged($event)"
-						[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
-					<label>Entreprise</label>
-				</span>
-
+				<mat-form-field>
+					<mat-label>Entreprise</mat-label>
+					<input matInput formControlName="company" [matAutocomplete]="autoCompany">
+					<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
+						<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
+							{{company}}
+						</mat-option>
+					</mat-autocomplete>
+				</mat-form-field>
 			</div>
 			<div class="col pl-0">
-				<span class="ui-float-label">
-					<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name" (onChange)="workplaceChanged($event)"
-						[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true"></p-dropdown>
-					<label>Poste</label>
-				</span>
+				<mat-form-field>
+					<mat-label>Emploi</mat-label>
+					<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
+					<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
+						<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
+							{{workplace}}
+						</mat-option>
+					</mat-autocomplete>
+				</mat-form-field>
 			</div>
 		</div>
-
-		<div class="row mt-4" *ngIf="isFileFichePaie()">
+		<div class="row" *ngIf="isSelectedFichePaie()">
 			<div class="col">
-				<span class="ui-float-label">
-					<input type="text" [(ngModel)]="file.grossSalary" pInputText pKeyFilter="money" [style]="{'width': '100%'}">
-					<label>Salaire brut (€)</label>
-				</span>
-
+				<mat-form-field>
+					<mat-label>Salaire brut (€)</mat-label>
+					<input matInput formControlName="grossSalary" appNumberValidator>
+				</mat-form-field>
 			</div>
 			<div class="col pl-0">
-				<span class="ui-float-label">
-					<input type="text" [(ngModel)]="file.netSalary" pInputText pKeyFilter="money" [style]="{'width': '100%'}">
-					<label>Salaire net (€)</label>
-				</span>
+				<mat-form-field>
+					<mat-label>Salaire net (€)</mat-label>
+					<input matInput formControlName="netSalary" appNumberValidator>
+				</mat-form-field>
 			</div>
 		</div>
-	</div>
-	<p-footer>
-		<button type="button" class="btn btn-primary btn-sm" (click)="updateFile()" [disabled]="loading">
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-button color="primary" [disabled]="!form.valid || loading" type="submit">
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
-			Appliquer
-		</button>
-		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
-			<i class="fa fa-times"></i>
-			Fermer
-		</button>
-	</p-footer>
-</p-dialog>
+			Appliquer</button>
+		<button mat-button [mat-dialog-close]="true">Fermer</button>
+	</mat-dialog-actions>
+</form>

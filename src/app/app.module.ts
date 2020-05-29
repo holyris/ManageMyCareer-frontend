@@ -11,48 +11,44 @@ import { RegisterComponent } from './register/register.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatCommonModule } from '@angular/material/core';
+import { MatCommonModule, MatNativeDateModule, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { DialogModule } from 'primeng/dialog';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
 import { FileUploadModule } from 'primeng/fileupload';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { KeyFilterModule } from 'primeng/keyfilter';
-import { InputTextModule } from 'primeng/inputtext';
-import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { MatDividerModule } from '@angular/material/divider';
-import { PasswordModule } from 'primeng/password';
-import { CardModule } from 'primeng/card';
-import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import {InputTextareaModule} from 'primeng/inputtextarea';
+import { ChartsModule } from 'ng2-charts';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
 import { SafePipeModule } from 'safe-pipe';
-
 import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
+
 import { FileListComponent } from './file-list/file-list.component';
 import { UploadModalComponent } from './upload-modal/upload-modal.component';
-import { FooterComponent } from './footer/footer.component';
 import { LoginComponent } from './login/login.component';
-import { OperationsComponent } from './operations/operations.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
+import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { UpdateModalComponent } from './update-modal/update-modal.component';
-import { CompanyCreationModalComponent } from './company-creation-modal/company-creation-modal.component';
-import { WorkplaceCreationModalComponent } from './workplace-creation-modal/workplace-creation-modal.component';
-import { CompanyListComponent } from './company-list/company-list.component';
-import { CompanyUpdateModalComponent } from './company-update-modal/company-update-modal.component';
-import { WorkplaceListComponent } from './workplace-list/workplace-list.component';
-import { WorkplaceUpdateModalComponent } from './workplace-update-modal/workplace-update-modal.component';
-// import { WorkplaceListComponent } from './workplace-list/workplace-list.component';
-
+import { OverviewComponent } from './overview/overview.component';
+import { FolderCreationModalComponent } from './folder-creation-modal/folder-creation-modal.component';
+import { NumberValidatorDirective } from '../shared/directives/number-validator.directive';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -61,21 +57,15 @@ import { WorkplaceUpdateModalComponent } from './workplace-update-modal/workplac
     HeaderComponent,
     RegisterComponent,
     FileListComponent,
-    CompanyListComponent,
     LeftMenuComponent,
     UploadModalComponent,
-    FooterComponent,
     LoginComponent,
-    OperationsComponent,
     NotificationToastComponent,
     FilePreviewModalComponent,
     UpdateModalComponent,
-    CompanyCreationModalComponent,
-    WorkplaceCreationModalComponent,
-    CompanyListComponent,
-    CompanyUpdateModalComponent,
-    WorkplaceListComponent,
-    WorkplaceUpdateModalComponent,
+    OverviewComponent,
+    FolderCreationModalComponent,
+    NumberValidatorDirective,
   ],
   imports: [
     BrowserModule,
@@ -89,23 +79,26 @@ import { WorkplaceUpdateModalComponent } from './workplace-update-modal/workplac
     MatSidenavModule,
     MatListModule,
     DialogModule,
-    DynamicDialogModule,
-    OverlayPanelModule,
     ButtonModule,
-    DropdownModule,
-    CalendarModule,
     FileUploadModule,
-    AutoCompleteModule,
-    KeyFilterModule,
-    InputTextModule,
-    InputTextareaModule,
     MatDividerModule,
-    PasswordModule,
-    CardModule,
-    MessagesModule,
-    MessageModule,
     ToastModule,
-    SafePipeModule,    
+    ChartsModule,
+    MatTreeModule,
+    MatIconModule,
+    SafePipeModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatNativeDateModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatRadioModule,
     AgGridModule.withComponents([]),
   ],
   providers: [
@@ -114,6 +107,9 @@ import { WorkplaceUpdateModalComponent } from './workplace-update-modal/workplac
       useClass: RequestInterceptor,
       multi: true
     },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+
+    MatDatepickerModule
   ],
   bootstrap: [AppComponent]
 })

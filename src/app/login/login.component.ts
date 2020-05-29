@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   loading: Boolean = false;
   alertMsg: any = "";
+  hidePassword: boolean = true;
   isAlerting: Boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService) {
@@ -34,7 +35,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {    
     this.loading=true;
-    this.resetAlert;
+    this.resetAlert();
     this.authenticationService.login(new User(this.form.value.username, this.form.value.password))
     .pipe(first())
     .subscribe(
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
       },
       error => {
         console.log(error)
-        error = "Nom d'utilisateur ou mot de passe incorrect";
+        error = "Les identifiants sont incorrects";
         this.alert(error);
         this.loading=false;
       });

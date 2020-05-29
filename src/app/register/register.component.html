@@ -1,31 +1,41 @@
 <div class="row justify-content-center align-items-center h-100 w-100">
 	<div class="col-4">
 		<form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
-			<p-card header="Créer un compte">
-				<p-message *ngIf="isAlerting" severity="error" [text]="alertMsg"></p-message>
-				<div class="mt-4 form-group">
-					<input pInputText type="text" class="form-control" formControlName="username"
-						placeholder="Nom d'utilisateur*" />
-				</div>
-				<div class="form-group">
-					<input pInputText type="password" class="form-control" formControlName="password"
-						placeholder="Mot de passe*" />
-				</div>
-				<div class="form-group">
-					<input pInputText type="password" class="form-control" formControlName="passwordChecker"
-						placeholder="Confirmer mot de passe*" />
-				</div>
-				<p-footer>
+
+
+			<mat-card>
+				<mat-card-title>Créer un compte</mat-card-title>
+				<mat-card-content>
+					<h5 *ngIf="isAlerting" class="text-danger ">{{alertMsg}}</h5>
+					<div class="mt-4">
+						<mat-form-field class="w-100">
+							<mat-label>Nom d'utilisateur</mat-label>
+							<input matInput formControlName="username" required>
+						</mat-form-field>
+					</div>
 					<div>
-						<button type="submit" class="btn btn-success btn-sm" [disabled]="!form.valid || loading">
-							<span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
-							S'enregistrer
+						<mat-form-field class="w-100">
+							<mat-label>Mot de passe</mat-label>
+							<input matInput type="password" formControlName="password" required>
+						</mat-form-field>
+					</div>
+					<div>
+						<mat-form-field class="w-100">
+							<mat-label>Confirmer le mot de passe</mat-label>
+							<input matInput type="password" formControlName="passwordChecker" required>
+						</mat-form-field>
+					</div>
+				</mat-card-content>
+				<mat-card-actions>
+					<div>
+						<button mat-flat-button type="submit" color="accent" [disabled]="!form.valid || loading">
+							<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+							S'enregistrer 
 						</button>
 						<a class="ml-3" routerLink="/login">J'ai déjà un compte</a>
 					</div>
-				</p-footer>
-
-			</p-card>
+				</mat-card-actions>
+			</mat-card>
 		</form>
 	</div>
 </div>

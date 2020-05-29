@@ -1,0 +1,28 @@
+.active {
+  background: #6797fe2a !important;
+}
+
+.scrollbar {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  visibility: hidden;
+  &:hover {
+    visibility: visible;
+  }
+  .scrollbar-content {
+    visibility: visible;
+    .mat-list-item {
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+      &:hover {
+        .show-on-hover {
+          visibility: visible;
+        }
+      }
+      .show-on-hover {
+        visibility: hidden;
+      }
+    }
+  }
+}

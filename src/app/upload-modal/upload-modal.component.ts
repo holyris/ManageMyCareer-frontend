@@ -1,33 +1,44 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
-import { SelectItem } from 'primeng/api';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
-import { Subscription } from 'rxjs';
-import { UploadModalService } from './upload-modal.service';
-import { CompanyService } from 'src/shared/services/company.service';
-import { WorkplaceService } from 'src/shared/services/workplace.service';
-import { WorkplaceModel } from 'src/shared/models/WorkplaceModel';
-import { CompanyModel } from 'src/shared/models/CompanyModel';
+import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { Moment } from 'moment';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { startWith, map } from 'rxjs/operators';
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-upload-modal',
   templateUrl: './upload-modal.component.html',
   styleUrls: ['./upload-modal.component.scss'],
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
 export class UploadModalComponent implements OnInit {
   @ViewChild('uploadFileComponent') uploadFileComponent: any;
-  visible: Boolean;
-  fileObjects: Array<FileModel>;
-  filteredCompanies: any[];
-  filteredJobs: any[];
   loading: Boolean = false;
-  subscription: Subscription;
-  companies: CompanyModel[];
-  workplaces: WorkplaceModel[];
-
-  types: SelectItem[] = [
+  companies: string[] = ['Acta DS', 'ISIR', 'Google', 'Facebook'];
+  workplaces: string[] = ['Manager', 'Developpeur', 'Caissier', 'Croque-mort'];
+  form: FormGroup;
+  filteredCompanies: Observable<string[]>;
+  filteredWorkplaces: Observable<string[]>;
+  types: Array<any> = [
     {
       label: EnumTypeValue.FichePaie,
       value: EnumTypeValue.FichePaie
@@ -53,128 +64,95 @@ export class UploadModalComponent implements OnInit {
   constructor(
     public fileService: FileService,
     public fileUploadEventService: FileUploadEventService,
-    private uploadModalService: UploadModalService,
-    private companyService: CompanyService,
-    private workplaceService: WorkplaceService) { }
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit() {
-    // permet d'executer du code quand show() du service est appelé
-    this.subscription = this.uploadModalService.showEvent.subscribe(
-      () => {
-        this.show();
-      }
-    )
+    this.form = this.formBuilder.group({
+      formArray: this.formBuilder.array([])
+    })
   }
 
-  reset() {
-    if (!this.visible) {
-      this.getCompanies();
-      this.getWorkplaces();
-      this.loading = false;
-      this.fileObjects = [];
-      this.uploadFileComponent.clear(); //Reset le composant d'upload
-    }
-  }
-
-  show() {
-    this.reset();
-    this.visible = true;
-  }
-
-  close() {
-    this.visible = false;
-  }
-
-  async uploadFiles() {
+  async submit() {
     this.loading = true;
     await this.fileService.upload(this.fileObjects)
     this.fileUploadEventService.filesUploaded()
     this.loading = false;
-
     this.close();
+    console.log(this.fileObjects);
+  }
+
+  close() {
+    this.dialog.closeAll();
   }
 
   addFiles(event) {
-    this.fileObjects = [];  //Reset la liste des fichiers 
-    for (let file of event.files) {
+    for (let [index, file] of event.files.entries()) {
       let fileObject = new FileModel();
       fileObject.name = file.name;
       fileObject.size = file.size;
       fileObject.type = file.type;
+      this.formArray.push(this.formBuilder.group(fileObject));
+      this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
+      this.filteredWorkplaces = this.formArray.at(index).get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
 
       let reader = new FileReader();
       //appelle cette fonction quand readAsArrayBuffer est fini
-      reader.onload = function (e) {
+      reader.onload = () => {
         // converti reader.result en base64
-        fileObject.fileContent = btoa(
+        let fileContent = btoa(
           new Uint8Array(reader.result as ArrayBuffer)
             .reduce((data, byte) => data + String.fromCharCode(byte), '')
         );
+
+        this.formArray.at(index).patchValue({ fileContent: fileContent });
       }
       //prend le blob et le converti en tableau binaire dans reader.result
       reader.readAsArrayBuffer(file);
-      this.fileObjects.push(fileObject);
     }
     this.uploadFileComponent.clear();
   }
 
   deleteFileObjectByIndex(index) {
-    console.log(index)
-    console.log(this.fileObjects);
-    this.fileObjects.splice(index, 1);
-    console.log(this.fileObjects);
+    this.formArray.removeAt(index);
   }
 
-  getCompanies() {
-    this.companyService.getAll().subscribe(data => {
-      this.companies = data;
-    })
+  // loadCompanies() {
+  //   this.companyService.getAll().subscribe(data => {
+  //     this.companies = data;
+  //   })
+  // }
+
+  // loadWorkplaces() {
+  //   this.workplaceService.getAll().subscribe(data => {
+  //     this.workplaces = data;
+  //   })
+  // }
+
+  get formArray() {
+    return this.form.get('formArray') as FormArray;
   }
 
-  getWorkplaces() {
-    this.workplaceService.getAll().subscribe(data => {
-      this.workplaces = data;
-    })
-  }
-
-  companyChanged(event, i){
-    this.fileObjects[i].company = event.value.name;
-  }
-
-  workplaceChanged(event, i){
-    this.fileObjects[i].workplace = event.value.name;
+  get fileObjects() {
+    return this.formArray.value as FileModel[];
   }
 
   isSelectedFichePaie(index) {
-    return this.fileObjects[index].isFichePaie()
+    return this.fileObjects[index].documentType === EnumTypeValue.FichePaie;
   }
 
-  isSelectedContrat(index) {
-    return this.fileObjects[index].isContrat();
+  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, index: number) {
+    datepicker.close();
+    this.formArray.at(index).patchValue({ documentDate: normalizedMonth.toDate() });
   }
 
-  // filterCompanies(event) {
-  //   let filtered: any[] = [];
-  //   for (let i = 0; i < this.companies.length; i++) {
-  //     let company = this.companies[i];
-  //     if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-  //       filtered.push(company);
-  //     }
-  //   }
-  //   this.filteredCompanies = filtered;
-  // }
-
-  // filterJobs(event) {
-  //   let filtered: any[] = [];
-  //   for (let i = 0; i < this.jobs.length; i++) {
-  //     let company = this.jobs[i];
-  //     if (company.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-  //       filtered.push(company);
-  //     }
-  //   }
-  //   this.filteredJobs = filtered;
-  // }
-
-
-
+  private filterCompanies(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.companies.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  }
+  private filterWorkplaces(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.workplaces.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  }
 }

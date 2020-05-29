@@ -1,23 +1,16 @@
-<app-header *ngIf="currentUser"></app-header>
+<div class="d-flex flex-column h-100">
+  <app-header *ngIf="currentUser"></app-header>
 
+  <mat-sidenav-container class="h-100">
+    <mat-sidenav mode="side" opened disableClose="true" *ngIf="currentUser">
+      <app-left-menu></app-left-menu>
+    </mat-sidenav>
 
-<mat-sidenav-container style="height: calc(100% - 64px);">
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
 
-  <mat-sidenav mode="side" opened disableClose="true" *ngIf="currentUser" style="z-index:1">
-    <app-left-menu></app-left-menu>
-  </mat-sidenav>
-
-  <mat-sidenav-content style="z-index:1">
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-
-</mat-sidenav-container>
-
-<app-upload-modal></app-upload-modal>
-<app-company-creation-modal></app-company-creation-modal>
-<app-workplace-creation-modal></app-workplace-creation-modal>
 <app-file-preview-modal></app-file-preview-modal>
-<app-update-modal></app-update-modal>
-<app-company-update-modal></app-company-update-modal>
-<app-workplace-update-modal></app-workplace-update-modal>
 <app-notification-toast></app-notification-toast>

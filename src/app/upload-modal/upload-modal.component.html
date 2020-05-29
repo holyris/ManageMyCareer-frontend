@@ -1,113 +1,107 @@
-<p-dialog [style]="{'overflow':'visible'}"
-	[contentStyle]="{'overflow-y':'auto', 'overflow-x':'visible', 'padding':'0px'}" [(visible)]="visible" header="Nouveau"
-	[resizable]="false" [modal]="true" [draggable]="false" [blockScroll]="true">
+<form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+	<h2 mat-dialog-title>Importer un fichier</h2>
+	<mat-dialog-content>
+		<div class="py-2 px-2">
+			<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload"
+				[auto]="true" [showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier(s)" [multiple]="true"
+				#uploadFileComponent>
+			</p-fileUpload>
+		</div>
+		<div formArrayName="formArray">
+			<div class="row py-2" style="border-top: solid 1px #eaeaea" *ngFor="let alias of formArray.controls; let i=index"
+				[formGroupName]="i">
+				<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #eaeaea">
+					<div class="row">
+						<div class="col-12">Taille :</div>
+					</div>
+					<div class="row">
+						<div class="col-12">{{alias.value.size}}B</div>
+					</div>
+					<div class="row mt-auto">
+						<div class="col-12">
+							<button mat-button (click)="deleteFileObjectByIndex(i)">Retirer</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="row">
+						<div class="col-12">
+							<mat-form-field [style]="{'min-width':'300px'}">
+								<mat-label>Nom</mat-label>
+								<input matInput formControlName="name" required>
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<mat-form-field>
+								<mat-label>Type de document</mat-label>
+								<mat-select formControlName="documentType">
+									<mat-option *ngFor="let type of types" [value]="type.value">
+										{{type.label}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div class="col pl-0">
+							<mat-form-field>
+								<mat-label>Date</mat-label>
+								<input matInput [matDatepicker]="dp" formControlName="documentDate">
+								<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+								<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, i)"
+									panelClass="example-month-picker">
+								</mat-datepicker>
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<mat-form-field>
+								<mat-label>Entreprise</mat-label>
+								<input matInput formControlName="company" [matAutocomplete]="autoCompany">
+								<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
+									<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
+										{{company}}
+									</mat-option>
+								</mat-autocomplete>
+							</mat-form-field>
+						</div>
+						<div class="col pl-0">
+							<mat-form-field>
+								<mat-label>Emploi</mat-label>
+								<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
+								<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
+									<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
+										{{workplace}}
+									</mat-option>
+								</mat-autocomplete>
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="row" *ngIf="isSelectedFichePaie(i)">
+						<div class="col">
+							<mat-form-field>
+								<mat-label>Salaire brut (€)</mat-label>
+								<input matInput formControlName="grossSalary" appNumberValidator>
+							</mat-form-field>
 
-	<div class="py-2 px-2">
-		<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" [auto]="true"
-			[showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier(s)" [multiple]="true"
-			#uploadFileComponent>
-		</p-fileUpload>
-	</div>
+						</div>
+						<div class="col pl-0">
+							<mat-form-field>
+								<mat-label>Salaire net (€)</mat-label>
+								<input matInput formControlName="netSalary" appNumberValidator>
+							</mat-form-field>
+						</div>
+					</div>
 
-	<div class="ui-g py-2" style="border-top: solid 1px grey" *ngFor="let fileObject of fileObjects; index as i">
-		<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px grey">
-			<div class="row">
-				<div class="col-12">Taille :</div>
-			</div>
-			<div class="row">
-				<div class="col-12">{{fileObject.size}}B</div>
-			</div>
-			<div class="row mt-auto">
-				<div class="col-12">
-					<button class="btn btn-light btn-sm" (click)="deleteFileObjectByIndex(i)">
-						Retirer
-					</button>
 				</div>
 			</div>
 		</div>
-		<div class="col-auto my-3">
-			<div class="row">
-				<div class="col-12">
-					<span class="ui-float-label">
-						<input type="text" [(ngModel)]="fileObjects[i].name" pInputText
-							[style]="{'min-width':'300px', 'width': '100%'}">
-						<label>Nom</label>
-					</span>
-				</div>
-			</div>
-			<div class="row mt-4">
-				<div class="col">
-					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="types" [(ngModel)]="fileObjects[i].documentType"
-							[autoDisplayFirst]="false" [style]="{'width': '100%'}"></p-dropdown>
-						<label>Type de document</label>
-					</span>
-
-				</div>
-				<div class="col pl-0" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
-					<span class="ui-float-label">
-						<p-calendar appendTo="body" [(ngModel)]="fileObjects[i].documentDate" view="month" dateFormat="mm/yy"
-							[style]="{'width': '100%'}" [yearNavigator]="true" yearRange="1950:2030"></p-calendar>
-						<label>Date</label>
-					</span>
-
-				</div>
-			</div>
-			<div class="row mt-4" *ngIf="isSelectedFichePaie(i) || isSelectedContrat(i)">
-				<div class="col">
-					<!-- <p-autoComplete [suggestions]="filteredCompanies" (completeMethod)="filterCompanies($event)"
-						[(ngModel)]="fileObjects[i].company" placeholder="Entreprise"></p-autoComplete>
-				</div>
-				<div class="col pl-0">
-					<p-autoComplete [suggestions]="filteredJobs" (completeMethod)="filterJobs($event)"
-						[(ngModel)]="fileObjects[i].workplace" placeholder="Poste">
-					</p-autoComplete> -->
-
-					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="companies" optionLabel="name" (onChange)="companyChanged($event, i)"
-							[autoDisplayFirst]="false" [style]="{'width': '100%'}" filter="true">
-						</p-dropdown>
-						<label>Entreprise</label>
-					</span>
-
-				</div>
-				<div class="col pl-0">
-					<span class="ui-float-label">
-						<p-dropdown appendTo="body" [options]="workplaces" optionLabel="name"
-							(onChange)="workplaceChanged($event, i)" [autoDisplayFirst]="false" [style]="{'width': '100%'}"
-							filter="true"></p-dropdown>
-						<label>Poste</label>
-					</span>
-				</div>
-			</div>
-
-			<div class="row mt-4" *ngIf="isSelectedFichePaie(i)">
-				<div class="col">
-					<span class="ui-float-label">
-						<input type="text" [(ngModel)]="fileObjects[i].grossSalary" pInputText pKeyFilter="money"
-							[style]="{'width': '100%'}">
-						<label>Salaire brut (€)</label>
-					</span>
-
-				</div>
-				<div class="col pl-0">
-					<span class="ui-float-label">
-						<input type="text" [(ngModel)]="fileObjects[i].netSalary" pInputText pKeyFilter="money"
-							[style]="{'width': '100%'}">
-						<label>Salaire net (€)</label>
-					</span>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<p-footer>
-		<button type="button" class="btn btn-primary btn-sm" (click)="uploadFiles()" [disabled]="loading">
-			<i *ngIf="!loading" class="fa fa-upload"></i>
-			Importer
-		</button>
-		<button type="button" (click)="close()" class="btn btn-secondary btn-sm">
-			Fermer
-		</button>
-	</p-footer>
-</p-dialog>
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!form.valid || loading" type="submit">
+			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+			Importer</button>
+		<button mat-button [mat-dialog-close]="true">Fermer</button>
+	</mat-dialog-actions>
+</form>

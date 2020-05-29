@@ -1,19 +1,83 @@
-<div class="btn-group">
-  <button type="button" icon="pi pi-plus" class="mx-5 mb-2 mt-3 btn btn-outline-primary rounded-pill dropdown-toggle"
-    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fa fa-plus"></i>
-    <span class="pl-2">Ajouter</span>
-  </button>
-  <div class="dropdown-menu">
-    <button class="dropdown-item" (click)="showFileUploadModal()">Fichiers</button>
-    <!-- <div class="dropdown-divider"></div> -->
-    <button class="dropdown-item" (click)="showCompanyCreationModal()">Entreprise</button>
-    <button class="dropdown-item" (click)="showWorkplaceCreationModal()">Poste</button>
+<div class="d-flex flex-column h-100">
+  <div class="btn-group w-100 px-3">
+    <button mat-raised-button [matMenuTriggerFor]="menu" class="rounded-pill mx-auto my-3" color="primary">
+      <mat-icon>add</mat-icon>
+      <span>Ajouter</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="showFileUploadModal()">
+        <mat-icon fontSet="material-icons-outlined">note_add</mat-icon>
+        Fichier(s)
+      </button>
+      <button mat-menu-item (click)="showFolderCreationModal()">
+        <mat-icon fontSet="material-icons-outlined">create_new_folder</mat-icon>
+        Dossier
+      </button>
+    </mat-menu>
+  </div>
+  <mat-divider></mat-divider>
+  <mat-nav-list dense class="py-2">
+    <mat-list-item routerLink="files" routerLinkActive="active">
+      <div matLine>
+        <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_drive_file</mat-icon>
+        <span class="ml-3">Mes fichiers</span>
+      </div>
+    </mat-list-item>
+    <mat-list-item routerLink="overview" routerLinkActive="active">
+      <div matLine>
+        <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_chart</mat-icon>
+        <span class="ml-3"> Ma carrière </span>
+      </div>
+    </mat-list-item>
+  </mat-nav-list>
+  <mat-divider></mat-divider>
+  <h4 mat-subheader class="m-0 py-2 pr-0">
+    DOSSIERS
+    <!-- <button class="ml-auto" mat-icon-button type="button" aria-label="crée un dossier" matTooltip="Rafraichir"
+      matTooltipPosition="above">
+      <mat-icon>refresh</mat-icon>
+    </button> -->
+  </h4>
 
+  <div class="scrollbar">
+    <div class="scrollbar-content">
+      <mat-tree tabindex="0" [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node class="tree-node" *matTreeNodeDef="let node">
+          <mat-nav-list dense class="w-100 pt-0">
+            <mat-list-item disableRipple="true" [routerLink]="'folders/' + node.name" routerLinkActive="active">
+              <div matLine matTreeNodePadding matTreeNodePaddingIndent="8px">
+                <button mat-icon-button *ngIf="hasChild(node)" (click)="toggleNode($event, node)" disableRipple
+                  [attr.aria-label]="'toggle ' + node.name">
+                  <mat-icon>
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                  </mat-icon>
+                </button>
+                <button *ngIf="!hasChild(node)" mat-icon-button disabled></button>
+                <mat-icon class="ml-n2">
+                  {{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
+                </mat-icon>
+                <span class="ml-2">
+                  {{node.name}}
+                </span>
+              </div>
+              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)" class="show-on-hover"
+                type="button">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon fontSet="material-icons-outlined">create</mat-icon>
+                  Modifier
+                </button>
+                <button mat-menu-item (click)="deleteNode(node)">
+                  <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
+                  Supprimer
+                </button>
+              </mat-menu>
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-tree-node>
+      </mat-tree>
+    </div>
   </div>
 </div>
-<mat-nav-list>
-  <mat-list-item routerLink="files">Fichiers</mat-list-item>
-  <mat-list-item routerLink="companies">Entreprises</mat-list-item>
-  <mat-list-item routerLink="workplaces">Postes</mat-list-item>
-</mat-nav-list>

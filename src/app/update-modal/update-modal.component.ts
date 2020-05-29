@@ -1,32 +1,32 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 
-import { Subscription } from 'rxjs';
-import { UpdateModalService } from './update-modal.service';
-import { FileModel } from 'src/shared/models/FileModel';
+import { Observable } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileService } from 'src/shared/services/file.service';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
-import { CompanyService } from 'src/shared/services/company.service';
-import { WorkplaceService } from 'src/shared/services/workplace.service';
-import { CompanyModel } from 'src/shared/models/CompanyModel';
-import { WorkplaceModel } from 'src/shared/models/WorkplaceModel';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { MY_FORMATS } from '../upload-modal/upload-modal.component';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { Moment } from 'moment';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-modal',
   templateUrl: './update-modal.component.html',
-  styleUrls: ['./update-modal.component.scss']
+  styleUrls: ['./update-modal.component.scss'],
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
 export class UpdateModalComponent implements OnInit {
-  subscription: Subscription;
-  visible: Boolean = false;
   loading: Boolean = false;
-  file: FileModel = new FileModel();
-  companies: CompanyModel[];
-  workplaces: WorkplaceModel[];
-  selectedCompany: CompanyModel;
-  selectedWorkplace: WorkplaceModel;
-
+  companies: string[] = ['Acta DS', 'ISIR', 'Google', 'Facebook'];
+  workplaces: string[] = ['Manager', 'Developpeur', 'Caissier', 'Croque-mort'];
+  form: FormGroup;
+  filteredCompanies: Observable<string[]>;
+  filteredWorkplaces: Observable<string[]>;
   types: SelectItem[] = [
     {
       label: EnumTypeValue.FichePaie,
@@ -51,71 +51,63 @@ export class UpdateModalComponent implements OnInit {
   ];
 
   constructor(
-    private updateModalService: UpdateModalService, 
-    private fileService: FileService, 
-    private fileUploadEventService: FileUploadEventService, 
-    private companyService: CompanyService,
-    private workplaceService: WorkplaceService
-    ) { }
+    @Inject(MAT_DIALOG_DATA) public fileData: any,
+    private fileService: FileService,
+    private fileUploadEventService: FileUploadEventService,
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
+  ) { }
 
-  ngOnInit(): void {    
-    // permet d'executer du code quand show() du service est appelé
-    this.subscription = this.updateModalService.showEvent.subscribe(
-      file => {
-        this.show(file);
-      }
-    )
+  ngOnInit() {
+    this.form = this.formBuilder.group(this.fileData);
+    this.filteredCompanies = this.form.get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
+    this.filteredWorkplaces = this.form.get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
   }
 
-  show(file: FileModel) {
-    this.reset();
-    this.file = file;
-    this.visible = true;
-  }
-
-  close() {
-    this.visible = false;
-  }
-
-  private reset(){
-    this.getCompanies();
-    this.getWorkplaces();
-    this.loading = false;    
-  }
-
-  async updateFile(){
-    this.loading = true;    
+  async submit() {
+    this.loading = true;
     await this.fileService.update(this.file);
     this.fileUploadEventService.filesUploaded()
     this.loading = false;
     this.close();
   }
 
-  private getCompanies() {
-    this.companyService.getAll().subscribe(data => {
-      this.companies = data;            
-    })
+  close() {
+    this.dialog.closeAll();
   }
 
-  private getWorkplaces() {
-    this.workplaceService.getAll().subscribe(data => {
-      this.workplaces = data;
-    })
+  // loadCompanies() {
+  //   this.companyService.getAll().subscribe(data => {
+  //     this.companies = data;
+  //   })
+  // }
+  
+
+  // loadWorkplaces() {
+  //   this.workplaceService.getAll().subscribe(data => {
+  //     this.workplaces = data;
+  //   })
+  // }
+
+  get file() {
+    return this.form.value;
   }
 
-  companyChanged(event){
-    this.file.company = event.value.name;
+  isSelectedFichePaie() {
+    return this.file && this.file.documentType === EnumTypeValue.FichePaie;
   }
 
-  workplaceChanged(event){
-    this.file.workplace = event.value.name;
+  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+    datepicker.close();
+    this.form.patchValue({ documentDate: normalizedMonth.toDate() });
   }
 
-  isFileFichePaie() {
-    return this.file && this.file.isFichePaie();
+  private filterCompanies(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.companies.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
-
-  isFileContrat() {
-    return this.file && this.file.isContrat();
+  private filterWorkplaces(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.workplaces.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
 }
