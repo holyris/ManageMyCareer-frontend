@@ -1,8 +1,75 @@
-@import '~@fortawesome/fontawesome-free/css/all.min.css';
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
 @import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
 @import "../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
+/* For use in src/lib/core/theming/_palette.scss */
+$primary-palette: (
+  50: #edf3ff,
+  100: #d1e0ff,
+  200: #b3ccff,
+  300: #95b7fe,
+  400: #7ea7fe,
+  500: #6798fe,
+  600: #5f90fe,
+  700: #5485fe,
+  800: #4a7bfe,
+  900: #396afd,
+  A100: #ffffff,
+  A200: #ffffff,
+  A400: #e0e7ff,
+  A700: #c7d4ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+/* For use in src/lib/core/theming/_palette.scss */
+$accent-palette: (
+  50: #e9f6f4,
+  100: #c9eae3,
+  200: #a5dcd0,
+  300: #80cdbd,
+  400: #65c3af,
+  500: #4ab8a1,
+  600: #43b199,
+  700: #3aa88f,
+  800: #32a085,
+  900: #229174,
+  A100: #cffff1,
+  A200: #9cffe3,
+  A400: #69ffd5,
+  A700: #4fffce,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -12,38 +79,93 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$homepage-primary: mat-palette($mat-indigo);
-$homepage-accent: mat-palette($mat-pink, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$homepage-warn: mat-palette($mat-red);
+$app-primary: mat-palette($primary-palette);
+$app-accent: mat-palette($accent-palette);
+$app-warn: mat-palette($mat-red);
+$app-grey: mat-palette($mat-grey);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$homepage-theme: mat-light-theme($homepage-primary, $homepage-accent, $homepage-warn);
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($homepage-theme);
+@include angular-material-theme($app-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
+button {
+  outline: 0 !important;
+}
 
-.ag-theme-alpine {
-    @include ag-theme-alpine();
+label {
+  margin: 0 !important;
+}
+
+.mat-form-field {
+  width: 100% !important;
+}
+
+.mat-menu-item {
+  max-height: 36px;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.mat-tree-node {
+  min-height: 40px !important;
+  max-height: 40px !important;
+  .mat-icon {
+    color: grey !important;
+  }
+}
+
+.mat-list-item {
+  .mat-icon {
+    color: grey !important;
+  }
+  .mat-line {
+    display: flex !important;
+    align-items: center !important;
+    span {
+      font-size: 14px !important;
+    }
+  }
 }
 
 $theme-colors: (
   "primary": #6798fe,
-  "success": #4ab8a1
+  "success": #4ab8a1,
 );
+
+.ag-theme-alpine {
+  @include ag-theme-alpine(());
+
+  .ag-root-wrapper {
+    border: 0px !important;
+  }
+
+  .ag-body-viewport {
+    overflow-y: scroll !important;
+  }
+
+  .ag-header {
+    color: transparent !important;
+    background-color: transparent !important;
+  }
+}
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
 @import "../node_modules/primeicons/primeicons.css";
 @import "../node_modules/primeng/resources/themes/nova-light/theme.css";
 @import "../node_modules/primeng/resources/primeng.min.css";
-

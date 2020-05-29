@@ -28,13 +28,6 @@ export class FileService {
   constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
   async upload(fileObjects: Array<FileModel>) {
-    //à garder au cas où on reparte sur les multiparts
-    // fileObjects.forEach(element => {
-    //   formData.append('file', element.file);
-    // });
-    fileObjects.forEach(file => {
-      file.reformat();
-    })
     const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
     const length = Object.keys(request).length
     let detail = "";
@@ -42,14 +35,13 @@ export class FileService {
       detail = length + ' fichiers importés'
     }
     else {
-      detail = length + ' fichier importé'
+      detail = 'Fichier importé'
     }
     this.notificationService.add({ severity: 'success', detail: detail });
     return request
   }
 
   async update(file: FileModel) {
-    console.log(file);
     const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
     this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
     return request;
@@ -116,7 +108,7 @@ export class FileService {
       detail = length + ' fichiers supprimés'
     }
     else {
-      detail = length + ' fichier supprimé'
+      detail = 'Fichier supprimé'
     }
     this.notificationService.add({ severity: 'success', detail: detail });
   }

@@ -5,7 +5,8 @@ import { Subscription } from 'rxjs';
 import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
 import { GridApi } from 'ag-grid-community';
-import { UpdateModalService } from '../update-modal/update-modal.service';
+import { MatDialog } from '@angular/material/dialog';
+import { UpdateModalComponent } from '../update-modal/update-modal.component';
 
 @Component({
   selector: 'app-file-list',
@@ -18,17 +19,23 @@ export class FileListComponent implements OnInit {
   uploadSubscription: Subscription;
   gridApi: GridApi;
   files: FileModel[];
+  menuTabs: Array<string> = ['filterMenuTab'];
 
 
-  constructor(private fileService: FileService, private fileUploadEventService: FileUploadEventService, private filePreviewModalService: FilePreviewModalService, private updateModalService: UpdateModalService) {
+  constructor(
+    private fileService: FileService,
+    private fileUploadEventService: FileUploadEventService,
+    private filePreviewModalService: FilePreviewModalService,
+    public dialog: MatDialog,
+  ) {
     this.columnDefs = [
-      { headerName: 'Nom', field: 'name', sortable: true, filter: true, suppressMovable: true, tooltipField: 'name' },
-      { headerName: 'Type', field: 'documentType', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Entreprise', field: 'company', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Poste', field: 'workplace', sortable: true, filter: true, suppressMovable: true },
-      { headerName: 'Date', field: 'documentDate', valueFormatter: (params) => { return this.documentDateFormatter(params.value) }, sortable: true, filter: true, suppressMovable: true },
+      { headerName: 'Nom', field: 'name', tooltipField: 'name' },
+      { headerName: 'Type', field: 'documentType' },
+      { headerName: 'Entreprise', field: 'company' },
+      { headerName: 'Emploi', field: 'workplace' },
+      { headerName: 'Date', field: 'documentDate', valueFormatter: (params) => { return this.formatDate(params.value) } }
     ];
-    this.defaultColDef = { resizable: false };
+    this.defaultColDef = { resizable: false, sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs };
   }
 
   ngOnInit(): void {
@@ -51,7 +58,7 @@ export class FileListComponent implements OnInit {
   }
 
   showUpdateModal(file: FileModel) {
-    this.updateModalService.show(file);
+    this.dialog.open(UpdateModalComponent, { data: file, disableClose: true });
   }
 
   showFilePreviewModal(file) {
@@ -79,7 +86,7 @@ export class FileListComponent implements OnInit {
   }
 
   rowDoubleClicked(event) {
-    this.showFilePreviewModal(event.data);
+    this.showUpdateModal(event.data);
   }
 
   rowRightClicked(event) {
@@ -88,14 +95,14 @@ export class FileListComponent implements OnInit {
     }
   }
 
-  documentDateFormatter(date): string {
+  formatDate(date: Date): string {
     if (date) {
       return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
     }
   }
 
   getContextMenuItems = (params) => {
-    if (params.node) {
+    if (params.node) {      
       var file = params.node.data;
       var result = [
         {

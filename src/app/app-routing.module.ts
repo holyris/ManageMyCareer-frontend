@@ -3,10 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { FileListComponent } from './file-list/file-list.component';
-import { CompanyListComponent } from './company-list/company-list.component';
-import { WorkplaceListComponent } from './workplace-list/workplace-list.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from 'src/shared/helpers/auth.guard'
+import { OverviewComponent } from './overview/overview.component';
 
 
 const routes: Routes = [
@@ -29,23 +28,24 @@ const routes: Routes = [
     path: "files",
     component: FileListComponent,
     canActivate: [AuthGuard]
-
   },
   {
-    path: "companies",
-    component: CompanyListComponent,
+    path: 'folders/:folderName',
+    component: FileListComponent,
     canActivate: [AuthGuard]
-
   },
   {
-    path: "workplaces",
-    component: WorkplaceListComponent,
+    path: "overview",
+    component: OverviewComponent,
     canActivate: [AuthGuard]
-
   },
+
+
 
   // otherwise redirect to home
-  { path: '**', redirectTo: 'home' }];
+  { path: '**', redirectTo: 'home' }
+
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -3,10 +3,10 @@
   <img height="50" routerLink="" src="../assets/logo2.png">
   <a class="text-success ml-2" routerLink="">ManageMyCareer</a>
 
-  <button type="button" (click)="logout()" label="Deconnexion" class="mr-2 btn btn-danger"
-    style="position: absolute; right:0;">
-    <i class="fa fa-power-off"></i>
-    Deconnexion
+
+  <button mat-button (click)="logout()" color="warn" style="position: absolute; right:0; height:100%">
+    <mat-icon>power_settings_new</mat-icon>
+    Déconnexion
   </button>
 
 </mat-toolbar>

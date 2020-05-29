@@ -1,10 +1,9 @@
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
-
 export class FileModel {
   constructor(
-    public id: Number = null,
+    public id: number = null,
     public name: string = null,
-    public size: Number = null,
+    public size: number = null,
     public type: string = null,
     public documentType: string = null,
     public company: string = null,
@@ -12,8 +11,8 @@ export class FileModel {
     public addedDate: Date = null,
     public modifiedDate: Date = null,
     public documentDate: Date = null,
-    public grossSalary: Number = null,
-    public netSalary: Number = null,
+    public grossSalary: number = null,
+    public netSalary: number = null,
     public fileContent: string = null
   ) {
   }
@@ -36,19 +35,6 @@ export class FileModel {
     )
   }
 
-  public reformat(): void {
-    if (this.isLettre() || this.isCv() || this.isAutre()) {
-      this.company = null;
-      this.workplace = null;
-      this.grossSalary = null;
-      this.netSalary = null;
-      this.documentDate = null;
-    } else if(this.isContrat()){
-      this.grossSalary = null;
-      this.netSalary = null;
-    }
-  }
-
   public isFichePaie(): Boolean {
     return this.documentType === EnumTypeValue.FichePaie;
   }
@@ -68,4 +54,5 @@ export class FileModel {
   public isAutre(): Boolean {
     return this.documentType === EnumTypeValue.Autre;
   }
+
 }
