@@ -7,31 +7,6 @@
     <mat-label>Nom</mat-label>
     <input matInput formControlName="name" required>
   </mat-form-field>
-  <mat-divider></mat-divider>
-  <mat-dialog-content>
-    <h4 class="my-2 font-weight-light">Imbriquer sous :</h4>
-
-    <mat-radio-group aria-label="Select a folder" formControlName="parent">
-      <mat-radio-button class="d-flex align-items-center" disableRipple labelPosition="before" style="height:40px">Aucun
-      </mat-radio-button>
-      <mat-tree tabindex="0" [dataSource]="dataSource" [treeControl]="treeControl">
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="8px">
-          <button type="button" mat-icon-button *ngIf="hasChild(node)" matTreeNodeToggle disableRipple>
-            <mat-icon>
-              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-            </mat-icon>
-          </button>
-          <button *ngIf="!hasChild(node)" mat-icon-button disabled></button>
-          <mat-icon class="ml-n2">
-            {{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
-          </mat-icon>
-          <mat-radio-button class="ml-2" [value]="node" labelPosition="before" disableRipple>{{node.name}}</mat-radio-button>
-        </mat-tree-node>
-      </mat-tree>
-    </mat-radio-group>
-
-  </mat-dialog-content>
-  <mat-divider></mat-divider>
   <mat-dialog-actions align="end">
     <button mat-button color="primary" [disabled]="loading" type="submit">
       <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>

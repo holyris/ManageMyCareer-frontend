@@ -49,6 +49,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { FolderCreationModalComponent } from './folder-creation-modal/folder-creation-modal.component';
 import { NumberValidatorDirective } from '../shared/directives/number-validator.directive';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { FolderUpdateModalComponent } from './folder-update-modal/folder-update-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
     OverviewComponent,
     FolderCreationModalComponent,
     NumberValidatorDirective,
+    FolderUpdateModalComponent,
   ],
   imports: [
     BrowserModule,

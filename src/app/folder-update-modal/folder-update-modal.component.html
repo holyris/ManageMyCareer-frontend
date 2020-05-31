@@ -1,0 +1,46 @@
+<form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+  <h2 mat-dialog-title>
+    Modifier un dossier
+  </h2>
+
+  <mat-form-field [style]="{'min-width':'300px'}">
+    <mat-label>Nom</mat-label>
+    <input matInput formControlName="name" required>
+  </mat-form-field>
+  <mat-divider></mat-divider>
+  <mat-dialog-content>
+    <h4 class="my-2 font-weight-light">Imbriquer sous :</h4>
+
+    <mat-radio-group aria-label="Select a folder" formControlName="parentFolderId">
+      <mat-radio-button class="d-flex align-items-center" labelPosition="before" [value]="null" style="height:40px">
+        Aucun
+      </mat-radio-button>
+      <mat-tree tabindex="0" [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="8px"
+          [matTooltip]="isUpdatingFolder(node) ? 'Impossible de déplacer le dossier vers lui même' : ''">
+          <button type="button" mat-icon-button *ngIf="node.expandable" [disabled]="isUpdatingFolder(node)"
+            matTreeNodeToggle disableRipple>
+            <mat-icon>
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <button *ngIf="!node.expandable" mat-icon-button disabled></button>
+          <mat-icon class="ml-n2">
+            {{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
+          </mat-icon>
+          <mat-radio-button class="ml-2" [value]="node.id" labelPosition="before" [disabled]="isUpdatingFolder(node)">
+            {{node.name}}
+          </mat-radio-button>
+        </mat-tree-node>
+      </mat-tree>
+    </mat-radio-group>
+
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+  <mat-dialog-actions align="end">
+    <button mat-button color="primary" [disabled]="loading" type="submit">
+      <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+      Confirmer</button>
+    <button type="button" mat-button matDialogClose>Fermer</button>
+  </mat-dialog-actions>
+</form>

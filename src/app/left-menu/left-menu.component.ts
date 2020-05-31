@@ -1,107 +1,130 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation, ElementRef, Renderer2 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatDialog } from '@angular/material/dialog';
 import { UploadModalComponent } from '../upload-modal/upload-modal.component';
 import { FolderCreationModalComponent } from '../folder-creation-modal/folder-creation-modal.component';
+import { FolderService } from 'src/shared/services/folder.service';
+import { Folder } from 'src/shared/models/Folder';
+import { FolderNode } from 'src/shared/models/FolderNode';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update-modal.component';
 
 
-/**
- * Food data with nested structure.
- * Each node has a name and an optional list of children.
- */
-interface FoodNode {
-  name: string;
-  children?: FoodNode[];
-}
-
-const TREE_DATA: FoodNode[] = [
-  {
-    name: 'Fruit',
-    children: [
-      { name: 'Apple' },
-      { name: 'Banana' },
-      { name: 'Fruit loops' },
-    ]
-  },
-  {
-    name: 'Vegetables',
-    children: [
-      {
-        name: 'Green',
-        children: [
-          { name: 'Broccoli' },
-          { name: 'Brussels sprouts' },
-        ]
-      }, {
-        name: 'Orange',
-        children: [
-          { name: 'Pumpkins' },
-          { name: 'Carrots' },
-        ]
-      },
-    ]
-  },
-  { name: "Casserole" }
-];
-
-/** Flat node with expandable and level information */
-interface ExampleFlatNode {
-  expandable: boolean;
-  name: string;
-  level: number;
-}
 @Component({
   selector: 'app-left-menu',
   templateUrl: './left-menu.component.html',
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent implements OnInit {
-  private _transformer = (node: FoodNode, level: number) => {
+
+  private _transformer = (folder: Folder, level: number) => {
     return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level: level,
+      id: folder.id,
+      name: folder.name,
+      childFolders: folder.childFolders,
+      expandable: !!folder.childFolders && folder.childFolders.length > 0,
+      level: level
     };
   }
 
-  treeControl = new FlatTreeControl<ExampleFlatNode>(
+  treeControl = new FlatTreeControl<FolderNode>(
     node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
+    this._transformer, node => node.level, node => node.expandable, node => node.childFolders);
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+  selectedFolderId: string = null;
+  expandedNodes: string[] = [];
+  dataSentSubscription: Subscription;
+
   constructor(
-    public router: Router,
-    public dialog: MatDialog,
+    private route: Router,
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private folderService: FolderService
   ) {
-    this.dataSource.data = TREE_DATA;
   }
 
   ngOnInit(): void {
+
+    this.refresh();
+    this.dataSentSubscription = this.folderService.getDataSentEvent.subscribe(
+      () => {
+        this.refresh();
+      }
+    )
   }
 
-  //impossible to change by another way
-  ngAfterViewInit(): void {
-    this.setListItemContentPadding();
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.dataSentSubscription.unsubscribe();
   }
 
-  showFileUploadModal() {
-    this.dialog.open(UploadModalComponent, { disableClose: true })
+  refresh() {
+    this.storeExpandedNodes();
+    this.folderService.getTree().subscribe(
+      data => {
+        this.dataSource.data = data;
+        this.expandStoredNodes();
+        this.setListItemContentPadding();
+      }
+    );
   }
 
-  showFolderCreationModal() {
-    this.dialog.open(FolderCreationModalComponent, { data: TREE_DATA, disableClose: true, minHeight:"0%"})
+  showFileUploadModal(folderId: string = null) {
+    console.log(this.activatedRoute.snapshot.paramMap);
+    this.dialog.open(UploadModalComponent, {
+      data: { folderId: folderId },
+      disableClose: true
+    })
   }
 
-  deleteNode(node) {
-    console.log(node);
-    console.log(this.treeFlattener.getChildren(node));
+  showFolderCreationModal(parentFolderId: string = null) {
+    this.dialog.open(FolderCreationModalComponent, {
+      data: { parentFolderId: parentFolderId },
+      disableClose: true
+    })
+  }
+  showFolderUpdateModal(node: FolderNode) {
+    let parentNode = this.getParentNode(node);
+
+    this.dialog.open(FolderUpdateModalComponent, {
+      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
+      disableClose: true
+    })
+  }
+  async deleteFolder(folder) {
+    await this.folderService.delete(folder.id);
+    if (this.getRouteFolderId() !== folder.id) return;
+
+    let parentFolder = this.getParentNode(folder);
+    if (parentFolder) {
+      this.route.navigate(['/folders/' + parentFolder.id]);
+    } else {
+      this.route.navigate(['/files']);
+    }
+  }
+
+  /* Get the parent node of a node */
+  getParentNode(node: FolderNode): FolderNode | null {
+    const currentLevel = node.level;
+    if (currentLevel < 1) {
+      return null;
+    }
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+      if (currentNode.level < currentLevel) {
+        return currentNode;
+      }
+    }
+    return null;
   }
 
   toggleNode(event, node) {
@@ -110,8 +133,34 @@ export class LeftMenuComponent implements OnInit {
     this.setListItemContentPadding();
   }
 
-  hasChild(node: ExampleFlatNode) {
-    return node.expandable;
+  getRouteFolderId(): string {
+    let route = this.route.url;
+    if (route.includes("/folders/")) {
+      return route.replace("/folders/", "");
+    } else {
+      return null;
+    }
+  }
+
+  storeExpandedNodes() {
+    if (this.treeControl.dataNodes) {
+      this.expandedNodes = [];
+      this.treeControl.dataNodes.forEach(node => {
+        if (this.treeControl.isExpanded(node)) {
+          this.expandedNodes.push(node.id);
+        }
+      });
+    }
+  }
+
+  expandStoredNodes() {
+    if (this.treeControl.dataNodes) {
+      this.treeControl.dataNodes.forEach(node => {
+        if (this.expandedNodes.includes(node.id)) {
+          this.treeControl.expand(node);
+        }
+      });
+    }
   }
 
   setListItemContentPadding() {
