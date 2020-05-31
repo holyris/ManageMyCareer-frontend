@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileService } from 'src/shared/services/file.service';
-import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MY_FORMATS } from '../upload-modal/upload-modal.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
@@ -53,7 +52,6 @@ export class UpdateModalComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public fileData: any,
     private fileService: FileService,
-    private fileUploadEventService: FileUploadEventService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog
   ) { }
@@ -66,9 +64,9 @@ export class UpdateModalComponent implements OnInit {
   }
 
   async submit() {
+    if (this.form.invalid) return;
     this.loading = true;
     await this.fileService.update(this.file);
-    this.fileUploadEventService.filesUploaded()
     this.loading = false;
     this.close();
   }

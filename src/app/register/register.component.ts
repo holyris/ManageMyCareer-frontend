@@ -34,7 +34,8 @@ export class RegisterComponent implements OnInit {
     }, { validator: this.passwordMatcher });
   }
 
-  onSubmit() {
+  submit() {
+    if (this.form.invalid) return;
     this.loading = true;
     this.resetAlert();
     const user = new User(this.form.value.username, this.form.value.password);

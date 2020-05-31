@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
-import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
 import { GridApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
 import { UpdateModalComponent } from '../update-modal/update-modal.component';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { FolderService } from 'src/shared/services/folder.service';
 
 @Component({
   selector: 'app-file-list',
@@ -16,15 +18,18 @@ import { UpdateModalComponent } from '../update-modal/update-modal.component';
 export class FileListComponent implements OnInit {
   public columnDefs;
   public defaultColDef;
-  uploadSubscription: Subscription;
+  folderIdRouteParam: string;
+  dataSentSubscription: Subscription;
+  routeParamsSubscription: Subscription;
   gridApi: GridApi;
   files: FileModel[];
   menuTabs: Array<string> = ['filterMenuTab'];
 
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private fileService: FileService,
-    private fileUploadEventService: FileUploadEventService,
+    private folderService: FolderService,
     private filePreviewModalService: FilePreviewModalService,
     public dialog: MatDialog,
   ) {
@@ -39,17 +44,21 @@ export class FileListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.refreshItems();
-    this.uploadSubscription = this.fileUploadEventService.getFilesUploadedEvent.subscribe(
+    this.routeParamsSubscription = this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
+      this.folderIdRouteParam = params.get('folderId');
+      this.handleFolderIdRouteParam();
+    })
+    this.dataSentSubscription = this.fileService.getDataSentEvent.subscribe(
       () => {
-        this.refreshItems();
+        this.handleFolderIdRouteParam();
       }
     )
   }
 
   ngOnDestroy() {
     // prevent memory leak when component destroyed
-    this.uploadSubscription.unsubscribe();
+    this.routeParamsSubscription.unsubscribe();
+    this.dataSentSubscription.unsubscribe();
   }
 
   onGridReady(params) {
@@ -75,14 +84,27 @@ export class FileListComponent implements OnInit {
 
   async deleteFiles(files: FileModel[]) {
     await this.fileService.deleteMultiple(files);
-    this.refreshItems();
   }
 
-  refreshItems(): void {
+  handleFolderIdRouteParam() {
+    if (this.folderIdRouteParam) {
+      this.loadFilesByFolderId(this.folderIdRouteParam);
+    } else {
+      this.loadAllFiles();
+    }
+  }
+
+  loadAllFiles() {
     this.fileService.getAll()
       .subscribe((files: FileModel[]) => {
         this.files = files;
       });
+  }
+
+  loadFilesByFolderId(folderId: string): void {
+    this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
+      this.files = files
+    })
   }
 
   rowDoubleClicked(event) {
@@ -102,7 +124,7 @@ export class FileListComponent implements OnInit {
   }
 
   getContextMenuItems = (params) => {
-    if (params.node) {      
+    if (params.node) {
       var file = params.node.data;
       var result = [
         {

@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSubmit() {    
+  submit() { 
+    if (this.form.invalid) return;   
     this.loading=true;
     this.resetAlert();
     this.authenticationService.login(new User(this.form.value.username, this.form.value.password))

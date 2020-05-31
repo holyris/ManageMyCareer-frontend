@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { FileModel } from 'src/shared/models/FileModel';
@@ -25,6 +25,9 @@ export class FileService {
     // })
   };
 
+  private dataSentSubject = new Subject<string>();
+  public getDataSentEvent = this.dataSentSubject.asObservable();
+
   constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
   getAll(): Observable<FileModel[]> {
@@ -39,34 +42,6 @@ export class FileService {
 
   getBlob(id: number): Observable<Blob> {
     return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
-  }
-
-  getCompanies() {
-    return this.http.get<string[]>(this.filesUrl + "companies", this.httpOptions);
-  }
-
-  getWorkplaces() {
-    return this.http.get<string[]>(this.filesUrl + "workplaces", this.httpOptions);
-  }
-
-  async upload(fileObjects: Array<FileModel>) {
-    const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
-    const length = Object.keys(request).length
-    let detail = "";
-    if (length > 1) {
-      detail = length + ' fichiers importés'
-    }
-    else {
-      detail = 'Fichier importé'
-    }
-    this.notificationService.add({ severity: 'success', detail: detail });
-    return request
-  }
-
-  async update(file: FileModel) {
-    const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
-    this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
-    return request;
   }
 
   download(id: number, filename?: string) {
@@ -101,6 +76,36 @@ export class FileService {
       });
   }
 
+  getCompanies() {
+    return this.http.get<string[]>(this.filesUrl + "companies", this.httpOptions);
+  }
+
+  getWorkplaces() {
+    return this.http.get<string[]>(this.filesUrl + "workplaces", this.httpOptions);
+  }
+
+  async upload(fileObjects: Array<FileModel>) {
+    const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
+    const length = Object.keys(request).length
+    let detail = "";
+    if (length > 1) {
+      detail = length + ' fichiers importés'
+    }
+    else {
+      detail = 'Fichier importé'
+    }
+    this.notificationService.add({ severity: 'success', detail: detail });
+    this.alertDataSent();
+    return request
+  }
+
+  async update(file: FileModel) {
+    const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
+    this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
+    this.alertDataSent();
+    return request;
+  }
+
   async delete(id: number) {
     const request = this.http.delete(this.filesUrl + id, this.httpOptions).toPromise();
     return request;
@@ -119,6 +124,11 @@ export class FileService {
       detail = 'Fichier supprimé'
     }
     this.notificationService.add({ severity: 'success', detail: detail });
+    this.alertDataSent();
+  }
+
+  alertDataSent() {
+    this.dataSentSubject.next();
   }
 
   /**

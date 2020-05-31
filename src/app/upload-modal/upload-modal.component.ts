@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileModel } from 'src/shared/models/FileModel';
-import { FileUploadEventService } from 'src/shared/services/file-upload-event.service';
 import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { Moment } from 'moment';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { startWith, map } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
 
 export const MY_FORMATS = {
   parse: {
@@ -62,8 +62,8 @@ export class UploadModalComponent implements OnInit {
   ];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public fileService: FileService,
-    public fileUploadEventService: FileUploadEventService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog
   ) { }
@@ -76,12 +76,11 @@ export class UploadModalComponent implements OnInit {
   }
 
   async submit() {
+    if (this.form.invalid) return;
     this.loading = true;
     await this.fileService.upload(this.fileObjects)
-    this.fileUploadEventService.filesUploaded()
     this.loading = false;
     this.close();
-    console.log(this.fileObjects);
   }
 
   close() {
@@ -89,11 +88,14 @@ export class UploadModalComponent implements OnInit {
   }
 
   addFiles(event) {
+
     for (let [index, file] of event.files.entries()) {
       let fileObject = new FileModel();
       fileObject.name = file.name;
       fileObject.size = file.size;
       fileObject.type = file.type;
+      fileObject.folderId = this.data.folderId;
+      console.log(fileObject);
       this.formArray.push(this.formBuilder.group(fileObject));
       this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
       this.filteredWorkplaces = this.formArray.at(index).get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))

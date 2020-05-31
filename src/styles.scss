@@ -107,12 +107,18 @@ button {
   outline: 0 !important;
 }
 
-label {
-  margin: 0 !important;
+.mat-radio-button {
+  label {
+    margin: 0 !important;
+  }
 }
 
 .mat-form-field {
   width: 100% !important;
+}
+.mat-tooltip {
+  font-size: 12px !important;
+  max-width: unset !important;
 }
 
 .mat-menu-item {

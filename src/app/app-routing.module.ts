@@ -30,7 +30,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'folders/:folderName',
+    path: 'folders/:folderId',
     component: FileListComponent,
     canActivate: [AuthGuard]
   },

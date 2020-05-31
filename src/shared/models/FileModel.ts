@@ -13,7 +13,8 @@ export class FileModel {
     public documentDate: Date = null,
     public grossSalary: number = null,
     public netSalary: number = null,
-    public fileContent: string = null
+    public fileContent: string = null,
+    public folderId: string = null
   ) {
   }
 
