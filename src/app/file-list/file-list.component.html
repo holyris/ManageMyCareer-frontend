@@ -1,15 +1,10 @@
-<div class="grid-wrapper h-100">
-    <ag-grid-angular
-    id="gridManageMyCareer"
-    class="ag-theme-alpine w-100 h-100"
-    [columnDefs]="columnDefs"
-    [defaultColDef]="defaultColDef"
-    [rowData]="files"
-    (gridReady)="onGridReady($event)"
-    suppressCellSelection="true"
-    (rowDoubleClicked)="rowDoubleClicked($event)"
-    (cellContextMenu)="rowRightClicked($event)"
-    [getContextMenuItems]="getContextMenuItems"
-    rowSelection='multiple'
-    ></ag-grid-angular>
+<div class="d-flex flex-column h-100">
+  <app-breadcrumb></app-breadcrumb>
+  <mat-divider></mat-divider>
+  <div class="h-100">
+    <ag-grid-angular id="gridManageMyCareer" class="ag-theme-alpine w-100 h-100" [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef" [rowData]="files" (gridReady)="onGridReady($event)" suppressCellSelection="true"
+      (rowDoubleClicked)="rowDoubleClicked($event)" (cellContextMenu)="rowRightClicked($event)"
+      [getContextMenuItems]="getContextMenuItems" rowSelection='multiple'></ag-grid-angular>
+  </div>
 </div>

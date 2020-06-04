@@ -5,7 +5,7 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
 import { FileService } from 'src/shared/services/file.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { MY_FORMATS } from '../upload-modal/upload-modal.component';
+import { MY_FORMATS } from '../file-upload-modal/file-upload-modal.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -13,16 +13,16 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-update-modal',
-  templateUrl: './update-modal.component.html',
-  styleUrls: ['./update-modal.component.scss'],
+  selector: 'app-file-update-modal',
+  templateUrl: './file-update-modal.component.html',
+  styleUrls: ['./file-update-modal.component.scss'],
   providers: [
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
-export class UpdateModalComponent implements OnInit {
+export class FileUpdateModalComponent implements OnInit {
   loading: Boolean = false;
-  companies: string[] = ['Acta DS', 'ISIR', 'Google', 'Facebook'];
-  workplaces: string[] = ['Manager', 'Developpeur', 'Caissier', 'Croque-mort'];
+  companies: string[] = [];
+  workplaces: string[] = [];
   form: FormGroup;
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;

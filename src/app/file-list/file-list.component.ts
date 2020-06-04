@@ -5,10 +5,10 @@ import { Subscription } from 'rxjs';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
 import { GridApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
-import { UpdateModalComponent } from '../update-modal/update-modal.component';
+import { FileUpdateModalComponent } from '../file-update-modal/file-update-modal.component';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import { FolderService } from 'src/shared/services/folder.service';
+import { MoveModalComponent } from '../move-modal/move-modal.component';
 
 @Component({
   selector: 'app-file-list',
@@ -67,7 +67,11 @@ export class FileListComponent implements OnInit {
   }
 
   showUpdateModal(file: FileModel) {
-    this.dialog.open(UpdateModalComponent, { data: file, disableClose: true });
+    this.dialog.open(FileUpdateModalComponent, { data: file, disableClose: true });
+  }
+
+  showMoveModal(file: FileModel) {
+    this.dialog.open(MoveModalComponent, { data: file, disableClose: true });
   }
 
   showFilePreviewModal(file) {
@@ -129,30 +133,34 @@ export class FileListComponent implements OnInit {
       var result = [
         {
           name: 'Aperçu',
-          icon: `<i class='fa fa-eye'></i>`,
+          icon: `<i class="material-icons-outlined">visibility</i>`,
           action: () => {
             this.showFilePreviewModal(file)
           }
         },
-        'separator',
         {
           name: 'Modifier',
-          icon: `<i class='fa fa-pen'></i>`,
+          icon: `<i class="material-icons-outlined">create</i>`,
           action: () => {
             this.showUpdateModal(file)
           }
         },
-        'separator',
+        {
+          name: 'Déplacer',
+          icon: `<i class="material-icons-outlined">low_priority</i>`,
+          action: () => {
+            this.showMoveModal(file)
+          }
+        },
         {
           name: 'Télécharger',
-          icon: `<i class='fa fa-download'></i>`,
+          icon: `<i class="material-icons-outlined">get_app</i>`,
           action: () => { this.downloadFile(file) }
 
         },
-        'separator',
         {
           name: 'Supprimer',
-          icon: `<i class='fa fa-trash'></i>`,
+          icon: `<i class="material-icons-outlined">delete</i>`,
           action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
 
         },
