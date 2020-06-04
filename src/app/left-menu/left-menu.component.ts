@@ -110,8 +110,9 @@ export class LeftMenuComponent implements OnInit {
   }
 
   showFolderUpdateModal(node: FolderNode) {
+    let parentNode = this.getParentNode(node);
     this.dialog.open(FolderUpdateModalComponent, {
-      data: { id: node.id, name: node.name },
+      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
       disableClose: true
     })
   }

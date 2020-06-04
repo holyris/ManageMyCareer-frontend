@@ -23,8 +23,9 @@ export class FolderUpdateModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      id: [this.data.id, Validators.required],
-      name: [this.data.name, Validators.required]
+      id: [this.data.id],
+      name: [this.data.name, Validators.required],
+      parentFolderId: [this.data.parentFolderId]
     })
   }
 
