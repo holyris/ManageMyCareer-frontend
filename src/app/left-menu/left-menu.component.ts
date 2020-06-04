@@ -53,7 +53,7 @@ export class LeftMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDataOnce();
+    this.refresh();
     this.dataSentSubscription = this.folderService.getDataSentEvent.subscribe(
       () => {
         this.refresh();
@@ -74,17 +74,6 @@ export class LeftMenuComponent implements OnInit {
     this.dataSentSubscription.unsubscribe();
   }
 
-  loadDataOnce() {
-    this.folderService.getTree().subscribe(
-      data => {
-        this.dataSource.data = data;
-        this.expandStoredNodes();
-        this.setListItemContentPadding();
-        this.sendActiveNodeParents();
-      }
-    );
-  }
-
   refresh() {
     this.storeExpandedNodes();
     this.folderService.getTree().subscribe(
@@ -92,6 +81,7 @@ export class LeftMenuComponent implements OnInit {
         this.dataSource.data = data;
         this.expandStoredNodes();
         this.setListItemContentPadding();
+        this.sendActiveNodeParents();
       }
     );
   }
