@@ -35,8 +35,8 @@ export class MoveModalComponent implements OnInit {
   loading: Boolean = false;
   form: FormGroup;
   initialFolderId: string = null;
-  modifyingFolderId: string = null;
   titleItem: string = null;
+  formControlName: string = null;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public injectedData: any,
@@ -52,15 +52,17 @@ export class MoveModalComponent implements OnInit {
       this.dataSource.data = data;
     })
     if (this.injectedData.hasOwnProperty("parentFolderId")) {
-      this.modifyingFolderId = this.injectedData.parentFolderId;
       this.initialFolderId = this.injectedData.id
       this.titleItem = "dossier";
+      this.formControlName = "parentFolderId"
     } else {
       this.titleItem = "fichier"
+      this.formControlName = "folderId"
     }
     this.form = this.formBuilder.group({
       id: [this.injectedData.id, Validators.required],
-      folderId: [this.modifyingFolderId]
+      name: [this.injectedData.name],
+      [this.formControlName]: [this.injectedData.parentFolderId]
     })
   }
 

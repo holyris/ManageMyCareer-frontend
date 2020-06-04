@@ -6,7 +6,7 @@
   <mat-dialog-content style="overflow-x: hidden; width:300px;">
     <h4 class="my-2 font-weight-light">Imbriquer sous :</h4>
 
-    <mat-radio-group aria-label="Select a folder" formControlName="folderId">
+    <mat-radio-group aria-label="Select a folder" [formControlName]="formControlName">
       <mat-radio-button class="d-flex align-items-center" labelPosition="before" [value]="null" style="height:40px">
         Aucun dossier
       </mat-radio-button>
