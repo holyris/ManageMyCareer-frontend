@@ -39,17 +39,19 @@ import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
 
 import { FileListComponent } from './file-list/file-list.component';
-import { UploadModalComponent } from './upload-modal/upload-modal.component';
+import { FileUploadModalComponent } from './file-upload-modal/file-upload-modal.component';
 import { LoginComponent } from './login/login.component';
 import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
 import { LeftMenuComponent } from './left-menu/left-menu.component';
-import { UpdateModalComponent } from './update-modal/update-modal.component';
+import { FileUpdateModalComponent } from './file-update-modal/file-update-modal.component';
 import { OverviewComponent } from './overview/overview.component';
 import { FolderCreationModalComponent } from './folder-creation-modal/folder-creation-modal.component';
 import { NumberValidatorDirective } from '../shared/directives/number-validator.directive';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { FolderUpdateModalComponent } from './folder-update-modal/folder-update-modal.component';
+import { MoveModalComponent } from './move-modal/move-modal.component';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 @NgModule({
   declarations: [
@@ -59,15 +61,17 @@ import { FolderUpdateModalComponent } from './folder-update-modal/folder-update-
     RegisterComponent,
     FileListComponent,
     LeftMenuComponent,
-    UploadModalComponent,
+    FileUploadModalComponent,
     LoginComponent,
     NotificationToastComponent,
     FilePreviewModalComponent,
-    UpdateModalComponent,
+    FileUpdateModalComponent,
     OverviewComponent,
     FolderCreationModalComponent,
     NumberValidatorDirective,
     FolderUpdateModalComponent,
+    MoveModalComponent,
+    BreadcrumbComponent,
   ],
   imports: [
     BrowserModule,

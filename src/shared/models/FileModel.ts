@@ -32,7 +32,8 @@ export class FileModel {
       json['documentDate'] ? new Date(json['documentDate']) : null,
       json['grossSalary'],
       json['netSalary'],
-      json['fileContent']
+      json['fileContent'],
+      json['folderId']
     )
   }
 

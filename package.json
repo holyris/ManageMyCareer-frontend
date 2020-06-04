@@ -23,7 +23,6 @@
     "@angular/platform-browser": "^9.1.4",
     "@angular/platform-browser-dynamic": "^9.1.4",
     "@angular/router": "^9.1.4",
-    "@fortawesome/fontawesome-free": "^5.13.0",
     "@popperjs/core": "^2.4.0",
     "@types/file-saver": "^2.0.1",
     "ag-grid-angular": "^23.1.0",

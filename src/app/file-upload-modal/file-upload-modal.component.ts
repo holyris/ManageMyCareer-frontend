@@ -24,17 +24,17 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-upload-modal',
-  templateUrl: './upload-modal.component.html',
-  styleUrls: ['./upload-modal.component.scss'],
+  selector: 'app-file-upload-modal',
+  templateUrl: './file-upload-modal.component.html',
+  styleUrls: ['./file-upload-modal.component.scss'],
   providers: [
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
-export class UploadModalComponent implements OnInit {
+export class FileUploadModalComponent implements OnInit {
   @ViewChild('uploadFileComponent') uploadFileComponent: any;
   loading: Boolean = false;
-  companies: string[] = ['Acta DS', 'ISIR', 'Google', 'Facebook'];
-  workplaces: string[] = ['Manager', 'Developpeur', 'Caissier', 'Croque-mort'];
+  companies: string[] = [];
+  workplaces: string[] = [];
   form: FormGroup;
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;
@@ -95,7 +95,6 @@ export class UploadModalComponent implements OnInit {
       fileObject.size = file.size;
       fileObject.type = file.type;
       fileObject.folderId = this.data.folderId;
-      console.log(fileObject);
       this.formArray.push(this.formBuilder.group(fileObject));
       this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
       this.filteredWorkplaces = this.formArray.at(index).get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))

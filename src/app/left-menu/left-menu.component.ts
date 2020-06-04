@@ -2,15 +2,17 @@ import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatDialog } from '@angular/material/dialog';
-import { UploadModalComponent } from '../upload-modal/upload-modal.component';
+import { FileUploadModalComponent } from '../file-upload-modal/file-upload-modal.component';
 import { FolderCreationModalComponent } from '../folder-creation-modal/folder-creation-modal.component';
 import { FolderService } from 'src/shared/services/folder.service';
 import { Folder } from 'src/shared/models/Folder';
 import { FolderNode } from 'src/shared/models/FolderNode';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Router, NavigationStart, RouterEvent, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update-modal.component';
-
+import { MoveModalComponent } from '../move-modal/move-modal.component';
+import { filter, distinctUntilChanged } from 'rxjs/operators';
+import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/folder-list-breadcrumb-communication.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -23,7 +25,6 @@ export class LeftMenuComponent implements OnInit {
     return {
       id: folder.id,
       name: folder.name,
-      childFolders: folder.childFolders,
       expandable: !!folder.childFolders && folder.childFolders.length > 0,
       level: level
     };
@@ -42,9 +43,9 @@ export class LeftMenuComponent implements OnInit {
   dataSentSubscription: Subscription;
 
   constructor(
-    private route: Router,
-    private activatedRoute: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog,
+    private breadCrumbCommunication: FolderListBreadcrumbCommunicationService,
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private folderService: FolderService
@@ -52,18 +53,36 @@ export class LeftMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.refresh();
+    this.loadDataOnce();
     this.dataSentSubscription = this.folderService.getDataSentEvent.subscribe(
       () => {
         this.refresh();
       }
-    )
+    );
+
+    //listen route change
+    this.router.events.pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd),
+      distinctUntilChanged(),
+    ).subscribe(() => {
+      this.sendActiveNodeParents();
+    })
   }
 
   ngOnDestroy() {
     // prevent memory leak when component destroyed
     this.dataSentSubscription.unsubscribe();
+  }
+
+  loadDataOnce() {
+    this.folderService.getTree().subscribe(
+      data => {
+        this.dataSource.data = data;
+        this.expandStoredNodes();
+        this.setListItemContentPadding();
+        this.sendActiveNodeParents();
+      }
+    );
   }
 
   refresh() {
@@ -77,9 +96,17 @@ export class LeftMenuComponent implements OnInit {
     );
   }
 
+  sendActiveNodeParents() {
+    let activeNode = this.findActiveFolderNode();
+    let parents = [];
+    if (activeNode) {
+      parents = this.getAllParentNode(activeNode, [activeNode])
+    }
+    this.breadCrumbCommunication.alertFolderChanged(parents);
+  }
+
   showFileUploadModal(folderId: string = null) {
-    console.log(this.activatedRoute.snapshot.paramMap);
-    this.dialog.open(UploadModalComponent, {
+    this.dialog.open(FileUploadModalComponent, {
       data: { folderId: folderId },
       disableClose: true
     })
@@ -91,23 +118,48 @@ export class LeftMenuComponent implements OnInit {
       disableClose: true
     })
   }
-  showFolderUpdateModal(node: FolderNode) {
-    let parentNode = this.getParentNode(node);
 
+  showFolderUpdateModal(node: FolderNode) {
     this.dialog.open(FolderUpdateModalComponent, {
+      data: { id: node.id, name: node.name },
+      disableClose: true
+    })
+  }
+
+  showMoveModal(node: FolderNode) {
+    const parentNode = this.getParentNode(node);
+
+    this.dialog.open(MoveModalComponent, {
       data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
       disableClose: true
     })
   }
+
   async deleteFolder(folder) {
     await this.folderService.delete(folder.id);
     if (this.getRouteFolderId() !== folder.id) return;
 
     let parentFolder = this.getParentNode(folder);
     if (parentFolder) {
-      this.route.navigate(['/folders/' + parentFolder.id]);
+      this.router.navigate(['/folders/' + parentFolder.id]);
     } else {
-      this.route.navigate(['/files']);
+      this.router.navigate(['/files']);
+    }
+  }
+
+  toggleNode(event, node) {
+    this.stopPropagation(event);
+    this.treeControl.toggle(node);
+    this.setListItemContentPadding();
+  }
+
+  findActiveFolderNode(): FolderNode {
+    return this.getNodeById(this.getRouteFolderId())
+  }
+
+  getNodeById(id: string): FolderNode {
+    if (this.treeControl.dataNodes) {
+      return this.treeControl.dataNodes.find(node => node.id === id)
     }
   }
 
@@ -127,14 +179,26 @@ export class LeftMenuComponent implements OnInit {
     return null;
   }
 
-  toggleNode(event, node) {
-    this.stopPropagation(event);
-    this.treeControl.toggle(node);
-    this.setListItemContentPadding();
+  //store all parents in parents
+  getAllParentNode(node: FolderNode, parents: FolderNode[]): FolderNode[] {
+    if (!node) return parents;
+    const currentLevel = node.level;
+    if (currentLevel < 1) {
+      return parents;
+    }
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+      if (currentNode.level < currentLevel) {
+        parents.unshift(currentNode);
+        return this.getAllParentNode(currentNode, parents);
+      }
+    }
+    return parents;
   }
 
   getRouteFolderId(): string {
-    let route = this.route.url;
+    let route = this.router.url;
     if (route.includes("/folders/")) {
       return route.replace("/folders/", "");
     } else {

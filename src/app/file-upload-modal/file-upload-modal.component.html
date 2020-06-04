@@ -2,7 +2,7 @@
 	<h2 mat-dialog-title>Importer un fichier</h2>
 	<mat-dialog-content>
 		<div class="py-2 px-2">
-			<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload"
+			<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" type="file"
 				[auto]="true" [showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier(s)" [multiple]="true"
 				#uploadFileComponent>
 			</p-fileUpload>
@@ -19,7 +19,7 @@
 					</div>
 					<div class="row mt-auto">
 						<div class="col-12">
-							<button mat-button (click)="deleteFileObjectByIndex(i)">Retirer</button>
+							<button type="button" mat-button (click)="deleteFileObjectByIndex(i)">Retirer</button>
 						</div>
 					</div>
 				</div>
@@ -102,6 +102,6 @@
 		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!form.valid || loading" type="submit">
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			Importer</button>
-		<button mat-button [mat-dialog-close]="true">Fermer</button>
+		<button type="button" mat-button [mat-dialog-close]="true">Fermer</button>
 	</mat-dialog-actions>
 </form>

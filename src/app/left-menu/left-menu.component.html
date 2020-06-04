@@ -33,11 +33,7 @@
   <mat-divider></mat-divider>
   <h4 mat-subheader class="m-0 py-2 pr-0">
     DOSSIERS
-    <button class="ml-auto" style="color:grey" mat-icon-button type="button" aria-label="crée un dossier" matTooltip="Rafraichir"
-      matTooltipPosition="above" (click)="refresh()">
-      <mat-icon >refresh</mat-icon>
-    </button>
-    <button mat-icon-button type="button" matTooltip="Nouveau dossier" matTooltipPosition="above"
+    <button mat-icon-button class="ml-auto" type="button" matTooltip="Nouveau dossier" matTooltipPosition="above"
       (click)="showFolderCreationModal()">
       <mat-icon class="text-primary">create_new_folder</mat-icon>
     </button>
@@ -50,17 +46,17 @@
           <mat-nav-list dense class="w-100 pt-0">
             <mat-list-item disableRipple="true" [routerLink]="['folders', node.id]" routerLinkActive="active">
               <div matLine matTreeNodePadding matTreeNodePaddingIndent="8px">
-                <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)" disableRipple
-                  [attr.aria-label]="'toggle ' + node.name">
+                <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)"
+                  disableRipple [attr.aria-label]="'toggle ' + node.name">
                   <mat-icon>
-                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    {{treeControl.isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
                   </mat-icon>
                 </button>
                 <button *ngIf="!node.expandable" mat-icon-button disabled></button>
                 <mat-icon class="ml-n2">
                   {{treeControl.isExpanded(node) && node.expandable ? 'folder_open' : 'folder'}}
                 </mat-icon>
-                <span class="ml-2">
+                <span class="ml-3">
                   {{node.name}}
                 </span>
               </div>
@@ -69,13 +65,21 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="showFileUploadModal(node.id)">
+                  <mat-icon fontSet="material-icons-outlined">note_add</mat-icon>
+                  Nouveaux fichiers
+                </button>
                 <button mat-menu-item (click)="showFolderCreationModal(node.id)">
                   <mat-icon fontSet="material-icons-outlined">create_new_folder</mat-icon>
                   Nouveau dossier
                 </button>
                 <button mat-menu-item (click)="showFolderUpdateModal(node)">
                   <mat-icon fontSet="material-icons-outlined">create</mat-icon>
-                  Modifier
+                  Renommer
+                </button>
+                <button mat-menu-item (click)="showMoveModal(node)">
+                  <mat-icon fontSet="material-icons-outlined">low_priority</mat-icon>
+                  Déplacer
                 </button>
                 <button mat-menu-item (click)="deleteFolder(node)">
                   <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
