@@ -33,8 +33,8 @@ export class FolderUpdateModalComponent implements OnInit {
     this.loading = true;
     if (this.form.invalid) return;
     await this.folderService.create(this.updatingFolder)
-    this.loading = false;
     this.close();
+    this.loading = false;
   }
 
   close() {

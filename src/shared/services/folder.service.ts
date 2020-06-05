@@ -20,6 +20,9 @@ export class FolderService {
   private dataSentSubject = new Subject<string>();
   public getDataSentEvent = this.dataSentSubject.asObservable();
 
+  private deleteSubject = new Subject<string>();
+  public getDeleteEvent = this.deleteSubject.asObservable();
+
   constructor(private http: HttpClient, private notificationService: NotificationService) { }
 
   getAll(): Observable<Folder[]> {
@@ -56,11 +59,16 @@ export class FolderService {
     const request = await this.http.delete(this.url + id, this.httpOptions).toPromise();
     this.notificationService.add({ severity: 'success', detail: 'Dossier Supprimé' });
     this.alertDataSent();
+    this.alertDelete();
     return request;
   }
 
   alertDataSent() {
     this.dataSentSubject.next();
+  }
+
+  alertDelete() {
+    this.deleteSubject.next();
   }
 }
 

@@ -33,7 +33,7 @@
   </mat-dialog-content>
   <mat-divider></mat-divider>
   <mat-dialog-actions align="end">
-    <button mat-button color="primary" [disabled]="loading" type="submit">
+    <button mat-button color="primary" [disabled]="!form.valid || loading" type="submit">
       <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
       Confirmer</button>
     <button type="button" mat-button matDialogClose>Fermer</button>

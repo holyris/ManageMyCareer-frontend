@@ -28,9 +28,11 @@ export class FolderCreationModalComponent implements OnInit {
   }
 
   submit() {
+    this.loading=true;
     if (this.form.invalid) return;
     this.folderService.create(this.creatingFolder)
     this.close();
+    this.loading=false;
   }
 
   close() {
