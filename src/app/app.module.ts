@@ -52,6 +52,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { FolderUpdateModalComponent } from './folder-update-modal/folder-update-modal.component';
 import { MoveModalComponent } from './move-modal/move-modal.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { FolderCellComponent } from './folder-cell/folder-cell.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     FolderUpdateModalComponent,
     MoveModalComponent,
     BreadcrumbComponent,
+    FolderCellComponent,
   ],
   imports: [
     BrowserModule,

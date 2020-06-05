@@ -1,0 +1,5 @@
+<div class="d-flex align-items-center h-100">
+  <button *ngIf="file.folderId" mat-button [routerLink]="['/folders', file.folderId]" (click)="stopPropagation($event)"
+    routerLinkActive="primary" [matTooltip]="folderRoute">{{folderName}}</button>
+  <span *ngIf="!file.folderId">Aucun dossier</span>
+</div>

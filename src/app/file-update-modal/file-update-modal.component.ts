@@ -67,8 +67,8 @@ export class FileUpdateModalComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true;
     await this.fileService.update(this.file);
-    this.loading = false;
     this.close();
+    this.loading = false;
   }
 
   close() {

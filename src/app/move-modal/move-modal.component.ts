@@ -8,6 +8,7 @@ import { FolderNode } from 'src/shared/models/FolderNode';
 import { Folder } from 'src/shared/models/Folder';
 import { FileService } from 'src/shared/services/file.service';
 import { FileModel } from 'src/shared/models/FileModel';
+import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 
 @Component({
   selector: 'app-move-modal',
@@ -16,41 +17,44 @@ import { FileModel } from 'src/shared/models/FileModel';
 })
 export class MoveModalComponent implements OnInit {
 
-  private _transformer = (node: Folder, level: number) => {
+  // matTree objects are recreated because the expand states of this component must be isolated
+  _transformer = (folder: Folder, level: number) => {
     return {
-      id: node.id,
-      expandable: !!node.childFolders && node.childFolders.length > 0,
-      name: node.name,
-      level: level,
+      id: folder.id,
+      name: folder.name,
+      expandable: !!folder.childFolders && folder.childFolders.length > 0,
+      level: level
     };
   }
-
-  treeControl = new FlatTreeControl<FolderNode>(
-    node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
     this._transformer, node => node.level, node => node.expandable, node => node.childFolders);
 
+  treeControl = new FlatTreeControl<FolderNode>(
+    node => node.level, node => node.expandable);
+
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   loading: Boolean = false;
   form: FormGroup;
   initialFolderId: string = null;
   titleItem: string = null;
   formControlName: string = null;
 
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public injectedData: any,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private folderService: FolderService,
-    private fileService: FileService
+    private fileService: FileService,
+    private folderTreeStoreService: FolderTreeStoreService
   ) {
   }
 
   ngOnInit(): void {
-    this.folderService.getTree().subscribe(data => {
-      this.dataSource.data = data;
-    })
+    this.dataSource.data = this.folderTreeStoreService.dataSource.data;
+
     if (this.injectedData.hasOwnProperty("parentFolderId")) {
       this.initialFolderId = this.injectedData.id
       this.titleItem = "dossier";
@@ -74,8 +78,8 @@ export class MoveModalComponent implements OnInit {
     } else if (this.injectedData.hasOwnProperty("folderId")) {
       await this.fileService.update(this.updatingItem);
     }
-    this.loading = false;
     this.close();
+    this.loading = false;
   }
 
   close() {

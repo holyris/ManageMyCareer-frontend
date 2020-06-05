@@ -49,12 +49,12 @@
                 <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)"
                   disableRipple [attr.aria-label]="'toggle ' + node.name">
                   <mat-icon>
-                    {{treeControl.isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
+                    {{isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
                   </mat-icon>
                 </button>
                 <button *ngIf="!node.expandable" mat-icon-button disabled></button>
                 <mat-icon class="ml-n2">
-                  {{treeControl.isExpanded(node) && node.expandable ? 'folder_open' : 'folder'}}
+                  {{isExpanded(node) && node.expandable ? 'folder_open' : 'folder'}}
                 </mat-icon>
                 <span class="ml-3">
                   {{node.name}}

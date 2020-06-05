@@ -79,8 +79,8 @@ export class FileUploadModalComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true;
     await this.fileService.upload(this.fileObjects)
-    this.loading = false;
     this.close();
+    this.loading = false;
   }
 
   close() {

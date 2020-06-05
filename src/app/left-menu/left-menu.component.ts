@@ -13,6 +13,7 @@ import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update
 import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
 import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/folder-list-breadcrumb-communication.service';
+import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 
 @Component({
   selector: 'app-left-menu',
@@ -21,78 +22,33 @@ import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/fo
 })
 export class LeftMenuComponent implements OnInit {
 
-  private _transformer = (folder: Folder, level: number) => {
-    return {
-      id: folder.id,
-      name: folder.name,
-      expandable: !!folder.childFolders && folder.childFolders.length > 0,
-      level: level
-    };
-  }
-
-  treeControl = new FlatTreeControl<FolderNode>(
-    node => node.level, node => node.expandable);
-
-  treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.childFolders);
-
-  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-  selectedFolderId: string = null;
-  expandedNodes: string[] = [];
-  dataSentSubscription: Subscription;
+  // dataSentSubscription: Subscription;
+  folderTreeStoreRefreshSubscription: Subscription
 
   constructor(
     private router: Router,
+    private folderTreeStoreService: FolderTreeStoreService,
     private dialog: MatDialog,
-    private breadCrumbCommunication: FolderListBreadcrumbCommunicationService,
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private folderService: FolderService
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
-    this.refresh();
-    this.dataSentSubscription = this.folderService.getDataSentEvent.subscribe(
+    this.folderTreeStoreService.refresh();
+    this.folderTreeStoreRefreshSubscription = this.folderTreeStoreService.getRefreshEvent.subscribe(
       () => {
         this.refresh();
-      }
-    );
-
-    //listen route change
-    this.router.events.pipe(
-      filter((event: RouterEvent) => event instanceof NavigationEnd),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      this.sendActiveNodeParents();
-    })
+      });
   }
 
   ngOnDestroy() {
     // prevent memory leak when component destroyed
-    this.dataSentSubscription.unsubscribe();
+    this.folderTreeStoreRefreshSubscription.unsubscribe();
   }
 
   refresh() {
-    this.storeExpandedNodes();
-    this.folderService.getTree().subscribe(
-      data => {
-        this.dataSource.data = data;
-        this.expandStoredNodes();
-        this.setListItemContentPadding();
-        this.sendActiveNodeParents();
-      }
-    );
-  }
-
-  sendActiveNodeParents() {
-    let activeNode = this.findActiveFolderNode();
-    let parents = [];
-    if (activeNode) {
-      parents = this.getAllParentNode(activeNode, [activeNode])
-    }
-    this.breadCrumbCommunication.alertFolderChanged(parents);
+    this.setListItemContentPadding();
   }
 
   showFileUploadModal(folderId: string = null) {
@@ -110,7 +66,7 @@ export class LeftMenuComponent implements OnInit {
   }
 
   showFolderUpdateModal(node: FolderNode) {
-    let parentNode = this.getParentNode(node);
+    let parentNode = this.folderTreeStoreService.getParentNode(node);
     this.dialog.open(FolderUpdateModalComponent, {
       data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
       disableClose: true
@@ -118,7 +74,7 @@ export class LeftMenuComponent implements OnInit {
   }
 
   showMoveModal(node: FolderNode) {
-    const parentNode = this.getParentNode(node);
+    const parentNode = this.folderTreeStoreService.getParentNode(node);
 
     this.dialog.open(MoveModalComponent, {
       data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
@@ -127,65 +83,25 @@ export class LeftMenuComponent implements OnInit {
   }
 
   async deleteFolder(folder) {
-    await this.folderService.delete(folder.id);
-    if (this.getRouteFolderId() !== folder.id) return;
-
-    let parentFolder = this.getParentNode(folder);
-    if (parentFolder) {
-      this.router.navigate(['/folders/' + parentFolder.id]);
-    } else {
-      this.router.navigate(['/files']);
+    if (this.folderTreeStoreService.isActiveFolderNodeId(folder.id)) {
+      let parentFolder = this.folderTreeStoreService.getParentNode(folder);
+      if (parentFolder) {
+        this.router.navigate(['/folders/' + parentFolder.id]);
+      } else {
+        this.router.navigate(['/files']);
+      }
     }
+    await this.folderService.delete(folder.id);
   }
 
   toggleNode(event, node) {
     this.stopPropagation(event);
-    this.treeControl.toggle(node);
+    this.folderTreeStoreService.toggleNode(node);
     this.setListItemContentPadding();
   }
 
-  findActiveFolderNode(): FolderNode {
-    return this.getNodeById(this.getRouteFolderId())
-  }
-
-  getNodeById(id: string): FolderNode {
-    if (this.treeControl.dataNodes) {
-      return this.treeControl.dataNodes.find(node => node.id === id)
-    }
-  }
-
-  /* Get the parent node of a node */
-  getParentNode(node: FolderNode): FolderNode | null {
-    const currentLevel = node.level;
-    if (currentLevel < 1) {
-      return null;
-    }
-    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-    for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl.dataNodes[i];
-      if (currentNode.level < currentLevel) {
-        return currentNode;
-      }
-    }
-    return null;
-  }
-
-  //store all parents in parents
-  getAllParentNode(node: FolderNode, parents: FolderNode[]): FolderNode[] {
-    if (!node) return parents;
-    const currentLevel = node.level;
-    if (currentLevel < 1) {
-      return parents;
-    }
-    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-    for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl.dataNodes[i];
-      if (currentNode.level < currentLevel) {
-        parents.unshift(currentNode);
-        return this.getAllParentNode(currentNode, parents);
-      }
-    }
-    return parents;
+  isExpanded(node) {
+    return this.treeControl.isExpanded(node);
   }
 
   getRouteFolderId(): string {
@@ -197,25 +113,12 @@ export class LeftMenuComponent implements OnInit {
     }
   }
 
-  storeExpandedNodes() {
-    if (this.treeControl.dataNodes) {
-      this.expandedNodes = [];
-      this.treeControl.dataNodes.forEach(node => {
-        if (this.treeControl.isExpanded(node)) {
-          this.expandedNodes.push(node.id);
-        }
-      });
-    }
+  get dataSource() {
+    return this.folderTreeStoreService.dataSource;
   }
 
-  expandStoredNodes() {
-    if (this.treeControl.dataNodes) {
-      this.treeControl.dataNodes.forEach(node => {
-        if (this.expandedNodes.includes(node.id)) {
-          this.treeControl.expand(node);
-        }
-      });
-    }
+  get treeControl() {
+    return this.folderTreeStoreService.treeControl;
   }
 
   setListItemContentPadding() {

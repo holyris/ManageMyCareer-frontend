@@ -3,12 +3,13 @@ import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
 import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
-import { GridApi } from 'ag-grid-community';
+import { GridApi, ColumnApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
 import { FileUpdateModalComponent } from '../file-update-modal/file-update-modal.component';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FolderService } from 'src/shared/services/folder.service';
 import { MoveModalComponent } from '../move-modal/move-modal.component';
+import { FolderCellComponent } from '../folder-cell/folder-cell.component';
 
 @Component({
   selector: 'app-file-list',
@@ -21,10 +22,10 @@ export class FileListComponent implements OnInit {
   folderIdRouteParam: string;
   dataSentSubscription: Subscription;
   routeParamsSubscription: Subscription;
+  folderDeleteSubscription: Subscription;
   gridApi: GridApi;
   files: FileModel[];
   menuTabs: Array<string> = ['filterMenuTab'];
-
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -33,24 +34,36 @@ export class FileListComponent implements OnInit {
     private filePreviewModalService: FilePreviewModalService,
     public dialog: MatDialog,
   ) {
+
     this.columnDefs = [
-      { headerName: 'Nom', field: 'name', tooltipField: 'name' },
-      { headerName: 'Type', field: 'documentType' },
-      { headerName: 'Entreprise', field: 'company' },
-      { headerName: 'Emploi', field: 'workplace' },
-      { headerName: 'Date', field: 'documentDate', valueFormatter: (params) => { return this.formatDate(params.value) } }
+      { headerName: 'Nom', field: 'name', tooltipField: 'name', flex: 5 },
+      { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3 },
+      { headerName: 'Entreprise', field: 'company', tooltipField: 'company', flex: 3 },
+      { headerName: 'Emploi', field: 'workplace', tooltipField: 'workplace', flex: 3 },
+      { headerName: 'Mois', field: 'documentMonth', flex: 2 },
+      { headerName: 'Année', field: 'documentYear', flex: 2 },
+      {
+        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3,
+        cellRendererFramework: FolderCellComponent,
+      },
     ];
-    this.defaultColDef = { resizable: false, sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs };
+    this.defaultColDef = { sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs};
   }
 
   ngOnInit(): void {
     this.routeParamsSubscription = this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.folderIdRouteParam = params.get('folderId');
-      this.handleFolderIdRouteParam();
+      this.refresh();
     })
+
     this.dataSentSubscription = this.fileService.getDataSentEvent.subscribe(
       () => {
-        this.handleFolderIdRouteParam();
+        this.refresh();
+      }
+    )
+    this.folderDeleteSubscription = this.folderService.getDeleteEvent.subscribe(
+      () => {
+        this.refresh();
       }
     )
   }
@@ -59,10 +72,10 @@ export class FileListComponent implements OnInit {
     // prevent memory leak when component destroyed
     this.routeParamsSubscription.unsubscribe();
     this.dataSentSubscription.unsubscribe();
+    this.folderDeleteSubscription.unsubscribe();
   }
 
   onGridReady(params) {
-    params.api.sizeColumnsToFit();
     this.gridApi = params.api;
   }
 
@@ -90,7 +103,7 @@ export class FileListComponent implements OnInit {
     await this.fileService.deleteMultiple(files);
   }
 
-  handleFolderIdRouteParam() {
+  refresh() {
     if (this.folderIdRouteParam) {
       this.loadFilesByFolderId(this.folderIdRouteParam);
     } else {
@@ -107,7 +120,7 @@ export class FileListComponent implements OnInit {
 
   loadFilesByFolderId(folderId: string): void {
     this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
-      this.files = files
+      this.files = files;
     })
   }
 
