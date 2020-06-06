@@ -23,21 +23,20 @@
         <span class="ml-3">Mes fichiers</span>
       </div>
     </mat-list-item>
-    <mat-list-item routerLink="overview" routerLinkActive="active">
-      <div matLine>
-        <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_chart</mat-icon>
-        <span class="ml-3"> Ma carrière </span>
-      </div>
-    </mat-list-item>
   </mat-nav-list>
   <mat-divider></mat-divider>
-  <h4 mat-subheader class="m-0 py-2 pr-0">
+  <h4 mat-subheader class="m-0 py-0 pr-0">
     DOSSIERS
-    <button mat-icon-button class="ml-auto" type="button" matTooltip="Nouveau dossier" matTooltipPosition="above"
+    <button mat-icon-button class="ml-auto" type="button" matTooltip="Fermer tous les dossiers"
+      matTooltipPosition="above" (click)="collapseAll()">
+      <mat-icon class="text-secondary">unfold_less</mat-icon>
+    </button>
+    <button mat-icon-button class="" type="button" matTooltip="Nouveau dossier à la racine" matTooltipPosition="above"
       (click)="showFolderCreationModal()">
       <mat-icon class="text-primary">create_new_folder</mat-icon>
     </button>
   </h4>
+  <!-- <mat-divider></mat-divider> -->
 
   <div class="scrollbar">
     <div class="scrollbar-content">
@@ -45,9 +44,9 @@
         <mat-tree-node *matTreeNodeDef="let node">
           <mat-nav-list dense class="w-100 pt-0">
             <mat-list-item disableRipple="true" [routerLink]="['folders', node.id]" routerLinkActive="active">
-              <div matLine matTreeNodePadding matTreeNodePaddingIndent="8px">
-                <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)"
-                  disableRipple [attr.aria-label]="'toggle ' + node.name">
+              <div matLine class="mx-n3" matTreeNodePadding matTreeNodePaddingIndent="8px">
+                <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)" disableRipple
+                  [attr.aria-label]="'toggle ' + node.name">
                   <mat-icon>
                     {{isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
                   </mat-icon>
@@ -60,7 +59,7 @@
                   {{node.name}}
                 </span>
               </div>
-              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)" class="show-on-hover"
+              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)" class="show-on-hover mr-n3"
                 type="button">
                 <mat-icon>more_vert</mat-icon>
               </button>
@@ -92,4 +91,14 @@
       </mat-tree>
     </div>
   </div>
+
+  <mat-divider></mat-divider>
+  <mat-nav-list dense class="pt-2">
+    <mat-list-item routerLink="career" routerLinkActive="active">
+      <div matLine>
+        <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_chart</mat-icon>
+        <span class="ml-3"> Ma carrière </span>
+      </div>
+    </mat-list-item>
+  </mat-nav-list>
 </div>

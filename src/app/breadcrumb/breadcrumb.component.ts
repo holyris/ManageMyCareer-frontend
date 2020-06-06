@@ -46,7 +46,19 @@ export class BreadcrumbComponent implements OnInit {
     this.routeFolderNodes = this.folderTreeStoreService.getRouteFolderNodes();
   }
 
+  expandAllParents(node) {
+    let i = this.routeFolderNodes.indexOf(node);
+    this.routeFolderNodes.forEach((parent, index) => {
+      if (index >= i) return;
+      this.treeControl.expand(parent);
+    });
+  }
+
   isLastOfRouteFolderNodes(index: number) {
     return index === this.routeFolderNodes.length - 1;
+  }
+
+  get treeControl() {
+    return this.folderTreeStoreService.treeControl;
   }
 }

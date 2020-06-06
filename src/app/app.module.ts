@@ -45,7 +45,7 @@ import { NotificationToastComponent } from './notification-toast/notification-to
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
 import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { FileUpdateModalComponent } from './file-update-modal/file-update-modal.component';
-import { OverviewComponent } from './overview/overview.component';
+import { CareerComponent } from './career/career.component';
 import { FolderCreationModalComponent } from './folder-creation-modal/folder-creation-modal.component';
 import { NumberValidatorDirective } from '../shared/directives/number-validator.directive';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -67,7 +67,7 @@ import { FolderCellComponent } from './folder-cell/folder-cell.component';
     NotificationToastComponent,
     FilePreviewModalComponent,
     FileUpdateModalComponent,
-    OverviewComponent,
+    CareerComponent,
     FolderCreationModalComponent,
     NumberValidatorDirective,
     FolderUpdateModalComponent,

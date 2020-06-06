@@ -5,11 +5,11 @@ import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 
 @Component({
-  selector: 'app-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.scss']
+  selector: 'app-career',
+  templateUrl: './career.component.html',
+  styleUrls: ['./career.component.scss']
 })
-export class OverviewComponent implements OnInit {
+export class CareerComponent implements OnInit {
   grossSalaries: Array<number> = [];
   netSalaries: Array<number> = [];
   charges: Array<number> = [];

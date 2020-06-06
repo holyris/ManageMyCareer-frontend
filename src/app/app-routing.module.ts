@@ -5,7 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { FileListComponent } from './file-list/file-list.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from 'src/shared/helpers/auth.guard'
-import { OverviewComponent } from './overview/overview.component';
+import { CareerComponent } from './career/career.component';
 
 
 const routes: Routes = [
@@ -29,8 +29,8 @@ const routes: Routes = [
     component: FileListComponent
   },
   {
-    path: "overview",
-    component: OverviewComponent,
+    path: "career",
+    component: CareerComponent,
     canActivate: [AuthGuard]
   },
 
