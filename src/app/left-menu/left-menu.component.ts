@@ -48,7 +48,6 @@ export class LeftMenuComponent implements OnInit {
   }
 
   refresh() {
-    this.setListItemContentPadding();
   }
 
   showFileUploadModal(folderId: string = null) {
@@ -97,11 +96,14 @@ export class LeftMenuComponent implements OnInit {
   toggleNode(event, node) {
     this.stopPropagation(event);
     this.folderTreeStoreService.toggleNode(node);
-    this.setListItemContentPadding();
   }
 
   isExpanded(node) {
     return this.treeControl.isExpanded(node);
+  }
+
+  collapseAll(){
+    this.treeControl.collapseAll();
   }
 
   getRouteFolderId(): string {
@@ -119,13 +121,6 @@ export class LeftMenuComponent implements OnInit {
 
   get treeControl() {
     return this.folderTreeStoreService.treeControl;
-  }
-
-  setListItemContentPadding() {
-    const listItems = this.elementRef.nativeElement.querySelectorAll('.mat-list-item-content') as HTMLElement[];
-    listItems.forEach(listItem => {
-      this.renderer.setStyle(listItem, 'padding', '0px');
-    });
   }
 
   stopPropagation(event: Event) {

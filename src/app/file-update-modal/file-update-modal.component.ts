@@ -59,8 +59,6 @@ export class FileUpdateModalComponent implements OnInit {
   ngOnInit() {
     this.loadDataFromApi();
     this.form = this.formBuilder.group(this.fileData);
-    this.filteredCompanies = this.form.get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
-    this.filteredWorkplaces = this.form.get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
   }
 
   async submit() {
@@ -79,12 +77,14 @@ export class FileUpdateModalComponent implements OnInit {
     this.fileService.getCompanies().subscribe(
       data => {
         this.companies = data;
+        this.filteredCompanies = this.form.get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
       }
     )
 
     this.fileService.getWorkplaces().subscribe(
       data => {
         this.workplaces = data;
+        this.filteredWorkplaces = this.form.get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
       }
     )
   }

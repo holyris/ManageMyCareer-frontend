@@ -132,15 +132,6 @@ export class FolderTreeStoreService {
     return this.getAllParentNode(activeFolderNode, [activeFolderNode]);
   }
 
-  getFolderNodeRoute(node: FolderNode): string {
-    let parentNodes = this.getAllParentNode(node, [node]);
-    let parentNodeNames = [];
-    parentNodes.forEach(parentNode => {
-      parentNodeNames.push(parentNode.name);
-    });
-    return parentNodeNames.join("/");
-  }
-
   alertRefresh() {
     this.refreshSubject.next();
   }

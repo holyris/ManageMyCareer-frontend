@@ -1,10 +1,17 @@
 <div class="d-flex flex-column h-100">
   <app-breadcrumb></app-breadcrumb>
   <mat-divider></mat-divider>
+  <div class="d-flex align-items-center px-2 pt-2 " style="background:white">
+    <mat-icon class="text-secondary">search</mat-icon>
+    <div class="input-group input-group-sm w-25 pl-1">
+      <input [(ngModel)]="filter" type="text" placeholder="Rechercher" class="form-control rounded-pill">
+    </div>
+  </div>
   <div class="h-100">
     <ag-grid-angular id="gridManageMyCareer" class="ag-theme-alpine w-100 h-100" [columnDefs]="columnDefs"
-      [defaultColDef]="defaultColDef" [rowData]="files" (gridReady)="onGridReady($event)" suppressCellSelection="true"
-      (rowDoubleClicked)="rowDoubleClicked($event)" (cellContextMenu)="rowRightClicked($event)"
-      [getContextMenuItems]="getContextMenuItems" rowSelection='multiple' [tooltipShowDelay]="0"></ag-grid-angular>
+      [defaultColDef]="defaultColDef" [rowData]="files" [rowHeight]="32" (gridReady)="onGridReady($event)"
+      suppressCellSelection="true" (rowDoubleClicked)="rowDoubleClicked($event)"
+      (cellContextMenu)="rowRightClicked($event)" [getContextMenuItems]="getContextMenuItems" rowSelection='multiple'
+      [tooltipShowDelay]="0" [quickFilterText]="filter"></ag-grid-angular>
   </div>
 </div>

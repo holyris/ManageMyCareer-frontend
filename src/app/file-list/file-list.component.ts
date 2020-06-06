@@ -25,6 +25,7 @@ export class FileListComponent implements OnInit {
   folderDeleteSubscription: Subscription;
   gridApi: GridApi;
   files: FileModel[];
+  filter: string;
   menuTabs: Array<string> = ['filterMenuTab'];
 
   constructor(
@@ -43,11 +44,11 @@ export class FileListComponent implements OnInit {
       { headerName: 'Mois', field: 'documentMonth', flex: 2 },
       { headerName: 'Année', field: 'documentYear', flex: 2 },
       {
-        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3,
+        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3, cellClass:"d-flex align-items-center",
         cellRendererFramework: FolderCellComponent,
       },
     ];
-    this.defaultColDef = { sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs};
+    this.defaultColDef = { sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs, cellClass:"d-flex align-items-center border-right border-grey"};
   }
 
   ngOnInit(): void {
@@ -122,6 +123,10 @@ export class FileListComponent implements OnInit {
     this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
       this.files = files;
     })
+  }
+
+  onSearchChange(event){
+    console.log(event);
   }
 
   rowDoubleClicked(event) {

@@ -12,6 +12,6 @@
       <mat-icon>chevron_right</mat-icon>
     </button>
     <button mat-button [color]="isLastOfRouteFolderNodes(index) ? 'primary' : ''"
-      [routerLink]="['/folders', routeFolderNode.id]" routerLinkActive="primary">{{routeFolderNode.name}}</button>
+      [routerLink]="['/folders', routeFolderNode.id]" routerLinkActive="primary" (click)="expandAllParents(routeFolderNode)">{{routeFolderNode.name}}</button>
   </div>
 </div>

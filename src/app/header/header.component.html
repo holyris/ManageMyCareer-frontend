@@ -1,10 +1,9 @@
-<mat-toolbar>
-
-  <img height="50" routerLink="" src="../assets/logo2.png">
-  <a class="text-success ml-2" routerLink="">ManageMyCareer</a>
-
-
-  <button mat-button (click)="logout()" color="warn" style="position: absolute; right:0; height:100%">
+<mat-toolbar class="d-flex flex-row justify-content-between pr-0">
+  <a routerLink="">
+    <img height="50" src="../assets/logo2.png">
+    <span class="text-success ml-2">ManageMyCareer</span>
+  </a>
+  <button mat-button (click)="logout()" color="warn" class="h-100">
     <mat-icon>power_settings_new</mat-icon>
     Déconnexion
   </button>
