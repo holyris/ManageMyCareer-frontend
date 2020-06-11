@@ -27,6 +27,10 @@ export class FileListComponent implements OnInit {
   files: FileModel[];
   filter: string;
   menuTabs: Array<string> = ['filterMenuTab'];
+  exportParams = {
+    allColumns: false,
+    columnKeys: ["name", "documentType", "company", "workplace", "documentMonth", "documentYear", "grossSalary", "netSalary"]
+  }
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -37,18 +41,20 @@ export class FileListComponent implements OnInit {
   ) {
 
     this.columnDefs = [
-      { headerName: 'Nom', field: 'name', tooltipField: 'name', flex: 5 },
+      { headerName: 'Document', field: 'name', tooltipField: 'name', suppressMenu: true, flex: 5 },
       { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3 },
       { headerName: 'Entreprise', field: 'company', tooltipField: 'company', flex: 3 },
       { headerName: 'Emploi', field: 'workplace', tooltipField: 'workplace', flex: 3 },
       { headerName: 'Mois', field: 'documentMonth', flex: 2 },
       { headerName: 'Année', field: 'documentYear', flex: 2 },
+      { headerName: 'Salaire brut', field: 'grossSalary', hide: true },
+      { headerName: 'Salaire net', field: 'netSalary', hide: true },
       {
-        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3, cellClass:"d-flex align-items-center",
+        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3, cellClass: "d-flex align-items-center",
         cellRendererFramework: FolderCellComponent,
       },
     ];
-    this.defaultColDef = { sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs, cellClass:"d-flex align-items-center border-right border-grey"};
+    this.defaultColDef = { sortable: true, filter: true, suppressMovable: true, menuTabs: this.menuTabs, cellClass: "d-flex align-items-center border-right border-grey" };
   }
 
   ngOnInit(): void {
@@ -125,7 +131,7 @@ export class FileListComponent implements OnInit {
     })
   }
 
-  onSearchChange(event){
+  onSearchChange(event) {
     console.log(event);
   }
 
@@ -139,9 +145,15 @@ export class FileListComponent implements OnInit {
     }
   }
 
-  formatDate(date: Date): string {
-    if (date) {
-      return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+  exportAsCsv() {
+    if (this.gridApi) {
+      this.gridApi.exportDataAsCsv(this.exportParams);
+    }
+  }
+
+  exportAsExcel() {
+    if (this.gridApi) {
+      this.gridApi.exportDataAsExcel(this.exportParams);
     }
   }
 
@@ -151,34 +163,34 @@ export class FileListComponent implements OnInit {
       var result = [
         {
           name: 'Aperçu',
-          icon: `<i class="material-icons-outlined">visibility</i>`,
+          icon: `<i class="material-icons-outlined text-secondary">visibility</i>`,
           action: () => {
             this.showFilePreviewModal(file)
           }
         },
         {
           name: 'Modifier',
-          icon: `<i class="material-icons-outlined">create</i>`,
+          icon: `<i class="material-icons-outlined text-secondary">create</i>`,
           action: () => {
             this.showUpdateModal(file)
           }
         },
         {
           name: 'Déplacer',
-          icon: `<i class="material-icons-outlined">low_priority</i>`,
+          icon: `<i class="material-icons-outlined text-secondary">low_priority</i>`,
           action: () => {
             this.showMoveModal(file)
           }
         },
         {
           name: 'Télécharger',
-          icon: `<i class="material-icons-outlined">get_app</i>`,
+          icon: `<i class="material-icons-outlined text-secondary">save_alt</i>`,
           action: () => { this.downloadFile(file) }
 
         },
         {
           name: 'Supprimer',
-          icon: `<i class="material-icons-outlined">delete</i>`,
+          icon: `<i class="material-icons-outlined text-secondary">delete</i>`,
           action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
 
         },
