@@ -134,6 +134,25 @@ export class FileUploadModalComponent implements OnInit {
     )
   }
 
+  applyToAllCompanies(event, company: string) {
+    this.stopPropagation(event)
+    for (let i = 0; i < this.fileObjects.length; i++) {
+      this.formArray.at(i).patchValue({ company: company })
+    }
+  }
+
+  applyToAllWorkplaces(event, workplace: string) {
+    this.stopPropagation(event)
+    for (let i = 0; i < this.fileObjects.length; i++) {
+      this.formArray.at(i).patchValue({ workplace: workplace })
+    }
+  }
+
+  stopPropagation(event: Event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
+
   get formArray() {
     return this.form.get('formArray') as FormArray;
   }

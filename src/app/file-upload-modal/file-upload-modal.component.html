@@ -59,6 +59,11 @@
 							<mat-form-field>
 								<mat-label>Entreprise</mat-label>
 								<input matInput formControlName="company" [matAutocomplete]="autoCompany">
+								<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+									(click)="applyToAllCompanies($event, fileObjects[i].company)"
+									matTooltip="Appliquer à tous les autres fichiers">
+									<mat-icon>call_split</mat-icon>
+								</button>
 								<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
 									<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
 										{{company}}
@@ -70,6 +75,11 @@
 							<mat-form-field>
 								<mat-label>Emploi</mat-label>
 								<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
+								<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+									(click)="applyToAllWorkplaces($event, fileObjects[i].workplace)"
+									matTooltip="Appliquer à tous les autres fichiers">
+									<mat-icon>call_split</mat-icon>
+								</button>
 								<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
 									<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
 										{{workplace}}
