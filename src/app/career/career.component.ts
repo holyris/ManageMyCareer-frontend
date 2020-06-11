@@ -19,7 +19,7 @@ export class CareerComponent implements OnInit {
   chartDatasets: ChartDataSets[] = [
     { data: this.grossSalaries, label: 'Salaire Brut' },
     { data: this.netSalaries, label: 'Salaire Net' },
-    { data: this.charges, label: 'Taxes' },
+    { data: this.charges, label: 'Charges' },
   ];
   chartLabels: Label[] = this.dates;
   chartColors: Color[] = [
@@ -32,7 +32,6 @@ export class CareerComponent implements OnInit {
   chartOptions = {
     maintainAspectRatio: false
   };
-  chartLegend = false
 
   constructor(private fileService: FileService) { }
 
