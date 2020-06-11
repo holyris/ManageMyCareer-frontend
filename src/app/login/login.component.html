@@ -1,44 +1,36 @@
-<div class="row justify-content-center align-items-center h-100 w-100">
-  <div class="col-4">
-    <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
-      <mat-card>
-        <mat-card-title>Se connecter</mat-card-title>
-        <mat-card-content>
-          <h5 *ngIf="isAlerting" class="text-danger ">{{alertMsg}}</h5>
-          <div class="mt-4">
-            <mat-form-field class="w-100">
-              <mat-label>Nom d'utilisateur</mat-label>
-              <input matInput formControlName="username" required>
+<form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off" class="w-100 h-100">
+  <div class="w-100 h-100 d-flex flex-column justify-content-center">
+    <div class="align-self-center w-100" style="max-width: 400px;">
 
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="w-100">
-              <mat-label>Mot de passe</mat-label>
-              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
-              <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-            </mat-form-field>
-          </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <div>
-            <button mat-flat-button color="accent" [disabled]="!form.valid || loading" type="submit">
-              <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
-              Connexion
-            </button>
+      <h1>Connexion</h1>
 
-            <button mat-flat-button color="primary" class="ml-2" routerLink="/register" type="button">
-              Créer un compte
-            </button>
+      <h5 *ngIf="isAlerting" class="text-danger">{{alertMsg}}</h5>
 
-          </div>
-          <div class="mt-2">
-            <a routerLink="/login">Mot de passe oublié</a>
-          </div>
-        </mat-card-actions>
-      </mat-card>
-    </form>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nom d'utilisateur</mat-label>
+        <input matInput formControlName="username" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button" class="pt-2">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div>
+        <button mat-flat-button color="accent" [disabled]="!form.valid || loading" type="submit">
+          <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+          Se connecter
+        </button>
+
+        <button mat-button color="primary" class="ml-2" type="button" (click)="changeToRegisterComponent.emit()">
+          Créer un compte
+        </button>
+      </div>
+    </div>
+
   </div>
-</div>
+
+</form>

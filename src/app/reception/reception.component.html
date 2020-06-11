@@ -1,0 +1,17 @@
+<div class="row h-100 w-100" style="overflow-y: hidden;">
+  <div class="col-8 h-100 text-light hide-scrollbar" style="overflow-y:scroll; background-color: #396afd">
+    <div class="d-flex justify-content-center mt-4">
+      <img height="250" src="../assets/logo_title_white.png">
+    </div>
+    <h1 class="d-flex justify-content-center mt-5 font-weight-light" style="font-size:36px;">Le cloud professionnel</h1>
+    <h3 class="mx-5 mt-5 text-center">Ne perdez plus de temps à ranger et trier vos documents. ManageMyCareer s'occupe de tout.
+    </h3>
+    <div class="mt-auto"></div>
+  </div>
+  <div class="col p-0">
+    <div class="px-5 h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+      <app-login *ngIf="!registerComponentVisible" class="h-100 w-100" (changeToRegisterComponent)="registerComponentVisible=true"></app-login>
+      <app-register *ngIf="registerComponentVisible" class="h-100 w-100" (changeToLoginComponent)="registerComponentVisible=false"></app-register>
+    </div>
+  </div>
+</div>

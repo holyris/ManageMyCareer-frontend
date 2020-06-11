@@ -53,6 +53,7 @@ import { FolderUpdateModalComponent } from './folder-update-modal/folder-update-
 import { MoveModalComponent } from './move-modal/move-modal.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FolderCellComponent } from './folder-cell/folder-cell.component';
+import { ReceptionComponent } from './reception/reception.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { FolderCellComponent } from './folder-cell/folder-cell.component';
     MoveModalComponent,
     BreadcrumbComponent,
     FolderCellComponent,
+    ReceptionComponent,
   ],
   imports: [
     BrowserModule,
