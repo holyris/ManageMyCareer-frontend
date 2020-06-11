@@ -17,7 +17,7 @@
   </div>
   <mat-divider></mat-divider>
   <mat-nav-list dense class="py-2">
-    <mat-list-item routerLink="files" routerLinkActive="active">
+    <mat-list-item routerLink="files" routerLinkActive="active" disableRipple>
       <div matLine>
         <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_drive_file</mat-icon>
         <span class="ml-3">Mes fichiers</span>
@@ -29,14 +29,13 @@
     DOSSIERS
     <button mat-icon-button class="ml-auto" type="button" matTooltip="Fermer tous les dossiers"
       matTooltipPosition="above" (click)="collapseAll()">
-      <mat-icon class="text-secondary">unfold_less</mat-icon>
+      <mat-icon class="text-secondary">vertical_align_center</mat-icon>
     </button>
     <button mat-icon-button class="" type="button" matTooltip="Nouveau dossier à la racine" matTooltipPosition="above"
       (click)="showFolderCreationModal()">
       <mat-icon class="text-primary">create_new_folder</mat-icon>
     </button>
   </h4>
-  <!-- <mat-divider></mat-divider> -->
 
   <div class="scrollbar">
     <div class="scrollbar-content">
@@ -93,8 +92,8 @@
   </div>
 
   <mat-divider></mat-divider>
-  <mat-nav-list dense class="pt-2">
-    <mat-list-item routerLink="career" routerLinkActive="active">
+  <mat-nav-list class="pt-2">
+    <mat-list-item routerLink="career" routerLinkActive="active" disableRipple>
       <div matLine>
         <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_chart</mat-icon>
         <span class="ml-3"> Ma carrière </span>
