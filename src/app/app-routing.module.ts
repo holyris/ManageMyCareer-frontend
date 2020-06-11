@@ -6,18 +6,13 @@ import { FileListComponent } from './file-list/file-list.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from 'src/shared/helpers/auth.guard'
 import { CareerComponent } from './career/career.component';
+import { ReceptionComponent } from './reception/reception.component';
 
 
 const routes: Routes = [
   {
-    path: "login",
-    component: LoginComponent
-
-  },
-  {
-    path: "register",
-    component: RegisterComponent
-
+    path: "",
+    component: ReceptionComponent
   },
   {
     path: "home",
@@ -62,6 +57,6 @@ function foldersAndFilesRouteMatcherFunction(url: UrlSegment[]) {
       return { consumed: url, posParams: { folderId: paramSegment } };
     }
   }
-  
+
   return null;
 }

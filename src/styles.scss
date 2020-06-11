@@ -96,10 +96,20 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 html,
 body {
   height: 100%;
+  overflow-y: hidden !important;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0px; /* For Chrome, Safari, and Opera */
 }
 
 button {
@@ -147,6 +157,10 @@ button {
   }
 }
 
+.ui-button {
+  background-color: #6798fe !important;
+}
+
 $theme-colors: (
   "primary": #6798fe,
   "success": #4ab8a1,
@@ -166,7 +180,6 @@ $theme-colors: (
   .ag-header {
     color: transparent !important;
     background-color: transparent !important;
-
   }
 }
 
