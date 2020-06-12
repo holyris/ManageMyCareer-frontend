@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/shared/services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reception',
@@ -6,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./reception.component.scss']
 })
 export class ReceptionComponent implements OnInit {
-  registerComponentVisible: boolean = true;
+  registerComponentVisible: boolean = false;
 
-  constructor() { }
+  constructor(private router: Router, public authenticationService: AuthenticationService) {
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/home']);
+    }
+  }
 
   ngOnInit(): void {
   }

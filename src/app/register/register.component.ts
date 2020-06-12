@@ -20,11 +20,7 @@ export class RegisterComponent implements OnInit {
   alertMsg: any = "";
   isAlerting: Boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService, public userService: UserService) {
-    // redirect to home if already logged in
-    if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/']);
-    }
+  constructor(private formBuilder: FormBuilder, private router: Router, public userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -55,12 +51,12 @@ export class RegisterComponent implements OnInit {
 
   }
 
-  alert(error){
+  alert(error) {
     this.alertMsg = error;
     this.isAlerting = true;
   }
 
-  resetAlert(){
+  resetAlert() {
     this.alertMsg = "";
     this.isAlerting = false;
   }

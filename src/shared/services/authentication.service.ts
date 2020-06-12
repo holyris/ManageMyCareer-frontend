@@ -35,7 +35,7 @@ export class AuthenticationService {
   logout() {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 
   public get currentUserValue(): User {

@@ -36,7 +36,7 @@
 				<mat-form-field>
 					<mat-label>Entreprise</mat-label>
 					<input matInput formControlName="company" [matAutocomplete]="autoCompany">
-					<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
+					<mat-autocomplete #autoCompany="matAutocomplete">
 						<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
 							{{company}}
 						</mat-option>
@@ -47,7 +47,7 @@
 				<mat-form-field>
 					<mat-label>Emploi</mat-label>
 					<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
-					<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
+					<mat-autocomplete #autoWorkplace="matAutocomplete">
 						<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
 							{{workplace}}
 						</mat-option>
