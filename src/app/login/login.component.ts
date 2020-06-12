@@ -20,11 +20,7 @@ export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   isAlerting: Boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, public authenticationService: AuthenticationService) {
-    // redirect to home if already logged in
-    if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/']);
-    }
+  constructor(private formBuilder: FormBuilder, public authenticationService: AuthenticationService) {
   }
 
   ngOnInit(): void {
