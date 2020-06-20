@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate(['/account-creation-confirmation']);
+          this.changeToLoginComponent.emit();
         },
         error => {
           console.log(error)
