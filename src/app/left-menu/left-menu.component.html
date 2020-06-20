@@ -27,11 +27,15 @@
   <mat-divider></mat-divider>
   <h4 mat-subheader class="m-0 py-0 pr-0">
     DOSSIERS
-    <button mat-icon-button class="ml-auto" type="button" matTooltip="Fermer tous les dossiers"
-      matTooltipPosition="above" (click)="collapseAll()">
+    <button mat-icon-button class="ml-auto" type="button" matTooltip="Rafraîchir" matTooltipPosition="above"
+      (click)="folderTreeStoreServiceRefresh()">
+      <mat-icon class="text-secondary">sync</mat-icon>
+    </button>
+    <button mat-icon-button type="button" matTooltip="Fermer tous les dossiers" matTooltipPosition="above"
+      (click)="collapseAll()">
       <mat-icon class="text-secondary">vertical_align_center</mat-icon>
     </button>
-    <button mat-icon-button class="" type="button" matTooltip="Nouveau dossier à la racine" matTooltipPosition="above"
+    <button mat-icon-button type="button" matTooltip="Nouveau dossier à la racine" matTooltipPosition="above"
       (click)="showFolderCreationModal()">
       <mat-icon class="text-primary">create_new_folder</mat-icon>
     </button>
@@ -58,8 +62,8 @@
                   {{node.name}}
                 </span>
               </div>
-              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)" class="show-on-hover mr-n3"
-                type="button">
+              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)"
+                class="show-on-hover mr-n3" type="button">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
@@ -79,7 +83,7 @@
                   <mat-icon fontSet="material-icons-outlined">low_priority</mat-icon>
                   Déplacer
                 </button>
-                <button mat-menu-item (click)="deleteFolder(node)">
+                <button mat-menu-item (click)="tryDeleteFolder(node)">
                   <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
                   Supprimer
                 </button>

@@ -14,6 +14,7 @@ import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
 import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/folder-list-breadcrumb-communication.service';
 import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
+import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-left-menu',
@@ -21,16 +22,12 @@ import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.se
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent implements OnInit {
-
-  // dataSentSubscription: Subscription;
   folderTreeStoreRefreshSubscription: Subscription
 
   constructor(
     private router: Router,
     private folderTreeStoreService: FolderTreeStoreService,
     private dialog: MatDialog,
-    private elementRef: ElementRef,
-    private renderer: Renderer2,
     private folderService: FolderService
   ) { }
 
@@ -48,6 +45,10 @@ export class LeftMenuComponent implements OnInit {
   }
 
   refresh() {
+  }
+
+  folderTreeStoreServiceRefresh() {
+    this.folderTreeStoreService.refresh();
   }
 
   showFileUploadModal(folderId: string = null) {
@@ -81,6 +82,17 @@ export class LeftMenuComponent implements OnInit {
     })
   }
 
+  async tryDeleteFolder(folder) {
+    let dialogRef = this.dialog.open(DeleteModalComponent, { data: { items: [folder] } })
+    const sub: Subscription = dialogRef.componentInstance.onConfirm.subscribe(async (resolve) => {
+      await this.deleteFolder(folder);
+      resolve();
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
+  }
+
   async deleteFolder(folder) {
     if (this.folderTreeStoreService.isActiveFolderNodeId(folder.id)) {
       let parentFolder = this.folderTreeStoreService.getParentNode(folder);
@@ -102,7 +114,7 @@ export class LeftMenuComponent implements OnInit {
     return this.treeControl.isExpanded(node);
   }
 
-  collapseAll(){
+  collapseAll() {
     this.treeControl.collapseAll();
   }
 

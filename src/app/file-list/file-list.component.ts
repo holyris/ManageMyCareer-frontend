@@ -10,6 +10,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FolderService } from 'src/shared/services/folder.service';
 import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { FolderCellComponent } from '../folder-cell/folder-cell.component';
+import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-file-list',
@@ -106,6 +107,17 @@ export class FileListComponent implements OnInit {
     this.fileService.download(file.id, file.name);
   }
 
+  async tryDeleteFiles(files: FileModel[]) {
+    let dialogRef = this.dialog.open(DeleteModalComponent, { data: { items: files } })
+    const sub: Subscription = dialogRef.componentInstance.onConfirm.subscribe(async (resolve) => {
+      await this.deleteFiles(files);
+      resolve();
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
+  }
+
   async deleteFiles(files: FileModel[]) {
     await this.fileService.deleteMultiple(files);
   }
@@ -191,7 +203,7 @@ export class FileListComponent implements OnInit {
         {
           name: 'Supprimer',
           icon: `<i class="material-icons-outlined text-secondary">delete</i>`,
-          action: () => { this.deleteFiles(this.gridApi.getSelectedRows()) }
+          action: () => { this.tryDeleteFiles(this.gridApi.getSelectedRows()) }
 
         },
       ];

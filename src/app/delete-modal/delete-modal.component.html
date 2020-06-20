@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>
+  <div *ngIf="injectedData.items.length > 1">Attention, ces éléments seront supprimés définitivement !</div>
+  <div *ngIf="injectedData.items.length === 1">Attention, cet élément sera supprimé définitivement !</div>
+</h2 >
+
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" [disabled]="loading" type="button" (click)="confirm()">
+    <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+    Confirmer</button>
+  <button type="button" mat-button [mat-dialog-close]="true">Annuler</button>
+</mat-dialog-actions>
