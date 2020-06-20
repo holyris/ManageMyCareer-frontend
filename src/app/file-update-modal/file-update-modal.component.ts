@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
-import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
+import { DocumentType } from 'src/shared/models/DocumentType';
 import { FileService } from 'src/shared/services/file.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MY_FORMATS } from '../file-upload-modal/file-upload-modal.component';
@@ -26,28 +26,7 @@ export class FileUpdateModalComponent implements OnInit {
   form: FormGroup;
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;
-  types: SelectItem[] = [
-    {
-      label: EnumTypeValue.FichePaie,
-      value: EnumTypeValue.FichePaie
-    },
-    {
-      label: EnumTypeValue.Contrat,
-      value: EnumTypeValue.Contrat
-    },
-    {
-      label: EnumTypeValue.Cv,
-      value: EnumTypeValue.Cv
-    },
-    {
-      label: EnumTypeValue.Lettre,
-      value: EnumTypeValue.Lettre
-    },
-    {
-      label: EnumTypeValue.Autre,
-      value: EnumTypeValue.Autre
-    }
-  ];
+  types : Array<any> = Object.values(DocumentType);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public fileData: any,
@@ -94,7 +73,7 @@ export class FileUpdateModalComponent implements OnInit {
   }
 
   isSelectedFichePaie() {
-    return this.file && this.file.documentType === EnumTypeValue.FichePaie;
+    return this.file && this.file.documentType === DocumentType.FichePaie;
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {

@@ -14,8 +14,8 @@
 				<mat-form-field>
 					<mat-label>Type de document</mat-label>
 					<mat-select formControlName="documentType">
-						<mat-option *ngFor="let type of types" [value]="type.value">
-							{{type.label}}
+						<mat-option *ngFor="let type of types" [value]="type">
+							{{type}}
 						</mat-option>
 					</mat-select>
 				</mat-form-field>

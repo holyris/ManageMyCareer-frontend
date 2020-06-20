@@ -3,6 +3,13 @@
     <img height="50" src="../assets/logo.png">
     <span class="text-secondary ml-2">ManageMyCareer</span>
   </div>
+  <div class="d-flex h6 ml-auto mr-5 my-0 align-self-center">
+    <span class="text-secondary font-weight-light">
+      Utilisateur connecté :
+    </span>
+    <span class="text-success ml-1"> {{currentUser.username}}</span>
+  </div>
+
   <button mat-button (click)="logout()" color="warn" class="h-100">
     <mat-icon>power_settings_new</mat-icon>
     Déconnexion

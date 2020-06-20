@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/shared/services/authentication.service';
+import { User } from 'src/shared/models/user';
 
 
 @Component({
@@ -9,7 +10,13 @@ import { AuthenticationService } from 'src/shared/services/authentication.servic
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public authenticationService: AuthenticationService) { }
+  currentUser: User;
+
+  constructor(public authenticationService: AuthenticationService) {
+    this.authenticationService.currentUser.subscribe(x => {
+      this.currentUser = x}
+      );
+   }
 
   ngOnInit() {
   }

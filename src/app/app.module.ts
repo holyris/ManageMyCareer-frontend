@@ -16,8 +16,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { FileUploadModule } from 'primeng/fileupload';
 import { MatDividerModule } from '@angular/material/divider';
 import { ToastModule } from 'primeng/toast';
 import { ChartsModule } from 'ng2-charts';
@@ -54,6 +52,7 @@ import { MoveModalComponent } from './move-modal/move-modal.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FolderCellComponent } from './folder-cell/folder-cell.component';
 import { ReceptionComponent } from './reception/reception.component';
+import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +75,7 @@ import { ReceptionComponent } from './reception/reception.component';
     BreadcrumbComponent,
     FolderCellComponent,
     ReceptionComponent,
+    DeleteModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,8 +89,6 @@ import { ReceptionComponent } from './reception/reception.component';
     MatSidenavModule,
     MatListModule,
     DialogModule,
-    ButtonModule,
-    FileUploadModule,
     MatDividerModule,
     ToastModule,
     ChartsModule,

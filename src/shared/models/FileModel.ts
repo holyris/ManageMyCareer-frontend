@@ -1,4 +1,4 @@
-import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
+import { DocumentType } from 'src/shared/models/DocumentType';
 export class FileModel {
   constructor(
     public id: number = null,
@@ -42,23 +42,23 @@ export class FileModel {
   }
 
   public isFichePaie(): Boolean {
-    return this.documentType === EnumTypeValue.FichePaie;
+    return this.documentType === DocumentType.FichePaie;
   }
 
   public isContrat(): Boolean {
-    return this.documentType === EnumTypeValue.Contrat;
+    return this.documentType === DocumentType.Contrat;
   }
 
   public isLettre(): Boolean {
-    return this.documentType === EnumTypeValue.Lettre;
+    return this.documentType === DocumentType.Lettre;
   }
 
   public isCv(): Boolean {
-    return this.documentType === EnumTypeValue.Cv;
+    return this.documentType === DocumentType.Cv;
   }
 
   public isAutre(): Boolean {
-    return this.documentType === EnumTypeValue.Autre;
+    return this.documentType === DocumentType.Autre;
   }
 
 }

@@ -2,110 +2,121 @@
 	<h2 mat-dialog-title>Importer un fichier</h2>
 	<mat-dialog-content>
 		<div class="py-2 px-2">
-			<p-fileUpload [customUpload]="true" mode="basic" (uploadHandler)="addFiles($event)" name="fileUpload" type="file"
-				[auto]="true" [showUploadButton]="false" [showCancelButton]="false" chooseLabel="Fichier(s)" [multiple]="true"
-				#uploadFileComponent>
-			</p-fileUpload>
+			<input type="file" id="file" multiple (change)="addFiles($event.target.files)" #fileInput hidden>
+			<button type="button" mat-flat-button color="primary" (click)="fileInput.click()">
+				<mat-icon matPrefix fontSet="material-icons-outlined">add</mat-icon>
+				Ajouter des fichiers
+			</button>
+			<span *ngIf="formArray.length" class="ml-5">{{formArray.length}} fichiers dans la liste</span>
+			<div *ngIf="filesLengthWarning" class="mt-4 text-danger">La limite de 100 fichiers a été dépassée</div>
 		</div>
-		<div formArrayName="formArray">
-			<div class="row py-2" style="border-top: solid 1px #eaeaea" *ngFor="let alias of formArray.controls; let i=index"
-				[formGroupName]="i">
-				<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #eaeaea">
-					<div class="row">
-						<div class="col-12">Taille :</div>
-					</div>
-					<div class="row">
-						<div class="col-12">{{alias.value.size}}B</div>
-					</div>
-					<div class="row mt-auto">
-						<div class="col-12">
-							<button type="button" mat-button (click)="deleteFileObjectByIndex(i)">Retirer</button>
-						</div>
-					</div>
-				</div>
-				<div class="col-auto">
-					<div class="row">
-						<div class="col-12">
-							<mat-form-field [style]="{'min-width':'300px'}">
-								<mat-label>Nom</mat-label>
-								<input matInput formControlName="name" required>
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<mat-form-field>
-								<mat-label>Type de document</mat-label>
-								<mat-select formControlName="documentType">
-									<mat-option *ngFor="let type of types" [value]="type.value">
-										{{type.label}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div class="col pl-0">
-							<mat-form-field>
-								<mat-label>Date</mat-label>
-								<input matInput [matDatepicker]="dp" formControlName="documentDate">
-								<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-								<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, i)"
-									panelClass="example-month-picker">
-								</mat-datepicker>
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<mat-form-field>
-								<mat-label>Entreprise</mat-label>
-								<input matInput formControlName="company" [matAutocomplete]="autoCompany">
-								<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
-									(click)="applyToAllCompanies($event, fileObjects[i].company)"
-									matTooltip="Appliquer à tous les autres fichiers">
-									<mat-icon>call_split</mat-icon>
-								</button>
-								<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
-									<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
-										{{company}}
-									</mat-option>
-								</mat-autocomplete>
-							</mat-form-field>
-						</div>
-						<div class="col pl-0">
-							<mat-form-field>
-								<mat-label>Emploi</mat-label>
-								<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
-								<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
-									(click)="applyToAllWorkplaces($event, fileObjects[i].workplace)"
-									matTooltip="Appliquer à tous les autres fichiers">
-									<mat-icon>call_split</mat-icon>
-								</button>
-								<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
-									<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
-										{{workplace}}
-									</mat-option>
-								</mat-autocomplete>
-							</mat-form-field>
-						</div>
-					</div>
-					<div class="row" *ngIf="isSelectedFichePaie(i)">
-						<div class="col">
-							<mat-form-field>
-								<mat-label>Salaire brut (€)</mat-label>
-								<input matInput formControlName="grossSalary" appNumberValidator>
-							</mat-form-field>
-
-						</div>
-						<div class="col pl-0">
-							<mat-form-field>
-								<mat-label>Salaire net (€)</mat-label>
-								<input matInput formControlName="netSalary" appNumberValidator>
-							</mat-form-field>
-						</div>
-					</div>
-
+		<div formArrayName="formArray" *ngIf="formArray.length" class="d-flex flex-column">
+			<div class="d-flex my-2">
+				<mat-icon class="text-secondary">search</mat-icon>
+				<div class="input-group input-group-sm">
+					<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text" placeholder="Rechercher" class="form-control rounded-pill">
 				</div>
 			</div>
+			<mat-divider></mat-divider>
+			<div *ngFor="let control of formArray.controls; let index=index" [formGroupName]="index">
+				<div class="row py-2">
+					<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #dfdfdf;">
+						<div class="row">
+							<div class="col-12">Taille :</div>
+						</div>
+						<div class="row">
+							<div class="col-12">{{control.value.size}}B</div>
+						</div>
+						<div class="row mt-auto">
+							<div class="col-12">
+								<button type="button" mat-button (click)="deleteFileObjectByIndex(index)">Retirer</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-auto">
+						<div class="row">
+							<div class="col-12">
+								<mat-form-field [style]="{'min-width':'300px'}">
+									<mat-label>Nom</mat-label>
+									<input matInput formControlName="name" required>
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<mat-form-field>
+									<mat-label>Type de document</mat-label>
+									<mat-select formControlName="documentType">
+										<mat-option *ngFor="let type of types" [value]="type">
+											{{type}}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col pl-0">
+								<mat-form-field>
+									<mat-label>Date</mat-label>
+									<input matInput [matDatepicker]="dp" formControlName="documentDate">
+									<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+									<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, index)"
+										panelClass="example-month-picker">
+									</mat-datepicker>
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<mat-form-field>
+									<mat-label>Entreprise</mat-label>
+									<input matInput formControlName="company" [matAutocomplete]="autoCompany">
+									<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+										(click)="applyToAllCompanies($event, fileObjects[index].company)"
+										matTooltip="Appliquer à tous les autres fichiers">
+										<mat-icon>call_split</mat-icon>
+									</button>
+									<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
+										<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
+											{{company}}
+										</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+							</div>
+							<div class="col pl-0">
+								<mat-form-field>
+									<mat-label>Emploi</mat-label>
+									<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
+									<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+										(click)="applyToAllWorkplaces($event, fileObjects[index].workplace)"
+										matTooltip="Appliquer à tous les autres fichiers">
+										<mat-icon>call_split</mat-icon>
+									</button>
+									<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
+										<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
+											{{workplace}}
+										</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row" *ngIf="isSelectedFichePaie(index)">
+							<div class="col">
+								<mat-form-field>
+									<mat-label>Salaire brut (€)</mat-label>
+									<input matInput formControlName="grossSalary" appNumberValidator>
+								</mat-form-field>
+
+							</div>
+							<div class="col pl-0">
+								<mat-form-field>
+									<mat-label>Salaire net (€)</mat-label>
+									<input matInput formControlName="netSalary" appNumberValidator>
+								</mat-form-field>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<mat-divider></mat-divider>
 		</div>
 	</mat-dialog-content>
 	<mat-dialog-actions align="end">

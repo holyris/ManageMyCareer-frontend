@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FileService } from 'src/shared/services/file.service';
-import { EnumTypeValue } from 'src/shared/models/EnumTypeValue.model';
+import { DocumentType } from 'src/shared/models/DocumentType';
 import { FileModel } from 'src/shared/models/FileModel';
 import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
@@ -31,41 +31,23 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
 export class FileUploadModalComponent implements OnInit {
-  @ViewChild('uploadFileComponent') uploadFileComponent: any;
   loading: Boolean = false;
+  filesLengthWarning: Boolean = false;
+  selectedFiles: FileList;
   companies: string[] = [];
   workplaces: string[] = [];
   form: FormGroup;
+  filter: string = "";
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;
-  types: Array<any> = [
-    {
-      label: EnumTypeValue.FichePaie,
-      value: EnumTypeValue.FichePaie
-    },
-    {
-      label: EnumTypeValue.Contrat,
-      value: EnumTypeValue.Contrat
-    },
-    {
-      label: EnumTypeValue.Cv,
-      value: EnumTypeValue.Cv
-    },
-    {
-      label: EnumTypeValue.Lettre,
-      value: EnumTypeValue.Lettre
-    },
-    {
-      label: EnumTypeValue.Autre,
-      value: EnumTypeValue.Autre
-    }
-  ];
+  types: Array<any> = Object.values(DocumentType);
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public injectedData: any,
     public fileService: FileService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -87,14 +69,19 @@ export class FileUploadModalComponent implements OnInit {
     this.dialog.closeAll();
   }
 
-  addFiles(event) {
-
-    for (let [index, file] of event.files.entries()) {
+  addFiles(files) {
+    this.filesLengthWarning = false;
+    if ((files.length + this.formArray.length) > 100) {
+      this.filesLengthWarning = true;
+      return;
+    }
+    console.time("time")
+    for (let index = 0, len = files.length; index < len; ++index) {
       let fileObject = new FileModel();
-      fileObject.name = file.name;
-      fileObject.size = file.size;
-      fileObject.type = file.type;
-      fileObject.folderId = this.data.folderId;
+      fileObject.name = files[index].name;
+      fileObject.size = files[index].size;
+      fileObject.type = files[index].type;
+      fileObject.folderId = this.injectedData.folderId;
       this.formArray.push(this.formBuilder.group(fileObject));
       this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
       this.filteredWorkplaces = this.formArray.at(index).get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
@@ -103,17 +90,18 @@ export class FileUploadModalComponent implements OnInit {
       //appelle cette fonction quand readAsArrayBuffer est fini
       reader.onload = () => {
         // converti reader.result en base64
-        let fileContent = btoa(
-          new Uint8Array(reader.result as ArrayBuffer)
-            .reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-
-        this.formArray.at(index).patchValue({ fileContent: fileContent });
+        this.formArray.at(index).patchValue({
+          fileContent: btoa(
+            new Uint8Array(reader.result as ArrayBuffer)
+              .reduce((data, byte) => data + String.fromCharCode(byte), '')
+          )
+        });
+        console.log("fin reader")
       }
       //prend le blob et le converti en tableau binaire dans reader.result
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(files[index]);
     }
-    this.uploadFileComponent.clear();
+    console.timeEnd("time")
   }
 
   deleteFileObjectByIndex(index) {
@@ -136,6 +124,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllCompanies(event, company: string) {
     this.stopPropagation(event)
+    if(!company) return null;
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ company: company })
     }
@@ -143,6 +132,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllWorkplaces(event, workplace: string) {
     this.stopPropagation(event)
+    if(!workplace) return null;
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ workplace: workplace })
     }
@@ -162,7 +152,7 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   isSelectedFichePaie(index) {
-    return this.fileObjects[index].documentType === EnumTypeValue.FichePaie;
+    return this.fileObjects[index].documentType === DocumentType.FichePaie;
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, index: number) {
