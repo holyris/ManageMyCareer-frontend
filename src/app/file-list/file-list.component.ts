@@ -119,7 +119,7 @@ export class FileListComponent implements OnInit {
   }
 
   async deleteFiles(files: FileModel[]) {
-    await this.fileService.deleteMultiple(files);
+    await this.fileService.delete(files);
   }
 
   refresh() {

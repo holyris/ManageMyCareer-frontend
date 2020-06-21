@@ -1,7 +1,7 @@
 import { DocumentType } from 'src/shared/models/DocumentType';
 export class FileModel {
   constructor(
-    public id: number = null,
+    public id: string = null,
     public name: string = null,
     public size: number = null,
     public type: string = null,

@@ -40,11 +40,11 @@ export class FileService {
       );
   }
 
-  getBlob(id: number): Observable<Blob> {
+  getBlob(id: string): Observable<Blob> {
     return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
   }
 
-  download(id: number, filename?: string) {
+  download(id: string, filename?: string) {
     this.getBlob(id)
       .subscribe(x => {
         // It is necessary to create a new blob object with mime-type explicitly set
@@ -106,25 +106,20 @@ export class FileService {
     return request;
   }
 
-  async delete(id: number) {
-    const request = this.http.delete(this.filesUrl + id, this.httpOptions).toPromise();
-    return request;
-  }
+  async delete(files: FileModel[]) {
+    const ids: String[] = [];
+    for (let i = 0, len = files.length; i < len; ++i) {
+      ids.push(files[i].id);
+    }
+    let newHttpOptions: any = this.httpOptions;
+    newHttpOptions.body = ids;
+    const request = await this.http.delete(this.filesUrl, newHttpOptions).toPromise();
 
-  async deleteMultiple(files: FileModel[]) {
-    for (const file of files) {
-      await this.delete(file.id);
-    }
-    const length = files.length
-    let detail = "";
-    if (length > 1) {
-      detail = length + ' fichiers supprimés'
-    }
-    else {
-      detail = 'Fichier supprimé'
-    }
+    let detail = ids.length === 1 ? 'Fichier supprimé' : ids.length + ' fichiers supprimés';
     this.notificationService.add({ severity: 'success', detail: detail });
     this.alertDataSent();
+
+    return request;
   }
 
   alertDataSent() {
