@@ -11,14 +11,14 @@
 			<div *ngIf="filesLengthWarning" class="mt-4 text-danger">La limite de 100 fichiers a été dépassée</div>
 		</div>
 		<div formArrayName="formArray" *ngIf="formArray.length" class="d-flex flex-column">
-			<div class="d-flex my-2">
+			<div class="d-flex my-2 align-items-center">
 				<mat-icon class="text-secondary">search</mat-icon>
 				<div class="input-group input-group-sm">
-					<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text" placeholder="Rechercher" class="form-control rounded-pill">
+					<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text" placeholder="Rechercher par nom de fichier" class="form-control rounded-pill">
 				</div>
 			</div>
-			<mat-divider></mat-divider>
-			<div *ngFor="let control of formArray.controls; let index=index" [formGroupName]="index">
+			<div *ngFor="let control of filteredFormControls; let index=index" [formGroupName]="index">
+				<mat-divider></mat-divider>
 				<div class="row py-2">
 					<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #dfdfdf;">
 						<div class="row">

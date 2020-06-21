@@ -75,7 +75,6 @@ export class FileUploadModalComponent implements OnInit {
       this.filesLengthWarning = true;
       return;
     }
-    console.time("time")
     for (let index = 0, len = files.length; index < len; ++index) {
       let fileObject = new FileModel();
       fileObject.name = files[index].name;
@@ -96,12 +95,10 @@ export class FileUploadModalComponent implements OnInit {
               .reduce((data, byte) => data + String.fromCharCode(byte), '')
           )
         });
-        console.log("fin reader")
       }
       //prend le blob et le converti en tableau binaire dans reader.result
       reader.readAsArrayBuffer(files[index]);
     }
-    console.timeEnd("time")
   }
 
   deleteFileObjectByIndex(index) {
@@ -124,7 +121,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllCompanies(event, company: string) {
     this.stopPropagation(event)
-    if(!company) return null;
+    if (!company) return null;
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ company: company })
     }
@@ -132,7 +129,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllWorkplaces(event, workplace: string) {
     this.stopPropagation(event)
-    if(!workplace) return null;
+    if (!workplace) return null;
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ workplace: workplace })
     }
@@ -141,6 +138,11 @@ export class FileUploadModalComponent implements OnInit {
   stopPropagation(event: Event) {
     event.preventDefault();
     event.stopImmediatePropagation();
+  }
+
+  get filteredFormControls() {
+    let filteredFormControls = this.formArray.controls.filter(control => control.value.name.toLowerCase().includes(this.filter.toLowerCase()));
+    return filteredFormControls;
   }
 
   get formArray() {
