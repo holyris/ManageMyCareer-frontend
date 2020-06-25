@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FileModel } from 'src/shared/models/FileModel';
 import { FileService } from 'src/shared/services/file.service';
 import { Subscription } from 'rxjs';
-import { FilePreviewModalService } from '../file-preview-modal/file-preview-modal.service';
-import { GridApi, ColumnApi } from 'ag-grid-community';
+import { GridApi } from 'ag-grid-community';
 import { MatDialog } from '@angular/material/dialog';
 import { FileUpdateModalComponent } from '../file-update-modal/file-update-modal.component';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -11,6 +10,7 @@ import { FolderService } from 'src/shared/services/folder.service';
 import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { FolderCellComponent } from '../folder-cell/folder-cell.component';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
+import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
 
 @Component({
   selector: 'app-file-list',
@@ -37,7 +37,6 @@ export class FileListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fileService: FileService,
     private folderService: FolderService,
-    private filePreviewModalService: FilePreviewModalService,
     public dialog: MatDialog,
   ) {
 
@@ -96,15 +95,15 @@ export class FileListComponent implements OnInit {
   }
 
   showFilePreviewModal(file) {
-    this.fileService.getBlob(file.id).subscribe(
+    this.fileService.getBlob(file).subscribe(
       blob => {
-        this.filePreviewModalService.show(blob)
+        this.dialog.open(FilePreviewModalComponent, { data: { blob: blob }, minWidth:"100vw", maxWidth:"100vw", panelClass: 'preview-modal' });
       }
     )
   }
 
   downloadFile(file: FileModel): void {
-    this.fileService.download(file.id, file.name);
+    this.fileService.download(file);
   }
 
   async tryDeleteFiles(files: FileModel[]) {
@@ -141,10 +140,6 @@ export class FileListComponent implements OnInit {
     this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
       this.files = files;
     })
-  }
-
-  onSearchChange(event) {
-    console.log(event);
   }
 
   rowDoubleClicked(event) {

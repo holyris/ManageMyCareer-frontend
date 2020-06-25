@@ -161,6 +161,12 @@ button {
   background-color: #6798fe !important;
 }
 
+.preview-modal .mat-dialog-container{
+  background: none !important;
+  padding:0 !important;
+  box-shadow: none !important;
+}
+
 $theme-colors: (
   "primary": #6798fe,
   "success": #4ab8a1,
@@ -184,5 +190,3 @@ $theme-colors: (
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";
-@import "../node_modules/primeng/resources/themes/nova-light/theme.css";
-@import "../node_modules/primeng/resources/primeng.min.css";
