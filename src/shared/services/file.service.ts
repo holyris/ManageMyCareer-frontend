@@ -6,7 +6,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { FileModel } from 'src/shared/models/FileModel';
-import { NotificationService } from '../../app/notification-toast/notification.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable({
@@ -28,7 +28,7 @@ export class FileService {
   private dataSentSubject = new Subject<string>();
   public getDataSentEvent = this.dataSentSubject.asObservable();
 
-  constructor(private http: HttpClient, private notificationService: NotificationService) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
 
   getAll(): Observable<FileModel[]> {
     return this.http.get<FileModel[]>(this.filesUrl, this.httpOptions)
@@ -40,12 +40,12 @@ export class FileService {
       );
   }
 
-  getBlob(id: string): Observable<Blob> {
-    return this.http.get(this.filesUrl + id, { responseType: 'blob', withCredentials: true });
+  getBlob(file: FileModel): Observable<Blob> {
+    return this.http.get(this.filesUrl + file.id, { responseType: 'blob', withCredentials: true });
   }
 
-  download(id: string, filename?: string) {
-    this.getBlob(id)
+  download(file: FileModel) {
+    this.getBlob(file)
       .subscribe(x => {
         // It is necessary to create a new blob object with mime-type explicitly set
         // otherwise only Chrome works like it should
@@ -64,7 +64,7 @@ export class FileService {
 
         var link = document.createElement('a');
         link.href = data;
-        link.download = filename;
+        link.download = file.name;
         // this is necessary as link.click() does not work on the latest firefox
         link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
 
@@ -84,41 +84,39 @@ export class FileService {
     return this.http.get<string[]>(this.filesUrl + "workplaces", this.httpOptions);
   }
 
-  async upload(fileObjects: Array<FileModel>) {
-    const request = await this.http.post(this.filesUrl, fileObjects, this.httpOptions).toPromise();
-    const length = Object.keys(request).length
-    let detail = "";
-    if (length > 1) {
-      detail = length + ' fichiers importés'
-    }
-    else {
-      detail = 'Fichier importé'
-    }
-    this.notificationService.add({ severity: 'success', detail: detail });
+  async upload(files: Array<FileModel>) {
+    const request = await this.http.post(this.filesUrl, files, this.httpOptions).toPromise();
+    let detail = files.length === 1 ? 'Fichier importé' : files.length + ' fichiers importés';
+    this.snackBar.open(detail, "Fermer", {
+      duration: 2000,
+      horizontalPosition: 'end'
+    });
     this.alertDataSent();
     return request
   }
 
   async update(file: FileModel) {
     const request = await this.http.patch(this.filesUrl, file, this.httpOptions).toPromise();
-    this.notificationService.add({ severity: 'success', detail: 'Fichier modifié' });
+    this.snackBar.open('Fichier modifié', "Fermer", {
+      duration: 2000,
+      horizontalPosition: 'end'
+    });
     this.alertDataSent();
     return request;
   }
 
   async delete(files: FileModel[]) {
-    const ids: String[] = [];
-    for (let i = 0, len = files.length; i < len; ++i) {
-      ids.push(files[i].id);
-    }
     let newHttpOptions: any = this.httpOptions;
-    newHttpOptions.body = ids;
+    newHttpOptions.body = files;
     const request = await this.http.delete(this.filesUrl, newHttpOptions).toPromise();
 
-    let detail = ids.length === 1 ? 'Fichier supprimé' : ids.length + ' fichiers supprimés';
-    this.notificationService.add({ severity: 'success', detail: detail });
-    this.alertDataSent();
+    let detail = files.length === 1 ? 'Fichier supprimé' : files.length + ' fichiers supprimés';
+    this.snackBar.open(detail, "Fermer", {
+      duration: 2000,
+      horizontalPosition: 'end'
+    }); 
 
+    this.alertDataSent();
     return request;
   }
 

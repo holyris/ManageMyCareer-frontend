@@ -74,7 +74,7 @@ export class MoveModalComponent implements OnInit {
     this.loading = true;
     if (this.form.invalid) return;
     if (this.injectedData.hasOwnProperty("parentFolderId")) {
-      await this.folderService.create(this.updatingItem)
+      await this.folderService.update(this.updatingItem)
     } else if (this.injectedData.hasOwnProperty("folderId")) {
       await this.fileService.update(this.updatingItem);
     }

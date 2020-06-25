@@ -43,7 +43,6 @@ export class RegisterComponent implements OnInit {
           this.changeToLoginComponent.emit();
         },
         error => {
-          console.log(error)
           error = "Cet utilisateur existe déjà";
           this.alert(error)
           this.loading = false;

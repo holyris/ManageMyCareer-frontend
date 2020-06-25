@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FolderNode } from 'src/shared/models/FolderNode';
-import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/folder-list-breadcrumb-communication.service';
 import { Subscription } from 'rxjs';
 import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';

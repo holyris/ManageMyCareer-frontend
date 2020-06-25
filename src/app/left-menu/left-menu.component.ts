@@ -11,8 +11,6 @@ import { Router, NavigationStart, RouterEvent, NavigationEnd } from '@angular/ro
 import { Subscription } from 'rxjs';
 import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update-modal.component';
 import { MoveModalComponent } from '../move-modal/move-modal.component';
-import { filter, distinctUntilChanged } from 'rxjs/operators';
-import { FolderListBreadcrumbCommunicationService } from 'src/shared/services/folder-list-breadcrumb-communication.service';
 import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 

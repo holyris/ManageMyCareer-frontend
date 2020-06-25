@@ -15,9 +15,7 @@ import { MatCommonModule, MatNativeDateModule, MAT_DATE_LOCALE, DateAdapter } fr
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { DialogModule } from 'primeng/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { ToastModule } from 'primeng/toast';
 import { ChartsModule } from 'ng2-charts';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +30,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ScrollingModule as ExperimentalScrollingModule } from '@angular/cdk-experimental/scrolling';
 import { SafePipeModule } from 'safe-pipe';
 import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
@@ -39,7 +41,6 @@ import 'ag-grid-enterprise';
 import { FileListComponent } from './file-list/file-list.component';
 import { FileUploadModalComponent } from './file-upload-modal/file-upload-modal.component';
 import { LoginComponent } from './login/login.component';
-import { NotificationToastComponent } from './notification-toast/notification-toast.component';
 import { FilePreviewModalComponent } from './file-preview-modal/file-preview-modal.component';
 import { LeftMenuComponent } from './left-menu/left-menu.component';
 import { FileUpdateModalComponent } from './file-update-modal/file-update-modal.component';
@@ -64,7 +65,6 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     LeftMenuComponent,
     FileUploadModalComponent,
     LoginComponent,
-    NotificationToastComponent,
     FilePreviewModalComponent,
     FileUpdateModalComponent,
     CareerComponent,
@@ -88,9 +88,7 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    DialogModule,
     MatDividerModule,
-    ToastModule,
     ChartsModule,
     MatTreeModule,
     MatIconModule,
@@ -107,6 +105,10 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     MatAutocompleteModule,
     MatCardModule,
     MatRadioModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    ScrollingModule,
+    ExperimentalScrollingModule,
     AgGridModule.withComponents([]),
   ],
   providers: [

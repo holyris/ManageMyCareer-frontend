@@ -32,7 +32,7 @@ export class FolderUpdateModalComponent implements OnInit {
   async submit() {
     this.loading = true;
     if (this.form.invalid) return;
-    await this.folderService.create(this.updatingFolder)
+    await this.folderService.update(this.updatingFolder)
     this.close();
     this.loading = false;
   }

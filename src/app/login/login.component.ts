@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
       data => {
       },
       error => {
-        console.log(error)
         error = "Les identifiants sont incorrects";
         this.alert(error);
         this.loading=false;

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { SelectItem } from 'primeng/api/selectitem';
 import { DocumentType } from 'src/shared/models/DocumentType';
 import { FileService } from 'src/shared/services/file.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
