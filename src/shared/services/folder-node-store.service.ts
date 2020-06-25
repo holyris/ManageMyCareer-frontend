@@ -40,7 +40,7 @@ export class FolderTreeStoreService {
     private router: Router,
     private folderService: FolderService
   ) {
-    this.refresh();
+    // this.refresh();
     this.folderService.getDataSentEvent.subscribe(
       () => {
         this.refresh();

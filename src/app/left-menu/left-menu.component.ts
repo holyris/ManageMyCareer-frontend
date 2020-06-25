@@ -1,13 +1,10 @@
-import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FileUploadModalComponent } from '../file-upload-modal/file-upload-modal.component';
 import { FolderCreationModalComponent } from '../folder-creation-modal/folder-creation-modal.component';
 import { FolderService } from 'src/shared/services/folder.service';
-import { Folder } from 'src/shared/models/Folder';
 import { FolderNode } from 'src/shared/models/FolderNode';
-import { Router, NavigationStart, RouterEvent, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update-modal.component';
 import { MoveModalComponent } from '../move-modal/move-modal.component';
@@ -20,7 +17,6 @@ import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
   styleUrls: ['./left-menu.component.scss'],
 })
 export class LeftMenuComponent implements OnInit {
-  folderTreeStoreRefreshSubscription: Subscription
 
   constructor(
     private router: Router,
@@ -30,19 +26,7 @@ export class LeftMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.folderTreeStoreService.refresh();
-    this.folderTreeStoreRefreshSubscription = this.folderTreeStoreService.getRefreshEvent.subscribe(
-      () => {
-        this.refresh();
-      });
-  }
-
-  ngOnDestroy() {
-    // prevent memory leak when component destroyed
-    this.folderTreeStoreRefreshSubscription.unsubscribe();
-  }
-
-  refresh() {
+    this.folderTreeStoreServiceRefresh();
   }
 
   folderTreeStoreServiceRefresh() {
