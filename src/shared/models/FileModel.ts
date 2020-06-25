@@ -16,7 +16,8 @@ export class FileModel {
     public grossSalary: number = null,
     public netSalary: number = null,
     public fileContent: string = null,
-    public folderId: string = null
+    public folderId: string = null,
+    public index: number = null
   ) {
   }
 

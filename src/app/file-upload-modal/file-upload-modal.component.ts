@@ -9,7 +9,6 @@ import { Moment } from 'moment';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { startWith, map } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
 
 export const MY_FORMATS = {
   parse: {
@@ -32,8 +31,8 @@ export const MY_FORMATS = {
 })
 export class FileUploadModalComponent implements OnInit {
   loading: Boolean = false;
-  filesLengthWarning: Boolean = false;
-  selectedFiles: FileList;
+  filesLengthWarning: boolean = false;
+  filesLengthLimit: number = 500;
   companies: string[] = [];
   workplaces: string[] = [];
   form: FormGroup;
@@ -41,13 +40,14 @@ export class FileUploadModalComponent implements OnInit {
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;
   types: Array<any> = Object.values(DocumentType);
+  importatingFilesLength: number = 1;
+  importatedFilesLength: number = 1;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public injectedData: any,
     public fileService: FileService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog,
-    private changeDetectorRef: ChangeDetectorRef
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -58,11 +58,10 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   async submit() {
-    if (this.form.invalid) return;
+    if (!this.canSave) return;
     this.loading = true;
     await this.fileService.upload(this.fileObjects)
     this.close();
-    this.loading = false;
   }
 
   close() {
@@ -70,16 +69,21 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   addFiles(files) {
-    this.filesLengthWarning = false;
-    if ((files.length + this.formArray.length) > 100) {
+    if ((files.length + this.formArray.length) > this.filesLengthLimit) {
       this.filesLengthWarning = true;
       return;
     }
+    this.filesLengthWarning = false;
+
+    this.importatedFilesLength = 0;
+    this.importatingFilesLength = files.length;
+
     for (let index = 0, len = files.length; index < len; ++index) {
       let fileObject = new FileModel();
       fileObject.name = files[index].name;
       fileObject.size = files[index].size;
       fileObject.type = files[index].type;
+      fileObject.index = this.formArray.length;
       fileObject.folderId = this.injectedData.folderId;
       this.formArray.push(this.formBuilder.group(fileObject));
       this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
@@ -88,6 +92,7 @@ export class FileUploadModalComponent implements OnInit {
       let reader = new FileReader();
       //appelle cette fonction quand readAsArrayBuffer est fini
       reader.onload = () => {
+
         // converti reader.result en base64
         this.formArray.at(index).patchValue({
           fileContent: btoa(
@@ -95,6 +100,7 @@ export class FileUploadModalComponent implements OnInit {
               .reduce((data, byte) => data + String.fromCharCode(byte), '')
           )
         });
+        this.importatedFilesLength += 1;
       }
       //prend le blob et le converti en tableau binaire dans reader.result
       reader.readAsArrayBuffer(files[index]);
@@ -121,7 +127,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllCompanies(event, company: string) {
     this.stopPropagation(event)
-    if (!company) return null;
+    if (!company) company = '';
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ company: company })
     }
@@ -129,7 +135,7 @@ export class FileUploadModalComponent implements OnInit {
 
   applyToAllWorkplaces(event, workplace: string) {
     this.stopPropagation(event)
-    if (!workplace) return null;
+    if (!workplace) workplace = '';
     for (let i = 0; i < this.fileObjects.length; i++) {
       this.formArray.at(i).patchValue({ workplace: workplace })
     }
@@ -138,6 +144,42 @@ export class FileUploadModalComponent implements OnInit {
   stopPropagation(event: Event) {
     event.preventDefault();
     event.stopImmediatePropagation();
+  }
+
+  isSelectedFichePaie(index) {
+    return this.fileObjects[index].documentType === DocumentType.FichePaie;
+  }
+
+  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, index: number) {
+    datepicker.close();
+    this.formArray.at(index).patchValue({ documentDate: normalizedMonth.toDate() });
+  }
+
+  transformFileSize(number) {
+    if (number < 1024) {
+      return number + ' octets';
+    } else if (number >= 1024 && number < 1048576) {
+      return (number / 1024).toFixed(1) + ' Ko';
+    } else if (number >= 1048576) {
+      return (number / 1048576).toFixed(1) + ' Mo';
+    }
+  }
+
+  private filterCompanies(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.companies.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  }
+  private filterWorkplaces(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.workplaces.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  findControlIndex(control){
+    return this.formArray.controls.findIndex(x => x.value.index === control.value.index)
+  }
+
+  get canSave(){
+    return this.form.valid && this.importFinished && !this.loading
   }
 
   get filteredFormControls() {
@@ -153,21 +195,11 @@ export class FileUploadModalComponent implements OnInit {
     return this.formArray.value as FileModel[];
   }
 
-  isSelectedFichePaie(index) {
-    return this.fileObjects[index].documentType === DocumentType.FichePaie;
+  get importProgression() {
+    return Math.round((this.importatedFilesLength * 100) / this.importatingFilesLength);
   }
 
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, index: number) {
-    datepicker.close();
-    this.formArray.at(index).patchValue({ documentDate: normalizedMonth.toDate() });
-  }
-
-  private filterCompanies(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.companies.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
-  }
-  private filterWorkplaces(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.workplaces.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+  get importFinished() {
+    return this.importProgression === 100;
   }
 }

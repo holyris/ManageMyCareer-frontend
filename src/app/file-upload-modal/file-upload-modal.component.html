@@ -1,126 +1,154 @@
 <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
-	<h2 mat-dialog-title>Importer un fichier</h2>
-	<mat-dialog-content>
-		<div class="py-2 px-2">
-			<input type="file" id="file" multiple (change)="addFiles($event.target.files)" #fileInput hidden>
-			<button type="button" mat-flat-button color="primary" (click)="fileInput.click()">
-				<mat-icon matPrefix fontSet="material-icons-outlined">add</mat-icon>
-				Ajouter des fichiers
-			</button>
-			<span *ngIf="formArray.length" class="ml-5">{{formArray.length}} fichiers dans la liste</span>
-			<div *ngIf="filesLengthWarning" class="mt-4 text-danger">La limite de 100 fichiers a été dépassée</div>
-		</div>
-		<div formArrayName="formArray" *ngIf="formArray.length" class="d-flex flex-column">
-			<div class="d-flex my-2 align-items-center">
-				<mat-icon class="text-secondary">search</mat-icon>
-				<div class="input-group input-group-sm">
-					<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text" placeholder="Rechercher par nom de fichier" class="form-control rounded-pill">
-				</div>
-			</div>
-			<div *ngFor="let control of filteredFormControls; let index=index" [formGroupName]="index">
-				<mat-divider></mat-divider>
-				<div class="row py-2">
-					<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #dfdfdf;">
-						<div class="row">
-							<div class="col-12">Taille :</div>
-						</div>
-						<div class="row">
-							<div class="col-12">{{control.value.size}}B</div>
-						</div>
-						<div class="row mt-auto">
-							<div class="col-12">
-								<button type="button" mat-button (click)="deleteFileObjectByIndex(index)">Retirer</button>
-							</div>
-						</div>
-					</div>
-					<div class="col-auto">
-						<div class="row">
-							<div class="col-12">
-								<mat-form-field [style]="{'min-width':'300px'}">
-									<mat-label>Nom</mat-label>
-									<input matInput formControlName="name" required>
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<mat-form-field>
-									<mat-label>Type de document</mat-label>
-									<mat-select formControlName="documentType">
-										<mat-option *ngFor="let type of types" [value]="type">
-											{{type}}
-										</mat-option>
-									</mat-select>
-								</mat-form-field>
-							</div>
-							<div class="col pl-0">
-								<mat-form-field>
-									<mat-label>Date</mat-label>
-									<input matInput [matDatepicker]="dp" formControlName="documentDate">
-									<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-									<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, index)"
-										panelClass="example-month-picker">
-									</mat-datepicker>
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<mat-form-field>
-									<mat-label>Entreprise</mat-label>
-									<input matInput formControlName="company" [matAutocomplete]="autoCompany">
-									<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
-										(click)="applyToAllCompanies($event, fileObjects[index].company)"
-										matTooltip="Appliquer à tous les autres fichiers">
-										<mat-icon>call_split</mat-icon>
-									</button>
-									<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
-										<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
-											{{company}}
-										</mat-option>
-									</mat-autocomplete>
-								</mat-form-field>
-							</div>
-							<div class="col pl-0">
-								<mat-form-field>
-									<mat-label>Emploi</mat-label>
-									<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
-									<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
-										(click)="applyToAllWorkplaces($event, fileObjects[index].workplace)"
-										matTooltip="Appliquer à tous les autres fichiers">
-										<mat-icon>call_split</mat-icon>
-									</button>
-									<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
-										<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
-											{{workplace}}
-										</mat-option>
-									</mat-autocomplete>
-								</mat-form-field>
-							</div>
-						</div>
-						<div class="row" *ngIf="isSelectedFichePaie(index)">
-							<div class="col">
-								<mat-form-field>
-									<mat-label>Salaire brut (€)</mat-label>
-									<input matInput formControlName="grossSalary" appNumberValidator>
-								</mat-form-field>
 
+	<h2 mat-dialog-title class="mb-2">Importer des fichiers</h2>
+
+	<div class="py-2 px-2">
+		<div class="row">
+			<div class="col-auto">
+				<input type="file" id="file" multiple (change)="addFiles($event.target.files)" #fileInput hidden>
+				<button type="button" mat-flat-button color="primary" (click)="fileInput.click()"
+					[disabled]="loading || !importFinished">
+					<mat-icon matPrefix fontSet="material-icons-outlined">add</mat-icon>
+					Ajouter des fichiers
+				</button>
+			</div>
+
+			<div *ngIf="formArray.length" class="col">
+				<div class="d-flex align-items-end h-100">
+					<div class="align-self-end mx-auto">{{formArray.length}} fichiers dans la liste</div>
+					<div *ngIf="!importFinished" class="align-self-end ml-auto">Importation en cours...</div>
+					<div *ngIf="importFinished" class="align-self-end ml-auto">Importation terminée.</div>
+				</div>
+			</div>
+		</div>
+
+		<div *ngIf="filesLengthWarning" class="mt-2 text-danger">La limite de {{filesLengthLimit}} fichiers a été dépassée
+		</div>
+	</div>
+	<div *ngIf="formArray.length">
+		<mat-progress-bar mode="determinate" [value]="importProgression"></mat-progress-bar>
+		<div class="d-flex my-2 align-items-center">
+			<mat-icon class="text-secondary">search</mat-icon>
+			<div class="input-group input-group-sm">
+				<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text"
+					placeholder="Rechercher par nom de fichier" class="form-control rounded-pill">
+			</div>
+		</div>
+
+		<mat-divider class="mx-n4"></mat-divider>
+
+		<div formArrayName="formArray">
+			<cdk-virtual-scroll-viewport autosize style="height:60vh; width:630px; overflow-y:scroll" class="mx-n4">
+				<div *cdkVirtualFor="let control of filteredFormControls; let index=index; templateCacheSize: 0"
+					[formGroupName]="findControlIndex(control)" [style.height]="'auto'">
+					<mat-divider></mat-divider>
+					<div class="row py-2 px-3">
+						<div class="col d-flex flex-column text-truncate pr-5" style="border-right: solid 1px #dfdfdf;">
+							<div class="row">
+								<div class="col-12">Taille :</div>
 							</div>
-							<div class="col pl-0">
-								<mat-form-field>
-									<mat-label>Salaire net (€)</mat-label>
-									<input matInput formControlName="netSalary" appNumberValidator>
-								</mat-form-field>
+							<div class="row">
+								<div class="col-12">{{transformFileSize(control.value.size)}} </div>
+							</div>
+							<div class="row mt-auto">
+								<div class="col-12">
+									<button type="button" mat-button (click)="deleteFileObjectByIndex(findControlIndex(control))">Retirer</button>
+								</div>
+							</div>
+						</div>
+						<div class="col-auto">
+							<div class="row">
+								<div class="col-12">
+									<mat-form-field [style]="{'min-width':'300px'}">
+										<mat-label>Nom</mat-label>
+										<input matInput formControlName="name" required>
+									</mat-form-field>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<mat-form-field>
+										<mat-label>Type de document</mat-label>
+										<mat-select formControlName="documentType">
+											<mat-option *ngFor="let type of types" [value]="type">
+												{{type}}
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+								</div>
+								<div class="col pl-0">
+									<mat-form-field>
+										<mat-label>Date</mat-label>
+										<input matInput [matDatepicker]="dp" formControlName="documentDate">
+										<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+										<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, findControlIndex(control))"
+											panelClass="example-month-picker">
+										</mat-datepicker>
+									</mat-form-field>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<mat-form-field>
+										<mat-label>Entreprise</mat-label>
+										<input matInput formControlName="company" [matAutocomplete]="autoCompany">
+										<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+											(click)="applyToAllCompanies($event, control.value.company)"
+											matTooltip="Appliquer à tous les autres fichiers">
+											<mat-icon>call_split</mat-icon>
+										</button>
+										<mat-autocomplete autoActiveFirstOption #autoCompany="matAutocomplete">
+											<mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
+												{{company}}
+											</mat-option>
+										</mat-autocomplete>
+									</mat-form-field>
+								</div>
+								<div class="col pl-0">
+									<mat-form-field>
+										<mat-label>Emploi</mat-label>
+										<input matInput formControlName="workplace" [matAutocomplete]="autoWorkplace">
+										<button type="button" mat-icon-button matSuffix *ngIf="fileObjects.length > 1"
+											(click)="applyToAllWorkplaces($event, control.value.workplace)"
+											matTooltip="Appliquer à tous les autres fichiers">
+											<mat-icon>call_split</mat-icon>
+										</button>
+										<mat-autocomplete autoActiveFirstOption #autoWorkplace="matAutocomplete">
+											<mat-option *ngFor="let workplace of filteredWorkplaces | async" [value]="workplace">
+												{{workplace}}
+											</mat-option>
+										</mat-autocomplete>
+									</mat-form-field>
+								</div>
+							</div>
+							<div class="row" *ngIf="isSelectedFichePaie(findControlIndex(control))">
+								<div class="col">
+									<mat-form-field>
+										<mat-label>Salaire brut (€)</mat-label>
+										<input matInput formControlName="grossSalary" appNumberValidator>
+									</mat-form-field>
+
+								</div>
+								<div class="col pl-0">
+									<mat-form-field>
+										<mat-label>Salaire net (€)</mat-label>
+										<input matInput formControlName="netSalary" appNumberValidator>
+									</mat-form-field>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<mat-divider></mat-divider>
+			</cdk-virtual-scroll-viewport>
 		</div>
-	</mat-dialog-content>
+
+		<mat-divider class="mx-n4"></mat-divider>
+	</div>
+
+
 	<mat-dialog-actions align="end">
-		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!form.valid || loading" type="submit">
+		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!canSave"
+			type="submit">
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			Importer</button>
 		<button type="button" mat-button [mat-dialog-close]="true">Fermer</button>
