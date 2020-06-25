@@ -40,8 +40,6 @@ export class FileUploadModalComponent implements OnInit {
   filteredCompanies: Observable<string[]>;
   filteredWorkplaces: Observable<string[]>;
   types: Array<any> = Object.values(DocumentType);
-  importatingFilesLength: number = 1;
-  importatedFilesLength: number = 1;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public injectedData: any,
@@ -75,11 +73,9 @@ export class FileUploadModalComponent implements OnInit {
     }
     this.filesLengthWarning = false;
 
-    this.importatedFilesLength = 0;
-    this.importatingFilesLength = files.length;
-
     for (let index = 0, len = files.length; index < len; ++index) {
       let fileObject = new FileModel();
+      fileObject.blob = files[index];
       fileObject.name = files[index].name;
       fileObject.size = files[index].size;
       fileObject.type = files[index].type;
@@ -88,22 +84,6 @@ export class FileUploadModalComponent implements OnInit {
       this.formArray.push(this.formBuilder.group(fileObject));
       this.filteredCompanies = this.formArray.at(index).get('company').valueChanges.pipe(startWith(''), map(value => this.filterCompanies(value)))
       this.filteredWorkplaces = this.formArray.at(index).get('workplace').valueChanges.pipe(startWith(''), map(value => this.filterWorkplaces(value)))
-
-      let reader = new FileReader();
-      //appelle cette fonction quand readAsArrayBuffer est fini
-      reader.onload = () => {
-
-        // converti reader.result en base64
-        this.formArray.at(index).patchValue({
-          fileContent: btoa(
-            new Uint8Array(reader.result as ArrayBuffer)
-              .reduce((data, byte) => data + String.fromCharCode(byte), '')
-          )
-        });
-        this.importatedFilesLength += 1;
-      }
-      //prend le blob et le converti en tableau binaire dans reader.result
-      reader.readAsArrayBuffer(files[index]);
     }
   }
 
@@ -179,7 +159,7 @@ export class FileUploadModalComponent implements OnInit {
   }
 
   get canSave(){
-    return this.form.valid && this.importFinished && !this.loading
+    return this.form.valid && !this.loading
   }
 
   get filteredFormControls() {
@@ -193,13 +173,5 @@ export class FileUploadModalComponent implements OnInit {
 
   get fileObjects() {
     return this.formArray.value as FileModel[];
-  }
-
-  get importProgression() {
-    return Math.round((this.importatedFilesLength * 100) / this.importatingFilesLength);
-  }
-
-  get importFinished() {
-    return this.importProgression === 100;
   }
 }

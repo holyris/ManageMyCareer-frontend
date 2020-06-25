@@ -7,7 +7,7 @@
 			<div class="col-auto">
 				<input type="file" id="file" multiple (change)="addFiles($event.target.files)" #fileInput hidden>
 				<button type="button" mat-flat-button color="primary" (click)="fileInput.click()"
-					[disabled]="loading || !importFinished">
+					[disabled]="loading">
 					<mat-icon matPrefix fontSet="material-icons-outlined">add</mat-icon>
 					Ajouter des fichiers
 				</button>
@@ -15,9 +15,7 @@
 
 			<div *ngIf="formArray.length" class="col">
 				<div class="d-flex align-items-end h-100">
-					<div class="align-self-end mx-auto">{{formArray.length}} fichiers dans la liste</div>
-					<div *ngIf="!importFinished" class="align-self-end ml-auto">Importation en cours...</div>
-					<div *ngIf="importFinished" class="align-self-end ml-auto">Importation terminée.</div>
+					<div class="align-self-end ml-auto">{{formArray.length}} fichiers dans la liste</div>
 				</div>
 			</div>
 		</div>
@@ -26,7 +24,6 @@
 		</div>
 	</div>
 	<div *ngIf="formArray.length">
-		<mat-progress-bar mode="determinate" [value]="importProgression"></mat-progress-bar>
 		<div class="d-flex my-2 align-items-center">
 			<mat-icon class="text-secondary">search</mat-icon>
 			<div class="input-group input-group-sm">

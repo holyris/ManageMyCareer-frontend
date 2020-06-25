@@ -85,6 +85,10 @@ export class FileService {
   }
 
   async upload(files: Array<FileModel>) {
+    for (let index = 0, len = files.length; index < len; ++index) {
+      files[index] = await this.transformBlob(files[index]);
+    }
+
     const request = await this.http.post(this.filesUrl, files, this.httpOptions).toPromise();
     let detail = files.length === 1 ? 'Fichier importé' : files.length + ' fichiers importés';
     this.snackBar.open(detail, "Fermer", {
@@ -92,7 +96,25 @@ export class FileService {
       horizontalPosition: 'end'
     });
     this.alertDataSent();
-    return request
+  }
+
+  async transformBlob(file: FileModel): Promise<FileModel> {
+    return new Promise(resolve => {
+      let reader = new FileReader();
+      //appelle cette fonction quand readAsArrayBuffer est fini
+      reader.onload = () => {
+
+        // converti reader.result en base64
+        file.fileContent = btoa(
+          new Uint8Array(reader.result as ArrayBuffer)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+        resolve(file);
+      }
+      //prend le blob et le converti en tableau binaire dans reader.result
+      reader.readAsArrayBuffer(file.blob);
+    })
+
   }
 
   async update(file: FileModel) {
@@ -114,7 +136,7 @@ export class FileService {
     this.snackBar.open(detail, "Fermer", {
       duration: 2000,
       horizontalPosition: 'end'
-    }); 
+    });
 
     this.alertDataSent();
     return request;
