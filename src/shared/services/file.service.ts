@@ -7,13 +7,13 @@ import { catchError, tap, map } from 'rxjs/operators';
 
 import { FileModel } from 'src/shared/models/FileModel';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
-  private filesUrl = 'http://localhost:8080/files/';  // URL to web api
+  private filesUrl = environment.apiUrl + 'files/';  // URL to web api
 
   private httpOptions = {
     withCredentials: true

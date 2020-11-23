@@ -5,13 +5,14 @@ import { FileModel } from '../models/FileModel';
 import { map } from 'rxjs/operators';
 import { Folder } from '../models/Folder';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FolderService {
 
-  private url = 'http://localhost:8080/folders/';  // URL to web api
+  private url = environment.apiUrl + 'folders/';  // URL to web api
 
   private httpOptions = {
     withCredentials: true

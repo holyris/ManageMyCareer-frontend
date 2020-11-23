@@ -5,12 +5,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private url = 'http://localhost:8080/';  // URL to web api
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
@@ -22,7 +22,7 @@ export class AuthenticationService {
   }
 
   login(user: User) {
-    const req = this.http.post<any>(this.url + `login`, { username: user.username, password: user.password }, { withCredentials: true })
+    const req = this.http.post<any>(environment.apiUrl + `login`, { username: user.username, password: user.password }, { withCredentials: true })
       .pipe(map(response => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
