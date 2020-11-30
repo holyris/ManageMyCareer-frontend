@@ -9,7 +9,7 @@ import { User } from 'src/shared/models/user';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'homepage';
+  title = 'Manage My Career';
 
   currentUser: User;
 

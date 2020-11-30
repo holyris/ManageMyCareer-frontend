@@ -28,9 +28,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ScrollingModule as ExperimentalScrollingModule } from '@angular/cdk-experimental/scrolling';
@@ -103,9 +101,7 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     MatSelectModule,
     MatNativeDateModule,
     MatAutocompleteModule,
-    MatCardModule,
     MatRadioModule,
-    MatProgressBarModule,
     MatSnackBarModule,
     ScrollingModule,
     ExperimentalScrollingModule,
