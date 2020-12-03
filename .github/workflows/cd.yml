@@ -17,10 +17,10 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           port: ${{ secrets.SERVER_PORT }}
           key: ${{ secrets.SERVER_SSHKEY }}
-          script: 
-            - cd ${{ secrets.PROJECT_PATH }}
-            - git pull
-            - docker-compose up -d --build
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            git pull
+            docker-compose up -d --build
 
 
 
