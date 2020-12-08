@@ -26,7 +26,7 @@ export class AuthenticationService {
       .pipe(map(response => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/files']);
         return user;
       })
 
@@ -38,7 +38,7 @@ export class AuthenticationService {
     this.dialog.closeAll();
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['']);
+    this.router.navigate(['welcome']);
   }
 
   public get currentUserValue(): User {

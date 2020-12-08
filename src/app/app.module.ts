@@ -52,6 +52,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FolderCellComponent } from './folder-cell/folder-cell.component';
 import { ReceptionComponent } from './reception/reception.component';
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
+import { MainAppComponent } from './main-app/main-app.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     FolderCellComponent,
     ReceptionComponent,
     DeleteModalComponent,
+    MainAppComponent,
   ],
   imports: [
     BrowserModule,

@@ -17,7 +17,7 @@
   </div>
   <mat-divider></mat-divider>
   <mat-nav-list dense class="py-2">
-    <mat-list-item routerLink="files" routerLinkActive="active" disableRipple>
+    <mat-list-item routerLink="/files" routerLinkActive="active" disableRipple>
       <div matLine>
         <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_drive_file</mat-icon>
         <span class="ml-3">Mes fichiers</span>
@@ -46,7 +46,7 @@
       <mat-tree tabindex="0" [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node">
           <mat-nav-list dense class="w-100 pt-0">
-            <mat-list-item disableRipple="true" [routerLink]="['folders', node.id]" routerLinkActive="active">
+            <mat-list-item disableRipple="true" [routerLink]="['/folders', node.id]" routerLinkActive="active">
               <div matLine class="mx-n3" matTreeNodePadding matTreeNodePaddingIndent="8px">
                 <button mat-icon-button *ngIf="node.expandable" (click)="toggleNode($event, node)" disableRipple
                   [attr.aria-label]="'toggle ' + node.name">
@@ -97,7 +97,7 @@
 
   <mat-divider></mat-divider>
   <mat-nav-list class="pt-2">
-    <mat-list-item routerLink="career" routerLinkActive="active" disableRipple>
+    <mat-list-item routerLink="/career" routerLinkActive="active" disableRipple>
       <div matLine>
         <mat-icon mat-list-icon fontSet="material-icons-outlined">insert_chart</mat-icon>
         <span class="ml-3"> Ma carrière </span>

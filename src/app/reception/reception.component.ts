@@ -12,7 +12,7 @@ export class ReceptionComponent implements OnInit {
 
   constructor(private router: Router, public authenticationService: AuthenticationService) {
     if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/home']);
+      this.router.navigate(['/files']);
     }
   }
 
