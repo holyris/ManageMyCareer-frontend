@@ -14,23 +14,26 @@
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Mot de passe</mat-label>
         <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
-        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button" class="pt-2">
+        <button mat-icon-button matSuffix disableRipple (click)="hidePassword = !hidePassword" type="button"
+         style="padding-top: 12px">
           <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>
 
-      <div>
-        <button mat-flat-button color="accent" [disabled]="!form.valid || loading" type="submit">
-          <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
-          Se connecter
-        </button>
-
-        <button mat-button color="primary" class="ml-2" type="button" (click)="changeToRegisterComponent.emit()">
-          Créer un compte
-        </button>
+      <div class="row no-gutters">
+        <div class="col-auto mr-auto mr-sm-2">
+          <button mat-flat-button color="accent" class="px-2 px-sm-3" [disabled]="!form.valid || loading" type="submit">
+            <i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+            Se connecter
+          </button>
+        </div>
+        <div class="col-auto">
+          <button mat-button color="primary" class="px-2 px-sm-3" type="button"
+            (click)="changeToRegisterComponent.emit()">
+            Créer un compte
+          </button>
+        </div>
       </div>
     </div>
-
   </div>
-
 </form>

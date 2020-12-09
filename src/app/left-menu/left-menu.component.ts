@@ -10,6 +10,7 @@ import { FolderUpdateModalComponent } from '../folder-update-modal/folder-update
 import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-left-menu',
@@ -22,7 +23,8 @@ export class LeftMenuComponent implements OnInit {
     private router: Router,
     private folderTreeStoreService: FolderTreeStoreService,
     private dialog: MatDialog,
-    private folderService: FolderService
+    private folderService: FolderService,
+    public breakpointObserver: BreakpointObserver,
   ) { }
 
   ngOnInit(): void {
@@ -115,6 +117,10 @@ export class LeftMenuComponent implements OnInit {
 
   get treeControl() {
     return this.folderTreeStoreService.treeControl;
+  }
+
+  get isWeb() {
+    return this.breakpointObserver.isMatched(Breakpoints.Web)
   }
 
   stopPropagation(event: Event) {

@@ -22,15 +22,19 @@
 				<input matInput type="password" formControlName="passwordChecker" required>
 			</mat-form-field>
 
-			<div>
-				<button mat-flat-button type="submit" color="accent" [disabled]="!form.valid || loading">
-					<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
-					S'inscrire
-				</button>
-
-				<button mat-button color="primary" class="ml-2" type="button" (click)="changeToLoginComponent.emit()">J'ai
-					déjà un compte
-				</button>
+			<div class="row no-gutters">
+				<div class="col-auto mr-auto mr-sm-2">
+					<button mat-flat-button class="px-2 px-sm-3" type="submit" color="accent"
+						[disabled]="!form.valid || loading">
+						<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
+						S'inscrire
+					</button>
+				</div>
+				<div class="col-auto">
+					<button mat-button color="primary" class="px-2 px-sm-3" type="button" (click)="changeToLoginComponent.emit()">J'ai
+						déjà un compte
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,16 +1,25 @@
-<div class="row h-100 w-100" style="overflow-y: hidden;">
-  <div class="col-8 h-100 d-flex flex-column text-light hide-scrollbar" style="overflow-y:scroll; background-color: #396afd">
+<div class="row no-gutters h-100">
+  <div class="col p-0 h-100 d-flex flex-column text-light" style="background-color: #396afd">
+    <div class="row no-gutters p-3">
+      <button mat-button (click)="openLoginModal()" class="ml-auto mx-2">
+        <span>Connexion</span>
+      </button>
+      <button mat-raised-button (click)="openRegisterModal()" color="primary" class="ml-2">
+        <span>Inscription</span>
+      </button>
+    </div>
     <div class="d-flex justify-content-center mt-auto">
       <img height="250" src="../assets/logo_title_white.png">
     </div>
-    <h1 class="d-flex justify-content-center mt-5 mb-3 font-weight-light" style="font-size:30px;">Le cloud professionnel pour les particuliers</h1>
-    <h3 class="mt-5 mb-auto text-center">Ne perdez plus de temps à gérer vos documents professionnels. ManageMyCareer s'occupe de tout.
+    <h1 class="d-flex justify-content-center text-center mt-5 mb-3 font-weight-light" style="font-size:30px;">
+      Le cloud
+      professionnel
+      pour les particuliers</h1>
+    <h3 class="mt-5 mb-auto text-center">Ne perdez plus de temps à gérer vos documents professionnels. ManageMyCareer
+      s'occupe de tout.
     </h3>
   </div>
-  <div class="col p-0">
-    <div class="px-5 h-100 w-100 d-flex flex-column justify-content-center align-items-center">
-      <app-login *ngIf="!registerComponentVisible" class="h-100 w-100" (changeToRegisterComponent)="registerComponentVisible=true"></app-login>
-      <app-register *ngIf="registerComponentVisible" class="h-100 w-100" (changeToLoginComponent)="registerComponentVisible=false"></app-register>
-    </div>
-  </div>
+  <!-- <div *ngIf="isWeb" class="col-4 p-0">
+    <app-authentication></app-authentication>
+  </div> -->
 </div>

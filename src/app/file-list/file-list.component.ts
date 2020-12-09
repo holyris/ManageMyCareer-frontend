@@ -11,6 +11,7 @@ import { MoveModalComponent } from '../move-modal/move-modal.component';
 import { FolderCellComponent } from '../folder-cell/folder-cell.component';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-file-list',
@@ -38,19 +39,20 @@ export class FileListComponent implements OnInit {
     private fileService: FileService,
     private folderService: FolderService,
     public dialog: MatDialog,
+    public breakpointObserver: BreakpointObserver,
   ) {
 
     this.columnDefs = [
       { headerName: 'Document', field: 'name', tooltipField: 'name', suppressMenu: true, flex: 5 },
-      { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3 },
-      { headerName: 'Entreprise', field: 'company', tooltipField: 'company', flex: 3 },
-      { headerName: 'Emploi', field: 'workplace', tooltipField: 'workplace', flex: 3 },
-      { headerName: 'Mois', field: 'documentMonth', flex: 2 },
-      { headerName: 'Année', field: 'documentYear', flex: 2 },
+      { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3},
+      { headerName: 'Entreprise', field: 'company', tooltipField: 'company', flex: 3, hide: !this.isWeb },
+      { headerName: 'Emploi', field: 'workplace', tooltipField: 'workplace', flex: 3, hide: !this.isWeb },
+      { headerName: 'Mois', field: 'documentMonth', flex: 2, hide: !this.isWeb },
+      { headerName: 'Année', field: 'documentYear', flex: 2, hide: !this.isWeb },
       { headerName: 'Salaire brut', field: 'grossSalary', hide: true },
       { headerName: 'Salaire net', field: 'netSalary', hide: true },
       {
-        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3, cellClass: "d-flex align-items-center",
+        headerName: 'Dossier', sortable: false, suppressMenu: true, flex: 3, cellClass: "d-flex align-items-center", hide: !this.isWeb,
         cellRendererFramework: FolderCellComponent,
       },
     ];
@@ -97,7 +99,7 @@ export class FileListComponent implements OnInit {
   showFilePreviewModal(file) {
     this.fileService.getBlob(file).subscribe(
       blob => {
-        this.dialog.open(FilePreviewModalComponent, { data: { blob: blob }, minWidth:"100vw", maxWidth:"100vw", panelClass: 'preview-modal' });
+        this.dialog.open(FilePreviewModalComponent, { data: { blob: blob }, minWidth: "100vw", maxWidth: "100vw", panelClass: 'preview-modal' });
       }
     )
   }
@@ -205,5 +207,9 @@ export class FileListComponent implements OnInit {
 
       return result;
     }
+  }
+
+  get isWeb() {
+    return this.breakpointObserver.isMatched(Breakpoints.Web)
   }
 }

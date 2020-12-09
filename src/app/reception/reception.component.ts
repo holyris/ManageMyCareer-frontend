@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from 'src/shared/services/authentication.service';
-import { Router } from '@angular/router';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationComponent } from '../authentication/authentication.component';
 
 @Component({
   selector: 'app-reception',
@@ -8,15 +9,31 @@ import { Router } from '@angular/router';
   styleUrls: ['./reception.component.scss']
 })
 export class ReceptionComponent implements OnInit {
-  registerComponentVisible: boolean = false;
 
-  constructor(private router: Router, public authenticationService: AuthenticationService) {
-    if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/files']);
-    }
+  constructor(
+    public breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
+  ) {
+
   }
 
   ngOnInit(): void {
+  }
+
+  openLoginModal(): void {
+    this.dialog.open(AuthenticationComponent, {
+      data: { registerComponentVisible: false },
+    })
+  }
+
+  openRegisterModal(): void {
+    this.dialog.open(AuthenticationComponent, {
+      data: { registerComponentVisible: true },
+    })
+  }
+
+  get isWeb() {
+    return this.breakpointObserver.isMatched(Breakpoints.Web)
   }
 
 }

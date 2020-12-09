@@ -1,0 +1,6 @@
+<div class="d-flex flex-column justify-content-center align-items-center">
+  <app-login *ngIf="!registerComponentVisible" class="h-100"
+    (changeToRegisterComponent)="registerComponentVisible=true"></app-login>
+  <app-register *ngIf="registerComponentVisible" class="h-100"
+    (changeToLoginComponent)="registerComponentVisible=false"></app-register>
+</div>

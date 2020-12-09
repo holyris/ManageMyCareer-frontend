@@ -2,7 +2,7 @@
   <app-header></app-header>
 
   <mat-sidenav-container class="h-100">
-    <mat-sidenav mode="side" opened disableClose="true">
+    <mat-sidenav [mode]="isWeb ? 'side' : 'over'" [opened]="isWeb ? true : appStateService.sidenavVisible" (closedStart)="appStateService.sidenavVisible = false">
       <app-left-menu></app-left-menu>
     </mat-sidenav>
 

@@ -53,6 +53,7 @@ import { FolderCellComponent } from './folder-cell/folder-cell.component';
 import { ReceptionComponent } from './reception/reception.component';
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 import { MainAppComponent } from './main-app/main-app.component';
+import { AuthenticationComponent } from './authentication/authentication.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { MainAppComponent } from './main-app/main-app.component';
     ReceptionComponent,
     DeleteModalComponent,
     MainAppComponent,
+    AuthenticationComponent,
   ],
   imports: [
     BrowserModule,

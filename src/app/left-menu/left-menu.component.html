@@ -37,7 +37,7 @@
     </button>
     <button mat-icon-button type="button" matTooltip="Nouveau dossier à la racine" matTooltipPosition="above"
       (click)="showFolderCreationModal()">
-      <mat-icon class="text-primary">create_new_folder</mat-icon>
+      <mat-icon color="primary">create_new_folder</mat-icon>
     </button>
   </h4>
 
@@ -63,7 +63,7 @@
                 </span>
               </div>
               <button mat-icon-button [matMenuTriggerFor]="menu" (click)="stopPropagation($event)"
-                class="show-on-hover mr-n3" type="button">
+              [ngClass]="{'show-on-hover': isWeb}" class="mr-n3" type="button">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
