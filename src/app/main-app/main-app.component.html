@@ -1,0 +1,13 @@
+<div class="d-flex flex-column h-100">
+  <app-header></app-header>
+
+  <mat-sidenav-container class="h-100">
+    <mat-sidenav [mode]="isWeb ? 'side' : 'over'" [opened]="isWeb ? true : appStateService.sidenavVisible" (closedStart)="appStateService.sidenavVisible = false">
+      <app-left-menu></app-left-menu>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

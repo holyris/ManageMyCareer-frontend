@@ -1,9 +1,9 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/shared/services/authentication.service';
 import { first } from 'rxjs/operators';
 import { User } from 'src/shared/models/user'
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +20,10 @@ export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   isAlerting: Boolean = false;
 
-  constructor(private formBuilder: FormBuilder, public authenticationService: AuthenticationService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    public authenticationService: AuthenticationService
+  ) {
   }
 
   ngOnInit(): void {
@@ -30,28 +33,28 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  submit() { 
-    if (this.form.invalid) return;   
-    this.loading=true;
+  submit() {
+    if (this.form.invalid) return;
+    this.loading = true;
     this.resetAlert();
     this.authenticationService.login(new User(this.form.value.username, this.form.value.password))
-    .pipe(first())
-    .subscribe(
-      data => {
-      },
-      error => {
-        error = "Les identifiants sont incorrects";
-        this.alert(error);
-        this.loading=false;
-      });
+      .pipe(first())
+      .subscribe(
+        data => {
+        },
+        error => {
+          error = "Les identifiants sont incorrects";
+          this.alert(error);
+          this.loading = false;
+        });
   }
 
-  alert(error){
+  alert(error) {
     this.alertMsg = error;
     this.isAlerting = true;
   }
 
-  resetAlert(){
+  resetAlert() {
     this.alertMsg = "";
     this.isAlerting = false;
   }

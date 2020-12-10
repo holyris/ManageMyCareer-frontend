@@ -130,6 +130,15 @@ button {
   max-width: unset !important;
 }
 
+.mat-menu-panel {  
+  min-height: 1px !important; 
+}
+
+.mat-menu-panel.header-menu{
+  margin-top: 5px !important;
+  margin-right: 5px !important;
+}
+
 .mat-menu-item {
   max-height: 36px;
   display: flex !important;

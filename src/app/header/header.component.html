@@ -1,18 +1,28 @@
-<mat-toolbar class="d-flex flex-row justify-content-between pr-0">
-  <div routerLink="" class="d-flex flex-row align-items-center" style="cursor: pointer;">
-    <img height="50" src="../assets/logo.png">
-    <span class="text-secondary ml-2">ManageMyCareer</span>
-  </div>
-  <div class="d-flex h6 ml-auto mr-5 my-0 align-self-center">
-    <span class="text-secondary font-weight-light">
-      Utilisateur connecté :
-    </span>
-    <span class="text-success ml-1"> {{currentUser.username}}</span>
+<mat-toolbar class="d-flex flex-row justify-content-between px-0">
+  <button mat-button *ngIf="!isWeb" class="h-100" color="primary" style="border-radius: 0px;"
+    (click)="appStateService.sidenavVisible = !appStateService.sidenavVisible">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <div routerLink="" class="d-flex flex-row align-items-center ml-lg-3" style="cursor: pointer;">
+    <img height="40" src="../assets/logo.png">
+    <span class="text-secondary ml-2" *ngIf="isWeb">ManageMyCareer</span>
   </div>
 
-  <button mat-button (click)="logout()" color="warn" class="h-100">
-    <mat-icon>power_settings_new</mat-icon>
-    Déconnexion
-  </button>
+  <div class="h-100">
+    <button mat-button [matMenuTriggerFor]="menu" class="h-100" style="border-radius: 0px;">
+      <mat-icon class="material-icons-outlined text-secondary">person</mat-icon>
+      <span *ngIf="isWeb" class="mx-1 text-secondary"> {{currentUser.username}}</span>
+      <mat-icon [inline]="true" class="material-icons-outlined text-secondary" style="font-size: 18px">expand_more
+      </mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" class="header-menu" xPosition="after">
+      <h3 *ngIf="!isWeb" class="text-center mb-1 mx-3 text-secondary"> {{currentUser.username}}</h3>
+      <mat-divider *ngIf="!isWeb" class="mb-2"></mat-divider>
+      <button mat-menu-item (click)="logout()" class="text-danger">
+        <mat-icon color="warn">power_settings_new</mat-icon>
+        <span>Déconnexion</span>
+      </button>
+    </mat-menu>
+  </div>
 
 </mat-toolbar>

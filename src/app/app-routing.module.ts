@@ -1,36 +1,41 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, UrlSegment } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { RegisterComponent } from './register/register.component';
 import { FileListComponent } from './file-list/file-list.component';
-import { LoginComponent } from './login/login.component';
 import { AuthGuard } from 'src/shared/helpers/auth.guard'
 import { CareerComponent } from './career/career.component';
 import { ReceptionComponent } from './reception/reception.component';
+import { MainAppComponent } from './main-app/main-app.component';
 
 
 const routes: Routes = [
   {
-    path: "",
+    path: "welcome",
     component: ReceptionComponent
   },
   {
-    path: "home",
-    component: HomeComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    matcher: foldersAndFilesRouteMatcherFunction,
-    component: FileListComponent
-  },
-  {
-    path: "career",
-    component: CareerComponent,
-    canActivate: [AuthGuard]
+    path: "",
+    component: MainAppComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        matcher: foldersAndFilesRouteMatcherFunction,
+        component: FileListComponent
+      },
+      {
+        path: "career",
+        component: CareerComponent,
+      },
+      {
+        path: '',
+        redirectTo: 'files',
+        pathMatch: 'full'
+      }
+    ]
   },
 
   // otherwise redirect to home
-  { path: '**', redirectTo: 'home' }
+  { path: '**', redirectTo: 'files' }
 
 ];
 

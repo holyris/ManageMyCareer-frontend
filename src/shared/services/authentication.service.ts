@@ -24,9 +24,10 @@ export class AuthenticationService {
   login(user: User) {
     const req = this.http.post<any>(environment.apiUrl + `login`, { username: user.username, password: user.password }, { withCredentials: true })
       .pipe(map(response => {
+        this.dialog.closeAll();
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/files']);
         return user;
       })
 
@@ -35,10 +36,12 @@ export class AuthenticationService {
   }
 
   logout() {
-    this.dialog.closeAll();
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-    this.router.navigate(['']);
+    if (this.router.url !== "/welcome") {
+      this.dialog.closeAll();
+      localStorage.removeItem('currentUser');
+      this.currentUserSubject.next(null);
+      this.router.navigate(['welcome']);
+    }
   }
 
   public get currentUserValue(): User {
