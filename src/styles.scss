@@ -103,13 +103,13 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.hide-scrollbar {
-  scrollbar-width: none; /* For Firefox */
+.hidden-scrollbar {
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  width: 0px; /* For Chrome, Safari, and Opera */
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
 }
 
 button {
@@ -130,11 +130,11 @@ button {
   max-width: unset !important;
 }
 
-.mat-menu-panel {  
-  min-height: 1px !important; 
+.mat-menu-panel {
+  min-height: 1px !important;
 }
 
-.mat-menu-panel.header-menu{
+.mat-menu-panel.header-menu {
   margin-top: 5px !important;
   margin-right: 5px !important;
 }
@@ -170,9 +170,9 @@ button {
   background-color: #6798fe !important;
 }
 
-.preview-modal .mat-dialog-container{
+.preview-modal .mat-dialog-container {
   background: none !important;
-  padding:0 !important;
+  padding: 0 !important;
   box-shadow: none !important;
 }
 

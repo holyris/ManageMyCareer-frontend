@@ -2,25 +2,18 @@ import { Component, OnInit, Inject, ChangeDetectionStrategy, ChangeDetectorRef }
 import { FileService } from 'src/shared/services/file.service';
 import { DocumentType } from 'src/shared/models/DocumentType';
 import { FileModel } from 'src/shared/models/FileModel';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { Moment } from 'moment';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { startWith, map } from 'rxjs/operators';
+import { FilePreviewModalComponent } from '../file-preview-modal/file-preview-modal.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { FileUpdateModalComponent } from '../file-update-modal/file-update-modal.component';
+import { MY_FORMATS } from 'src/shared/models/MatDateFormat';
 
-export const MY_FORMATS = {
-  parse: {
-    dateInput: 'MM/YYYY',
-  },
-  display: {
-    dateInput: 'MM/YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 @Component({
   selector: 'app-file-upload-modal',
@@ -45,7 +38,8 @@ export class FileUploadModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public injectedData: any,
     public fileService: FileService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public breakpointObserver: BreakpointObserver,
   ) { }
 
   ngOnInit() {
@@ -145,6 +139,20 @@ export class FileUploadModalComponent implements OnInit {
     }
   }
 
+  showFileUpdateModal(file, index) {
+    let dialogRef = this.dialog.open(FileUpdateModalComponent, { data: file })
+    const sub: Subscription = dialogRef.componentInstance.submitted.subscribe((file) => {
+      this.formArray.at(index).patchValue(file);
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
+  }
+
+  showFilePreviewModal(file) {
+    this.dialog.open(FilePreviewModalComponent, { data: { blob: file.blob }, minWidth: "100vw", maxWidth: "100vw", panelClass: 'preview-modal' });
+  }
+
   private filterCompanies(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.companies.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
@@ -154,11 +162,11 @@ export class FileUploadModalComponent implements OnInit {
     return this.workplaces.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  findControlIndex(control){
+  findControlIndex(control) {
     return this.formArray.controls.findIndex(x => x.value.index === control.value.index)
   }
 
-  get canSave(){
+  get canSave() {
     return this.form.valid && !this.loading
   }
 
@@ -173,5 +181,9 @@ export class FileUploadModalComponent implements OnInit {
 
   get fileObjects() {
     return this.formArray.value as FileModel[];
+  }
+
+  get isWeb() {
+    return this.breakpointObserver.isMatched(Breakpoints.Web)
   }
 }

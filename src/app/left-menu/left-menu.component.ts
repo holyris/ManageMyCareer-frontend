@@ -37,23 +37,20 @@ export class LeftMenuComponent implements OnInit {
 
   showFileUploadModal(folderId: string = null) {
     this.dialog.open(FileUploadModalComponent, {
-      data: { folderId: folderId },
-      disableClose: true
+      data: { folderId: folderId }
     })
   }
 
   showFolderCreationModal(parentFolderId: string = null) {
     this.dialog.open(FolderCreationModalComponent, {
-      data: { parentFolderId: parentFolderId },
-      disableClose: true
+      data: { parentFolderId: parentFolderId }
     })
   }
 
   showFolderUpdateModal(node: FolderNode) {
     let parentNode = this.folderTreeStoreService.getParentNode(node);
     this.dialog.open(FolderUpdateModalComponent, {
-      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
-      disableClose: true
+      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null }
     })
   }
 
@@ -61,8 +58,7 @@ export class LeftMenuComponent implements OnInit {
     const parentNode = this.folderTreeStoreService.getParentNode(node);
 
     this.dialog.open(MoveModalComponent, {
-      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null },
-      disableClose: true
+      data: { id: node.id, name: node.name, parentFolderId: parentNode ? parentNode.id : null }
     })
   }
 

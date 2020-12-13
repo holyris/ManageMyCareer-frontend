@@ -2,20 +2,18 @@
 
 	<h2 mat-dialog-title class="mb-2">Importer des fichiers</h2>
 
-	<div class="py-2 px-2">
+	<div class="py-sm-2 px-2">
 		<div class="row">
 			<div class="col-auto">
 				<input type="file" id="file" multiple (change)="addFiles($event.target.files)" #fileInput hidden>
-				<button type="button" mat-flat-button color="primary" (click)="fileInput.click()"
-					[disabled]="loading">
+				<button type="button" mat-flat-button color="primary" (click)="fileInput.click()" [disabled]="loading">
 					<mat-icon matPrefix fontSet="material-icons-outlined">add</mat-icon>
 					Ajouter des fichiers
 				</button>
 			</div>
 
-			<div *ngIf="formArray.length" class="col">
-				<div class="d-flex align-items-end h-100">
-					<div class="align-self-end ml-auto">{{formArray.length}} fichiers dans la liste</div>
+			<div *ngIf="formArray.length" class="col-auto mt-2">
+				<div class="align-self-end ml-auto" *ngIf="formArray.length > 1">{{formArray.length}} fichiers dans la liste
 				</div>
 			</div>
 		</div>
@@ -24,18 +22,19 @@
 		</div>
 	</div>
 	<div *ngIf="formArray.length">
-		<div class="d-flex my-2 align-items-center">
+		<div class="d-flex my-2 align-items-center mx-n3">
 			<mat-icon class="text-secondary">search</mat-icon>
 			<div class="input-group input-group-sm">
-				<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text"
-					placeholder="Rechercher par nom de fichier" class="form-control rounded-pill">
+				<input [(ngModel)]="filter" [ngModelOptions]="{standalone: true}" type="text" placeholder="Rechercher"
+					class="form-control rounded-pill">
 			</div>
 		</div>
 
 		<mat-divider class="mx-n4"></mat-divider>
 
-		<div formArrayName="formArray">
-			<cdk-virtual-scroll-viewport autosize style="height:60vh; width:630px; overflow-y:scroll" class="mx-n4">
+		<!-- <div formArrayName="formArray" *ngIf="isWeb">
+			<cdk-virtual-scroll-viewport autosize style="min-height:30vh; max-height:60vh; width:630px; overflow-y:scroll"
+				class="mx-n4">
 				<div *cdkVirtualFor="let control of filteredFormControls; let index=index; templateCacheSize: 0"
 					[formGroupName]="findControlIndex(control)" [style.height]="'auto'">
 					<mat-divider></mat-divider>
@@ -48,15 +47,23 @@
 								<div class="col-12">{{transformFileSize(control.value.size)}} </div>
 							</div>
 							<div class="row mt-auto">
-								<div class="col-12">
-									<button type="button" mat-button (click)="deleteFileObjectByIndex(findControlIndex(control))">Retirer</button>
+								<div>
+									<button type="button" mat-icon-button (click)="showFilePreviewModal(control.value)" class="ml-3">
+										<mat-icon class="material-icons-outlined text-secondary">visibility</mat-icon>
+									</button>
+								</div>
+								<div>
+									<button type="button" mat-icon-button (click)="deleteFileObjectByIndex(findControlIndex(control))"
+										class="">
+										<mat-icon class="material-icons-outlined text-secondary">delete</mat-icon>
+									</button>
 								</div>
 							</div>
 						</div>
 						<div class="col-auto">
 							<div class="row">
 								<div class="col-12">
-									<mat-form-field [style]="{'min-width':'300px'}">
+									<mat-form-field>
 										<mat-label>Nom</mat-label>
 										<input matInput formControlName="name" required>
 									</mat-form-field>
@@ -78,7 +85,8 @@
 										<mat-label>Date</mat-label>
 										<input matInput [matDatepicker]="dp" formControlName="documentDate">
 										<mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-										<mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp, findControlIndex(control))"
+										<mat-datepicker #dp startView="multi-year"
+											(monthSelected)="chosenMonthHandler($event, dp, findControlIndex(control))"
 											panelClass="example-month-picker">
 										</mat-datepicker>
 									</mat-form-field>
@@ -137,15 +145,39 @@
 					</div>
 				</div>
 			</cdk-virtual-scroll-viewport>
-		</div>
+		</div> -->
+
+		<mat-list class="mx-n4 pt-0" style="max-height: 65vh; overflow-y: auto">
+			<mat-list-item *ngFor="let control of filteredFormControls; let index=index;">
+
+				<span style="font-size: 14px" class="text-truncate">{{control.value.name}}</span>
+				<button mat-icon-button [matMenuTriggerFor]="menu" class="ml-auto mr-n2" type="button">
+					<mat-icon>more_vert</mat-icon>
+				</button>
+				<mat-menu #menu="matMenu">
+					<button mat-menu-item (click)="showFilePreviewModal(control.value)">
+						<mat-icon fontSet="material-icons-outlined">visibility</mat-icon>
+						Aperçu
+					</button>
+					<button mat-menu-item (click)="showFileUpdateModal(control.value, findControlIndex(control))">
+						<mat-icon fontSet="material-icons-outlined">create</mat-icon>
+						Modifier
+					</button>
+					<button mat-menu-item (click)="deleteFileObjectByIndex(findControlIndex(control))">
+						<mat-icon fontSet="material-icons-outlined">delete</mat-icon>
+						Retirer
+					</button>
+				</mat-menu>
+			</mat-list-item>
+
+		</mat-list>
 
 		<mat-divider class="mx-n4"></mat-divider>
 	</div>
 
 
 	<mat-dialog-actions align="end">
-		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!canSave"
-			type="submit">
+		<button *ngIf="formArray.length" mat-button color="primary" [disabled]="!canSave" type="submit">
 			<i *ngIf="loading" class="spinner-border spinner-border-sm"></i>
 			Importer</button>
 		<button type="button" mat-button [mat-dialog-close]="true">Fermer</button>

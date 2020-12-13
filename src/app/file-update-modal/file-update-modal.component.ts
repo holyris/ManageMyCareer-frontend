@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Output, EventEmitter } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { DocumentType } from 'src/shared/models/DocumentType';
 import { FileService } from 'src/shared/services/file.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { MY_FORMATS } from '../file-upload-modal/file-upload-modal.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { map, startWith } from 'rxjs/operators';
+import { MY_FORMATS } from 'src/shared/models/MatDateFormat';
 
 @Component({
   selector: 'app-file-update-modal',
@@ -19,6 +19,7 @@ import { map, startWith } from 'rxjs/operators';
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }],
 })
 export class FileUpdateModalComponent implements OnInit {
+  @Output() submitted = new EventEmitter();
   loading: Boolean = false;
   companies: string[] = [];
   workplaces: string[] = [];
@@ -41,14 +42,7 @@ export class FileUpdateModalComponent implements OnInit {
 
   async submit() {
     if (this.form.invalid) return;
-    this.loading = true;
-    await this.fileService.update(this.file);
-    this.close();
-    this.loading = false;
-  }
-
-  close() {
-    this.dialog.closeAll();
+    this.submitted.emit(this.file);
   }
 
   loadDataFromApi() {
