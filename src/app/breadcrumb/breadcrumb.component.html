@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center" style="height:40px">
+<div class="d-flex align-items-center" style="height:40px; overflow-x:auto">
 
   <div *ngIf="!routeFolderNodes.length">
     <button mat-button disabled>Tous les fichiers</button>
@@ -7,11 +7,14 @@
     <button mat-button disabled>Dossiers</button>
   </div>
 
-  <div *ngFor="let routeFolderNode of routeFolderNodes; let index = index">
-    <button class="mx-n1" mat-icon-button disabled>
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-    <button mat-button [color]="isLastOfRouteFolderNodes(index) ? 'primary' : ''"
-      [routerLink]="['/folders', routeFolderNode.id]" routerLinkActive="primary" (click)="expandAllParents(routeFolderNode)">{{routeFolderNode.name}}</button>
+  <div *ngFor="let routeFolderNode of routeFolderNodes; let index = index" class="col-auto p-0">
+    <div class="row no-gutters align-items-center">
+      <button class="mx-n2" mat-icon-button disabled>
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-button [color]="isLastOfRouteFolderNodes(index) ? 'primary' : ''"
+        [routerLink]="['/folders', routeFolderNode.id]" routerLinkActive="primary"
+        (click)="expandAllParents(routeFolderNode)">{{routeFolderNode.name}}</button>
+    </div>
   </div>
 </div>

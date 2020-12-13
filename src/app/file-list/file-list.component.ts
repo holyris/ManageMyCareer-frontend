@@ -32,7 +32,13 @@ export class FileListComponent implements OnInit {
   exportParams = {
     allColumns: false,
     columnKeys: ["name", "documentType", "company", "workplace", "documentMonth", "documentYear", "grossSalary", "netSalary"]
-  }
+  };
+  overlayNoRowsTemplate = `
+                  <div>
+                    <img height='110px' src='../assets/noRowsIcon.png'></img>
+                    <h4 class="text-secondary pt-2">Déposez vos fichiers avec le bouton "Ajouter"</h4>
+                  </div>
+                  `;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -44,11 +50,12 @@ export class FileListComponent implements OnInit {
 
     this.columnDefs = [
       { headerName: 'Document', field: 'name', tooltipField: 'name', suppressMenu: true, flex: 5 },
-      { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3},
+      { headerName: 'Type', field: 'documentType', tooltipField: 'documentType', flex: 3, hide: !this.isWeb },
       { headerName: 'Entreprise', field: 'company', tooltipField: 'company', flex: 3, hide: !this.isWeb },
       { headerName: 'Emploi', field: 'workplace', tooltipField: 'workplace', flex: 3, hide: !this.isWeb },
-      { headerName: 'Mois', field: 'documentMonth', flex: 2, hide: !this.isWeb },
-      { headerName: 'Année', field: 'documentYear', flex: 2, hide: !this.isWeb },
+      { headerName: 'Date', field: 'documentDate', hide: !this.isWeb, valueFormatter: (params) => { return this.formatDate(params.value) } },
+      // { headerName: 'Mois', field: 'documentMonth', flex: 2, hide: !this.isWeb },
+      // { headerName: 'Année', field: 'documentYear', flex: 2, hide: !this.isWeb },
       { headerName: 'Salaire brut', field: 'grossSalary', hide: true },
       { headerName: 'Salaire net', field: 'netSalary', hide: true },
       {
@@ -75,6 +82,8 @@ export class FileListComponent implements OnInit {
         this.refresh();
       }
     )
+    document.addEventListener("keydown", this.onKeyDown)
+
   }
 
   ngOnDestroy() {
@@ -82,6 +91,7 @@ export class FileListComponent implements OnInit {
     this.routeParamsSubscription.unsubscribe();
     this.dataSentSubscription.unsubscribe();
     this.folderDeleteSubscription.unsubscribe();
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onGridReady(params) {
@@ -89,11 +99,17 @@ export class FileListComponent implements OnInit {
   }
 
   showUpdateModal(file: FileModel) {
-    this.dialog.open(FileUpdateModalComponent, { data: file, disableClose: true });
+    let dialogRef = this.dialog.open(FileUpdateModalComponent, { data: file })
+    const sub: Subscription = dialogRef.componentInstance.submitted.subscribe((file) => {
+      this.fileService.update(file);
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 
   showMoveModal(file: FileModel) {
-    this.dialog.open(MoveModalComponent, { data: file, disableClose: true });
+    this.dialog.open(MoveModalComponent, { data: file });
   }
 
   showFilePreviewModal(file) {
@@ -124,6 +140,7 @@ export class FileListComponent implements OnInit {
   }
 
   refresh() {
+    this.files = [];
     if (this.folderIdRouteParam) {
       this.loadFilesByFolderId(this.folderIdRouteParam);
     } else {
@@ -132,20 +149,25 @@ export class FileListComponent implements OnInit {
   }
 
   loadAllFiles() {
+    if (this.gridApi) this.gridApi.showLoadingOverlay();
     this.fileService.getAll()
       .subscribe((files: FileModel[]) => {
         this.files = files;
+        if (this.gridApi) this.gridApi.hideOverlay();
       });
   }
 
   loadFilesByFolderId(folderId: string): void {
+    if (this.gridApi) this.gridApi.showLoadingOverlay();
     this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
       this.files = files;
+      if (this.gridApi) this.gridApi.hideOverlay();
+
     })
   }
 
   rowDoubleClicked(event) {
-    this.showUpdateModal(event.data);
+    this.showFilePreviewModal(event.data);
   }
 
   rowRightClicked(event) {
@@ -166,46 +188,83 @@ export class FileListComponent implements OnInit {
     }
   }
 
+  onKeyDown = (event) => {
+    if (event.key === "a" && event.ctrlKey) {
+      event.preventDefault();
+      this.gridApi.selectAllFiltered()
+    }
+  }
+
   getContextMenuItems = (params) => {
     if (params.node) {
       var file = params.node.data;
-      var result = [
-        {
-          name: 'Aperçu',
-          icon: `<i class="material-icons-outlined text-secondary">visibility</i>`,
-          action: () => {
-            this.showFilePreviewModal(file)
-          }
-        },
-        {
-          name: 'Modifier',
-          icon: `<i class="material-icons-outlined text-secondary">create</i>`,
-          action: () => {
-            this.showUpdateModal(file)
-          }
-        },
-        {
-          name: 'Déplacer',
-          icon: `<i class="material-icons-outlined text-secondary">low_priority</i>`,
-          action: () => {
-            this.showMoveModal(file)
-          }
-        },
-        {
-          name: 'Télécharger',
-          icon: `<i class="material-icons-outlined text-secondary">save_alt</i>`,
-          action: () => { this.downloadFile(file) }
+      if (this.gridApi.getSelectedRows().length <= 1) {
+        return this.getSingleContextMenu(file);
+      } else {
+        return this.getMultipleContextMenu(this.gridApi.getSelectedRows())
+      }
+    }
+  }
 
-        },
-        {
-          name: 'Supprimer',
-          icon: `<i class="material-icons-outlined text-secondary">delete</i>`,
-          action: () => { this.tryDeleteFiles(this.gridApi.getSelectedRows()) }
+  private getSingleContextMenu(file) {
+    return [
+      {
+        name: 'Aperçu',
+        icon: `<i class="material-icons-outlined text-secondary">visibility</i>`,
+        action: () => {
+          this.showFilePreviewModal(file)
+        }
+      },
+      {
+        name: 'Modifier',
+        icon: `<i class="material-icons-outlined text-secondary">create</i>`,
+        action: () => {
+          this.showUpdateModal(file)
+        }
+      },
+      {
+        name: 'Déplacer',
+        icon: `<i class="material-icons-outlined text-secondary">low_priority</i>`,
+        action: () => {
+          this.showMoveModal(file)
+        }
+      },
+      {
+        name: 'Télécharger',
+        icon: `<i class="material-icons-outlined text-secondary">save_alt</i>`,
+        action: () => { this.downloadFile(file) }
 
-        },
-      ];
+      },
+      {
+        name: 'Supprimer',
+        icon: `<i class="material-icons-outlined text-secondary">delete</i>`,
+        action: () => { this.tryDeleteFiles(this.gridApi.getSelectedRows()) }
 
-      return result;
+      },
+    ];
+  }
+
+  private getMultipleContextMenu(files) {
+    return [
+      // {
+      //   name: 'Déplacer',
+      //   icon: `<i class="material-icons-outlined text-secondary">low_priority</i>`,
+      //   action: () => {
+      //     this.showMoveModal(files)
+      //   }
+      // },
+      {
+        name: 'Supprimer',
+        icon: `<i class="material-icons-outlined text-secondary">delete</i>`,
+        action: () => { this.tryDeleteFiles(files) }
+
+      },
+    ];
+  }
+
+  formatDate(date: Date): string {
+    if (date) {
+      return ('0' + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
     }
   }
 

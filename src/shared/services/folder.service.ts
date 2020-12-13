@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { Folder } from '../models/Folder';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,15 @@ export class FolderService {
   private deleteSubject = new Subject<string>();
   public getDeleteEvent = this.deleteSubject.asObservable();
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
+  private folderNodeStoreService;
+
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private router: Router,
+  ) {
+
+  }
 
   getAll(): Observable<Folder[]> {
     return this.http.get<Folder[]>(this.url, this.httpOptions);
@@ -43,12 +52,13 @@ export class FolderService {
   }
 
   async create(folder: Folder) {
-    const request = await this.http.post(this.url, folder, this.httpOptions).toPromise();
+    const request: any = await this.http.post(this.url, folder, this.httpOptions).toPromise();
     this.snackBar.open('Dossier crée', "Fermer", {
       duration: 2000,
       horizontalPosition: 'end'
-    }); 
+    });
     this.alertDataSent();
+    this.router.navigate(["folders/" + request.id])
     return request;
   }
 
@@ -57,7 +67,7 @@ export class FolderService {
     this.snackBar.open('Dossier modifié', "Fermer", {
       duration: 2000,
       horizontalPosition: 'end'
-    }); 
+    });
     this.alertDataSent();
     return request;
   }
@@ -67,7 +77,7 @@ export class FolderService {
     this.snackBar.open('Dossier supprimé', "Fermer", {
       duration: 2000,
       horizontalPosition: 'end'
-    }); 
+    });
     this.alertDataSent();
     this.alertDelete();
     return request;
@@ -79,6 +89,10 @@ export class FolderService {
 
   alertDelete() {
     this.deleteSubject.next();
+  }
+
+  setFolderNodeStoreService(folderNodeStoreService) {
+    this.folderNodeStoreService = folderNodeStoreService
   }
 }
 

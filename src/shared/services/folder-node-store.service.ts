@@ -3,10 +3,9 @@ import { Folder } from '../models/Folder';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { FolderNode } from '../models/FolderNode';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { FolderService } from './folder.service';
-import { filter, distinctUntilChanged } from 'rxjs/operators';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +40,7 @@ export class FolderTreeStoreService {
     private folderService: FolderService
   ) {
     // this.refresh();
+    this.folderService.setFolderNodeStoreService(this)
     this.folderService.getDataSentEvent.subscribe(
       () => {
         this.refresh();
@@ -155,5 +155,13 @@ export class FolderTreeStoreService {
         }
       });
     }
+  }
+
+  expandAllParents(node){
+    let parents = this.getAllParentNode(node, [node])
+    parents.forEach((parent, index) => {
+      if (index !== parents.length - 1)
+        this.treeControl.expand(parent)
+    });
   }
 }

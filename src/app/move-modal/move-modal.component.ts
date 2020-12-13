@@ -7,7 +7,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { FolderNode } from 'src/shared/models/FolderNode';
 import { Folder } from 'src/shared/models/Folder';
 import { FileService } from 'src/shared/services/file.service';
-import { FileModel } from 'src/shared/models/FileModel';
 import { FolderTreeStoreService } from 'src/shared/services/folder-node-store.service';
 
 @Component({
@@ -38,7 +37,7 @@ export class MoveModalComponent implements OnInit {
   loading: Boolean = false;
   form: FormGroup;
   initialFolderId: string = null;
-  titleItem: string = null;
+  title: string = null;
   formControlName: string = null;
 
 
@@ -57,14 +56,17 @@ export class MoveModalComponent implements OnInit {
 
     if (this.injectedData.hasOwnProperty("parentFolderId")) {
       this.initialFolderId = this.injectedData.id
-      this.titleItem = "dossier";
+      this.title = "Déplacer un dossier";
       this.formControlName = "parentFolderId"
+    } else if (Array.isArray(this.injectedData)) {
+      this.title = "Déplacer des fichiers"
+      this.formControlName = "folderId"
     } else {
-      this.titleItem = "fichier"
+      this.title = "Déplacer un fichier"
       this.formControlName = "folderId"
     }
     this.form = this.formBuilder.group({
-      id: [this.injectedData.id, Validators.required],
+      id: [this.injectedData.id],
       name: [this.injectedData.name],
       [this.formControlName]: [this.injectedData.parentFolderId]
     })
@@ -86,9 +88,7 @@ export class MoveModalComponent implements OnInit {
     this.dialog.closeAll();
   }
 
-  isUpdatingItem(node: FolderNode) {
-    return node.id === this.initialFolderId;
-  }
+  isUpdatingItem = (_: number, _nodeData: FolderNode) => _nodeData.id === this.initialFolderId;
 
   get updatingItem() {
     return this.form.value;
