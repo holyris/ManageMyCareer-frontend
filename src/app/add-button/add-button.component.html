@@ -1,0 +1,16 @@
+<div class="btn-group">
+  <button mat-raised-button [matMenuTriggerFor]="menu" class="rounded-pill" color="primary">
+    <mat-icon>add</mat-icon>
+    <span>Ajouter</span>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="showFileUploadModal(getRouteFolderId())">
+      <mat-icon fontSet="material-icons-outlined">note_add</mat-icon>
+      Fichier(s)
+    </button>
+    <button mat-menu-item (click)="showFolderCreationModal(getRouteFolderId())">
+      <mat-icon fontSet="material-icons-outlined">create_new_folder</mat-icon>
+      Dossier
+    </button>
+  </mat-menu>
+</div>
