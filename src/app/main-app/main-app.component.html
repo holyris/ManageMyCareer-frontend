@@ -2,12 +2,31 @@
   <app-header></app-header>
 
   <mat-sidenav-container class="h-100">
-    <mat-sidenav [mode]="isWeb ? 'side' : 'over'" [opened]="isWeb ? true : appStateService.sidenavVisible" (closedStart)="appStateService.sidenavVisible = false">
+    <mat-sidenav [mode]="isWeb ? 'side' : 'over'" [opened]="isWeb ? true : appStateService.sidenavVisible"
+      (closedStart)="appStateService.sidenavVisible = false">
       <app-left-menu></app-left-menu>
     </mat-sidenav>
 
     <mat-sidenav-content>
       <router-outlet></router-outlet>
+
+      <app-add-button *ngIf="!isWeb" style="position:absolute; right:0; bottom:0;" class="m-4"></app-add-button>
+      <!-- <div *ngIf="!isWeb" class="btn-group m-4" style="position:absolute; right:0; bottom:0">
+        <button mat-raised-button [matMenuTriggerFor]="menu" class="rounded-pill" color="primary">
+          <mat-icon>add</mat-icon>
+          <span>Ajouter</span>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="showFileUploadModal(getRouteFolderId())">
+            <mat-icon fontSet="material-icons-outlined">note_add</mat-icon>
+            Fichier(s)
+          </button>
+          <button mat-menu-item (click)="showFolderCreationModal(getRouteFolderId())">
+            <mat-icon fontSet="material-icons-outlined">create_new_folder</mat-icon>
+            Dossier
+          </button>
+        </mat-menu>
+      </div> -->
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

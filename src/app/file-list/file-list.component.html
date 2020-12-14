@@ -53,7 +53,7 @@
       [defaultColDef]="defaultColDef" [rowData]="files" [rowHeight]="32" (gridReady)="onGridReady($event)"
       suppressCellSelection="true" (rowDoubleClicked)="rowDoubleClicked($event)"
       (cellContextMenu)="rowRightClicked($event)" [getContextMenuItems]="getContextMenuItems" rowSelection='multiple'
-      [tooltipShowDelay]="0" [quickFilterText]="filter"
-      [overlayNoRowsTemplate]="overlayNoRowsTemplate"></ag-grid-angular>
+      [tooltipShowDelay]="0" [quickFilterText]="filter" [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+      [overlayLoadingTemplate]="overlayLoadingTemplate"></ag-grid-angular>
   </div>
 </div>

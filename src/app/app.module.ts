@@ -54,6 +54,7 @@ import { ReceptionComponent } from './reception/reception.component';
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 import { MainAppComponent } from './main-app/main-app.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
+import { AddButtonComponent } from './add-button/add-button.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { AuthenticationComponent } from './authentication/authentication.compone
     DeleteModalComponent,
     MainAppComponent,
     AuthenticationComponent,
+    AddButtonComponent,
   ],
   imports: [
     BrowserModule,

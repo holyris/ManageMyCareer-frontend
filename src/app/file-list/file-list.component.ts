@@ -39,6 +39,7 @@ export class FileListComponent implements OnInit {
                     <h4 class="text-secondary pt-2">Déposez vos fichiers avec le bouton "Ajouter"</h4>
                   </div>
                   `;
+  overlayLoadingTemplate = `<i class="spinner-border"></i>`;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -140,7 +141,8 @@ export class FileListComponent implements OnInit {
   }
 
   refresh() {
-    this.files = [];
+    if (this.gridApi) this.gridApi.showLoadingOverlay();
+    // this.files = [];
     if (this.folderIdRouteParam) {
       this.loadFilesByFolderId(this.folderIdRouteParam);
     } else {
@@ -149,19 +151,17 @@ export class FileListComponent implements OnInit {
   }
 
   loadAllFiles() {
-    if (this.gridApi) this.gridApi.showLoadingOverlay();
     this.fileService.getAll()
       .subscribe((files: FileModel[]) => {
         this.files = files;
-        if (this.gridApi) this.gridApi.hideOverlay();
+        // if (this.gridApi) this.gridApi.hideOverlay();
       });
   }
 
   loadFilesByFolderId(folderId: string): void {
-    if (this.gridApi) this.gridApi.showLoadingOverlay();
     this.folderService.getFilesById(folderId).subscribe((files: FileModel[]) => {
       this.files = files;
-      if (this.gridApi) this.gridApi.hideOverlay();
+      // if (this.gridApi) this.gridApi.hideOverlay();
 
     })
   }
